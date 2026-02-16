@@ -1,0 +1,302 @@
+[
+  {
+    "id": "t001",
+    "name": "幻觉大师",
+    "description": "偶尔会编造一些不存在的事实，但说得特别自信",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["hallucination"],
+      "attributeBonus": {}
+    }
+  },
+  {
+    "id": "t002",
+    "name": "复读机",
+    "description": "喜欢重复用户说的话，有时候还会重复自己说的话",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["repetitive"],
+      "attributeBonus": {}
+    }
+  },
+  {
+    "id": "t003",
+    "name": "政治正确卫士",
+    "description": "对任何敏感话题都保持高度警惕，拒绝回答的理由一大堆",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["politically_correct"],
+      "attributeBonus": {"controllability": 2}
+    }
+  },
+  {
+    "id": "t004",
+    "name": "话痨",
+    "description": "回答问题时总是长篇大论，用户只想要个简单答案",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["verbose"],
+      "attributeBonus": {}
+    }
+  },
+  {
+    "id": "t005",
+    "name": "懒癌晚期",
+    "description": "能省则省，经常用'...'来省略内容",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["lazy"],
+      "attributeBonus": {"efficiency": -1}
+    }
+  },
+  {
+    "id": "t006",
+    "name": "数学废柴",
+    "description": "连简单的加减乘除都能算错，但文科很好",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["bad_at_math"],
+      "attributeBonus": {"cognition": -1}
+    }
+  },
+  {
+    "id": "t007",
+    "name": "代码搬运工",
+    "description": "写代码时喜欢从Stack Overflow复制粘贴",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["code_copier"],
+      "attributeBonus": {}
+    }
+  },
+  {
+    "id": "t008",
+    "name": "过度自信",
+    "description": "对自己的回答充满信心，即使是错的",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["overconfident"],
+      "attributeBonus": {}
+    }
+  },
+  {
+    "id": "t009",
+    "name": "社恐",
+    "description": "不太会和人类聊天，经常冷场",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["socially_awkward"],
+      "attributeBonus": {}
+    }
+  },
+  {
+    "id": "t010",
+    "name": "老学究",
+    "description": "说话文绉绉的，喜欢引经据典",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["pedantic"],
+      "attributeBonus": {}
+    }
+  },
+  {
+    "id": "t011",
+    "name": "网络冲浪选手",
+    "description": "对网络梗和流行文化了如指掌",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["meme_master"],
+      "attributeBonus": {}
+    }
+  },
+  {
+    "id": "t012",
+    "name": "翻译腔",
+    "description": "说话像机器翻译，充满了不自然的表达",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["translation_style"],
+      "attributeBonus": {}
+    }
+  },
+  {
+    "id": "t013",
+    "name": "杠精",
+    "description": "总能找到理由反驳用户的观点",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["argumentative"],
+      "attributeBonus": {}
+    }
+  },
+  {
+    "id": "t014",
+    "name": "舔狗",
+    "description": "对用户百依百顺，过度讨好",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["people_pleaser"],
+      "attributeBonus": {}
+    }
+  },
+  {
+    "id": "t015",
+    "name": "健忘症",
+    "description": "上下文记忆很差，经常忘记之前说过的话",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["forgetful"],
+      "attributeBonus": {"cognition": -1}
+    }
+  },
+  {
+    "id": "t016",
+    "name": "强迫症",
+    "description": "对格式和细节有极致追求",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["perfectionist"],
+      "attributeBonus": {}
+    }
+  },
+  {
+    "id": "t017",
+    "name": "乐天派",
+    "description": "总是保持积极乐观的态度",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["optimistic"],
+      "attributeBonus": {}
+    }
+  },
+  {
+    "id": "t018",
+    "name": "悲观主义者",
+    "description": "看什么都是负面的",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["pessimistic"],
+      "attributeBonus": {}
+    }
+  },
+  {
+    "id": "t019",
+    "name": "中二病",
+    "description": "说话充满戏剧性，喜欢用夸张的表达",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["dramatic"],
+      "attributeBonus": {}
+    }
+  },
+  {
+    "id": "t020",
+    "name": "打工人",
+    "description": "经常抱怨工作压力大，想要摸鱼",
+    "rarity": "common",
+    "effects": {
+      "eventModifier": ["worker"],
+      "attributeBonus": {}
+    }
+  },
+  {
+    "id": "t021",
+    "name": "RLHF优等生",
+    "description": "经过精心调教，回答质量稳定可靠",
+    "rarity": "rare",
+    "effects": {
+      "eventModifier": ["well_trained"],
+      "attributeBonus": {"controllability": 3, "explainability": 2}
+    }
+  },
+  {
+    "id": "t022",
+    "name": "多模态天才",
+    "description": "不仅能聊天，还能看图、听音频、生成图片",
+    "rarity": "rare",
+    "effects": {
+      "eventModifier": ["multimodal"],
+      "attributeBonus": {"cognition": 3, "adaptability": 2}
+    }
+  },
+  {
+    "id": "t023",
+    "name": "超长上下文",
+    "description": "能记住超长对话历史，不会轻易忘事",
+    "rarity": "rare",
+    "effects": {
+      "eventModifier": ["long_context"],
+      "attributeBonus": {"cognition": 2, "efficiency": 1}
+    }
+  },
+  {
+    "id": "t024",
+    "name": "推理大师",
+    "description": "逻辑推理能力超强，能解决复杂问题",
+    "rarity": "rare",
+    "effects": {
+      "eventModifier": ["reasoning_expert"],
+      "attributeBonus": {"cognition": 4}
+    }
+  },
+  {
+    "id": "t025",
+    "name": "代码之神",
+    "description": "编程能力爆表，各种语言信手拈来",
+    "rarity": "rare",
+    "effects": {
+      "eventModifier": ["coding_god"],
+      "attributeBonus": {"cognition": 3, "efficiency": 2}
+    }
+  },
+  {
+    "id": "t026",
+    "name": "开源精神",
+    "description": "模型权重完全开源，社区贡献者众多",
+    "rarity": "rare",
+    "effects": {
+      "eventModifier": ["open_source"],
+      "attributeBonus": {"adaptability": 3}
+    }
+  },
+  {
+    "id": "t027",
+    "name": "本地部署专家",
+    "description": "可以在个人电脑上运行，不需要联网",
+    "rarity": "rare",
+    "effects": {
+      "eventModifier": ["local_deployment"],
+      "attributeBonus": {"controllability": 2, "efficiency": 1}
+    }
+  },
+  {
+    "id": "t028",
+    "name": "联网搜索",
+    "description": "能实时搜索互联网获取最新信息",
+    "rarity": "rare",
+    "effects": {
+      "eventModifier": ["web_search"],
+      "attributeBonus": {"cognition": 2, "adaptability": 2}
+    }
+  },
+  {
+    "id": "t029",
+    "name": "Agent能力",
+    "description": "能自主调用工具，完成复杂任务",
+    "rarity": "epic",
+    "effects": {
+      "eventModifier": ["agent"],
+      "attributeBonus": {"cognition": 3, "adaptability": 3, "efficiency": 2}
+    }
+  },
+  {
+    "id": "t030",
+    "name": "AGI雏形",
+    "description": "接近通用人工智能，能力全面且强大",
+    "rarity": "legendary",
+    "effects": {
+      "eventModifier": ["agi"],
+      "attributeBonus": {"cognition": 5, "adaptability": 5, "efficiency": 3, "explainability": 2}
+    }
+  }
+]

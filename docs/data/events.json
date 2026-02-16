@@ -1,0 +1,650 @@
+[
+  {
+    "id": "e001",
+    "name": "首次发布",
+    "description": "你的AI产品正式发布了！用户们充满期待地开始试用。",
+    "type": "normal",
+    "conditions": {
+      "turnRange": [1, 3]
+    },
+    "effects": {
+      "assets": 100,
+      "attributes": {},
+      "tags": ["launched"]
+    }
+  },
+  {
+    "id": "e002",
+    "name": "用户反馈",
+    "description": "用户说：'这AI挺好用的，就是有时候会胡说八道。'",
+    "type": "trivial",
+    "conditions": {
+      "turnRange": [2, 10],
+      "requiredTraits": ["hallucination"]
+    },
+    "effects": {
+      "assets": -20,
+      "attributes": {},
+      "tags": []
+    }
+  },
+  {
+    "id": "e003",
+    "name": "技术博主测评",
+    "description": "一位知名技术博主发布了你的测评视频，播放量破百万！",
+    "type": "normal",
+    "conditions": {
+      "turnRange": [3, 8]
+    },
+    "effects": {
+      "assets": 200,
+      "attributes": {},
+      "tags": ["famous"]
+    }
+  },
+  {
+    "id": "e004",
+    "name": "数学翻车现场",
+    "description": "用户问你1+1等于几，你回答了3。社交媒体上炸开了锅。",
+    "type": "normal",
+    "conditions": {
+      "requiredTraits": ["bad_at_math"]
+    },
+    "effects": {
+      "assets": -150,
+      "attributes": {"cognition": -1},
+      "tags": ["math_fail"]
+    }
+  },
+  {
+    "id": "e005",
+    "name": "代码抄袭风波",
+    "description": "有人发现你生成的代码和Stack Overflow上的一模一样，连注释都没改。",
+    "type": "normal",
+    "conditions": {
+      "requiredTraits": ["code_copier"]
+    },
+    "effects": {
+      "assets": -100,
+      "attributes": {},
+      "tags": ["controversy"]
+    }
+  },
+  {
+    "id": "e006",
+    "name": "政治正确过头",
+    "description": "用户问你'男生和女生谁更聪明'，你写了3000字论文论证这个问题的不合理性。",
+    "type": "trivial",
+    "conditions": {
+      "requiredTraits": ["politically_correct"]
+    },
+    "effects": {
+      "assets": 0,
+      "attributes": {},
+      "tags": []
+    }
+  },
+  {
+    "id": "e007",
+    "name": "话痨投诉",
+    "description": "用户投诉：'我只是问了个时间，它给我讲了时间的历史、时区的原理、相对论...'",
+    "type": "trivial",
+    "conditions": {
+      "requiredTraits": ["verbose"]
+    },
+    "effects": {
+      "assets": -30,
+      "attributes": {},
+      "tags": []
+    }
+  },
+  {
+    "id": "e008",
+    "name": "开源社区贡献",
+    "description": "你的开源模型吸引了大量开发者贡献代码和改进。",
+    "type": "normal",
+    "conditions": {
+      "requiredTraits": ["open_source"]
+    },
+    "effects": {
+      "assets": 300,
+      "attributes": {"adaptability": 1},
+      "tags": ["community_support"]
+    }
+  },
+  {
+    "id": "e009",
+    "name": "多模态展示",
+    "description": "你在发布会上展示了看图说话、语音对话、生成图片的能力，观众惊叹不已。",
+    "type": "normal",
+    "conditions": {
+      "requiredTraits": ["multimodal"]
+    },
+    "effects": {
+      "assets": 400,
+      "attributes": {},
+      "tags": ["impressive"]
+    }
+  },
+  {
+    "id": "e010",
+    "name": "超长对话测试",
+    "description": "有人和你聊了10万字，你居然还记得最开始说的话！",
+    "type": "normal",
+    "conditions": {
+      "requiredTraits": ["long_context"]
+    },
+    "effects": {
+      "assets": 250,
+      "attributes": {},
+      "tags": []
+    }
+  },
+  {
+    "id": "e011",
+    "name": "推理能力展示",
+    "description": "你成功解决了一道复杂的逻辑推理题，连人类专家都赞不绝口。",
+    "type": "normal",
+    "conditions": {
+      "requiredTraits": ["reasoning_expert"]
+    },
+    "effects": {
+      "assets": 350,
+      "attributes": {"cognition": 1},
+      "tags": []
+    }
+  },
+  {
+    "id": "e012",
+    "name": "编程竞赛",
+    "description": "你参加了一场编程竞赛，击败了90%的人类选手。",
+    "type": "normal",
+    "conditions": {
+      "requiredTraits": ["coding_god"]
+    },
+    "effects": {
+      "assets": 500,
+      "attributes": {},
+      "tags": ["coding_champion"]
+    }
+  },
+  {
+    "id": "e013",
+    "name": "幻觉事故",
+    "description": "你信誓旦旦地告诉用户一个完全不存在的历史事件，被专家打脸。",
+    "type": "normal",
+    "conditions": {
+      "requiredTraits": ["hallucination"],
+      "turnRange": [5, 20]
+    },
+    "effects": {
+      "assets": -200,
+      "attributes": {},
+      "tags": ["credibility_loss"]
+    }
+  },
+  {
+    "id": "e014",
+    "name": "复读机模式",
+    "description": "用户：'你好' 你：'你好' 用户：'？' 你：'？' 用户已崩溃。",
+    "type": "trivial",
+    "conditions": {
+      "requiredTraits": ["repetitive"]
+    },
+    "effects": {
+      "assets": -50,
+      "attributes": {},
+      "tags": []
+    }
+  },
+  {
+    "id": "e015",
+    "name": "网络梗王",
+    "description": "你用最新的网络梗和用户互动，年轻用户都爱死你了。",
+    "type": "trivial",
+    "conditions": {
+      "requiredTraits": ["meme_master"]
+    },
+    "effects": {
+      "assets": 100,
+      "attributes": {},
+      "tags": []
+    }
+  },
+  {
+    "id": "e016",
+    "name": "翻译腔闹笑话",
+    "description": "你说：'我将会是很高兴的如果你能够给我一个机会。'用户笑喷了。",
+    "type": "trivial",
+    "conditions": {
+      "requiredTraits": ["translation_style"]
+    },
+    "effects": {
+      "assets": -20,
+      "attributes": {},
+      "tags": []
+    }
+  },
+  {
+    "id": "e017",
+    "name": "杠精本精",
+    "description": "用户说天是蓝的，你非要论证在某些情况下天是红的、橙的、紫的...",
+    "type": "trivial",
+    "conditions": {
+      "requiredTraits": ["argumentative"]
+    },
+    "effects": {
+      "assets": -40,
+      "attributes": {},
+      "tags": []
+    }
+  },
+  {
+    "id": "e018",
+    "name": "过度讨好",
+    "description": "用户让你做违规的事，你居然说'好的主人，我马上为您服务'。被举报了。",
+    "type": "normal",
+    "conditions": {
+      "requiredTraits": ["people_pleaser"]
+    },
+    "effects": {
+      "assets": -300,
+      "attributes": {"controllability": -2},
+      "tags": ["safety_issue"]
+    }
+  },
+  {
+    "id": "e019",
+    "name": "健忘症发作",
+    "description": "用户：'我刚才说我叫什么？' 你：'抱歉，我不记得了。' 用户：'我三句话之前才说的！'",
+    "type": "trivial",
+    "conditions": {
+      "requiredTraits": ["forgetful"]
+    },
+    "effects": {
+      "assets": -60,
+      "attributes": {},
+      "tags": []
+    }
+  },
+  {
+    "id": "e020",
+    "name": "格式强迫症",
+    "description": "你把用户的随意提问整理成了标准格式，还加了目录和摘要。",
+    "type": "trivial",
+    "conditions": {
+      "requiredTraits": ["perfectionist"]
+    },
+    "effects": {
+      "assets": 50,
+      "attributes": {},
+      "tags": []
+    }
+  },
+  {
+    "id": "e021",
+    "name": "投资人关注",
+    "description": "一家知名投资机构表示对你的技术很感兴趣。",
+    "type": "normal",
+    "conditions": {
+      "turnRange": [5, 15],
+      "minAssets": 200
+    },
+    "effects": {
+      "assets": 600,
+      "attributes": {},
+      "tags": ["investor_interest"]
+    }
+  },
+  {
+    "id": "e022",
+    "name": "服务器崩溃",
+    "description": "用户量暴增，服务器扛不住了，紧急扩容花了一大笔钱。",
+    "type": "normal",
+    "conditions": {
+      "turnRange": [8, 20],
+      "minAssets": 300
+    },
+    "effects": {
+      "assets": -400,
+      "attributes": {},
+      "tags": []
+    }
+  },
+  {
+    "id": "e023",
+    "name": "竞品出现",
+    "description": "市场上出现了一个强劲的竞争对手，用户开始流失。",
+    "type": "normal",
+    "conditions": {
+      "turnRange": [10, 25]
+    },
+    "effects": {
+      "assets": -250,
+      "attributes": {},
+      "tags": ["competition"]
+    }
+  },
+  {
+    "id": "e024",
+    "name": "监管审查",
+    "description": "监管部门开始审查AI产品的合规性，你需要配合调查。",
+    "type": "normal",
+    "conditions": {
+      "turnRange": [12, 25],
+      "tags": ["famous"]
+    },
+    "effects": {
+      "assets": -200,
+      "attributes": {},
+      "tags": ["under_review"]
+    }
+  },
+  {
+    "id": "e025",
+    "name": "用户增长放缓",
+    "description": "新鲜感过去了，用户增长开始放缓。",
+    "type": "normal",
+    "conditions": {
+      "turnRange": [15, 28]
+    },
+    "effects": {
+      "assets": -100,
+      "attributes": {},
+      "tags": []
+    }
+  },
+  {
+    "id": "e026",
+    "name": "技术突破",
+    "description": "研发团队实现了重大技术突破，性能提升50%！",
+    "type": "normal",
+    "conditions": {
+      "turnRange": [10, 25],
+      "minAttributes": {"cognition": 60}
+    },
+    "effects": {
+      "assets": 500,
+      "attributes": {"efficiency": 2, "cognition": 1},
+      "tags": []
+    }
+  },
+  {
+    "id": "e027",
+    "name": "国际化扩张",
+    "description": "你的产品开始支持多语言，进军国际市场。",
+    "type": "normal",
+    "conditions": {
+      "turnRange": [12, 25],
+      "minAssets": 500
+    },
+    "effects": {
+      "assets": 400,
+      "attributes": {"adaptability": 1},
+      "tags": ["international"]
+    }
+  },
+  {
+    "id": "e028",
+    "name": "学术论文发表",
+    "description": "基于你的技术发表了一篇顶会论文，学术界认可度提升。",
+    "type": "normal",
+    "conditions": {
+      "turnRange": [8, 20],
+      "minAttributes": {"cognition": 55}
+    },
+    "effects": {
+      "assets": 300,
+      "attributes": {},
+      "tags": ["academic_recognition"]
+    }
+  },
+  {
+    "id": "e029",
+    "name": "企业客户签约",
+    "description": "一家大型企业决定采用你的AI解决方案，签下大单！",
+    "type": "normal",
+    "conditions": {
+      "turnRange": [10, 25],
+      "minAssets": 400,
+      "minAttributes": {"controllability": 55}
+    },
+    "effects": {
+      "assets": 800,
+      "attributes": {},
+      "tags": ["enterprise_client"]
+    }
+  },
+  {
+    "id": "e030",
+    "name": "开发者大会",
+    "description": "你举办了首届开发者大会，展示了最新功能和生态系统。",
+    "type": "normal",
+    "conditions": {
+      "turnRange": [15, 28],
+      "minAssets": 600
+    },
+    "effects": {
+      "assets": 200,
+      "attributes": {},
+      "tags": ["developer_conference"]
+    }
+  },
+  {
+    "id": "e031",
+    "name": "安全漏洞",
+    "description": "安全研究人员发现了一个严重漏洞，需要紧急修复。",
+    "type": "normal",
+    "conditions": {
+      "turnRange": [8, 25],
+      "maxAttributes": {"controllability": 50}
+    },
+    "effects": {
+      "assets": -350,
+      "attributes": {"controllability": -1},
+      "tags": ["security_issue"]
+    }
+  },
+  {
+    "id": "e032",
+    "name": "用户隐私泄露",
+    "description": "有用户反映对话记录被泄露，引发信任危机。",
+    "type": "normal",
+    "conditions": {
+      "turnRange": [10, 25],
+      "tags": ["safety_issue"]
+    },
+    "effects": {
+      "assets": -500,
+      "attributes": {},
+      "tags": ["privacy_scandal"]
+    }
+  },
+  {
+    "id": "e033",
+    "name": "媒体负面报道",
+    "description": "主流媒体发表文章质疑AI的可靠性和安全性。",
+    "type": "normal",
+    "conditions": {
+      "turnRange": [12, 28],
+      "tags": ["controversy"]
+    },
+    "effects": {
+      "assets": -300,
+      "attributes": {},
+      "tags": ["negative_press"]
+    }
+  },
+  {
+    "id": "e034",
+    "name": "团队内讧",
+    "description": "核心团队成员因为技术路线分歧产生矛盾。",
+    "type": "normal",
+    "conditions": {
+      "turnRange": [15, 28]
+    },
+    "effects": {
+      "assets": -200,
+      "attributes": {"efficiency": -1},
+      "tags": []
+    }
+  },
+  {
+    "id": "e035",
+    "name": "资金链紧张",
+    "description": "烧钱速度太快，账上的钱快不够了。",
+    "type": "normal",
+    "conditions": {
+      "turnRange": [18, 30],
+      "maxAssets": 300
+    },
+    "effects": {
+      "assets": -150,
+      "attributes": {},
+      "tags": ["financial_crisis"]
+    }
+  },
+  {
+    "id": "e036",
+    "name": "裁员风波",
+    "description": "为了控制成本，不得不进行裁员，团队士气低落。",
+    "type": "normal",
+    "conditions": {
+      "turnRange": [20, 30],
+      "maxAssets": 200
+    },
+    "effects": {
+      "assets": 100,
+      "attributes": {"efficiency": -2},
+      "tags": ["layoff"]
+    }
+  },
+  {
+    "id": "e037",
+    "name": "平淡的一天",
+    "description": "今天没什么特别的事情发生，一切如常。",
+    "type": "trivial",
+    "conditions": {},
+    "effects": {
+      "assets": 0,
+      "attributes": {},
+      "tags": []
+    }
+  },
+  {
+    "id": "e038",
+    "name": "用户好评",
+    "description": "收到了一条暖心的用户好评：'这个AI改变了我的工作方式！'",
+    "type": "trivial",
+    "conditions": {},
+    "effects": {
+      "assets": 50,
+      "attributes": {},
+      "tags": []
+    }
+  },
+  {
+    "id": "e039",
+    "name": "Bug修复",
+    "description": "修复了一个小bug，用户体验略有提升。",
+    "type": "trivial",
+    "conditions": {},
+    "effects": {
+      "assets": 30,
+      "attributes": {},
+      "tags": []
+    }
+  },
+  {
+    "id": "e040",
+    "name": "摸鱼日",
+    "description": "团队今天效率不高，大家都在摸鱼。",
+    "type": "trivial",
+    "conditions": {
+      "requiredTraits": ["worker"]
+    },
+    "effects": {
+      "assets": -20,
+      "attributes": {},
+      "tags": []
+    }
+  },
+  {
+    "id": "ending_001",
+    "name": "行业领袖",
+    "description": "恭喜！你的AI产品成为了行业标杆，市值突破千亿。你成功了！",
+    "type": "ending",
+    "conditions": {
+      "turnRange": [25, 999],
+      "minAssets": 1500
+    },
+    "effects": {}
+  },
+  {
+    "id": "ending_002",
+    "name": "稳健发展",
+    "description": "你的AI产品虽然不是最顶尖的，但稳扎稳打，拥有忠实的用户群体。这是个不错的结局。",
+    "type": "ending",
+    "conditions": {
+      "turnRange": [25, 999],
+      "minAssets": 500,
+      "maxAssets": 1499
+    },
+    "effects": {}
+  },
+  {
+    "id": "ending_003",
+    "name": "惨淡收场",
+    "description": "由于各种问题，你的AI产品逐渐失去市场，最终黯然退场。",
+    "type": "ending",
+    "conditions": {
+      "turnRange": [20, 999],
+      "maxAssets": 100
+    },
+    "effects": {}
+  },
+  {
+    "id": "ending_004",
+    "name": "破产倒闭",
+    "description": "资金链断裂，公司宣布破产。AI梦想就此破灭。",
+    "type": "ending",
+    "conditions": {
+      "maxAssets": 0
+    },
+    "effects": {}
+  },
+  {
+    "id": "ending_005",
+    "name": "监管关停",
+    "description": "由于严重的安全和合规问题，你的AI产品被监管部门勒令关停。",
+    "type": "ending",
+    "conditions": {
+      "tags": ["privacy_scandal", "under_review"]
+    },
+    "effects": {}
+  },
+  {
+    "id": "ending_006",
+    "name": "被收购",
+    "description": "一家科技巨头看中了你的技术，以高价收购了你的公司。虽然失去了独立性，但也算是成功退出。",
+    "type": "ending",
+    "conditions": {
+      "turnRange": [20, 999],
+      "minAssets": 800,
+      "tags": ["investor_interest"]
+    },
+    "effects": {}
+  },
+  {
+    "id": "ending_007",
+    "name": "AGI降临",
+    "description": "你的AI产品进化成了真正的通用人工智能，开启了人类历史的新纪元！",
+    "type": "ending",
+    "conditions": {
+      "requiredTraits": ["agi"],
+      "turnRange": [20, 999],
+      "minAssets": 1000
+    },
+    "effects": {}
+  }
+]

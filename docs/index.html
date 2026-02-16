@@ -1,38 +1,222 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>颜色认知挑战</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="./css/style.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#4F46E5',
-                        secondary: '#10B981',
-                        accent: '#F59E0B',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-</head>
-<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI发展模拟器 - 体验AI产品从诞生到发展的完整生命周期">
+  <title>AI发展模拟器</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {}
+      }
+    }
+  </script>
+  
+  <style>
+    /* CSS变量定义 */
+    :root {
+      --color-primary: #1e40af;
+      --color-primary-dark: #1e3a8a;
+      --color-secondary: #374151;
+      --color-success: #059669;
+      --color-warning: #d97706;
+      --color-error: #dc2626;
+      --color-text-primary: #1f2937;
+      --color-text-secondary: #6b7280;
+      --color-bg-main: #0f172a;
+      --color-bg-card: #ffffff;
+      --border-radius-sm: 4px;
+      --border-radius-md: 6px;
+      --border-radius-lg: 8px;
+    }
     
-    <main id="app" class="flex-grow flex flex-col items-center justify-center p-4 w-full max-w-4xl mx-auto relative">
-        <!-- Views will be rendered here -->
-    </main>
-
-    <footer class="py-6 text-center text-sm text-gray-500">
-        <p>由 <a href="https://with.woa.com/" style="color: #8A2BE2;" target="_blank">with</a> 通过自然语言生成</p>
-    </footer>
-
-    <script type="module" src="./js/main.js"></script>
+    /* 自定义动画 */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .animate-fadeIn {
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    /* 平滑滚动 */
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    /* 自定义滚动条 - 深色系 */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #1f2937;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #4b5563;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #6b7280;
+    }
+    
+    /* 词条卡片选中效果 */
+    .trait-card {
+      transition: all 0.3s ease;
+    }
+    
+    .trait-card.selected {
+      transform: scale(1.02);
+    }
+    
+    /* 保留词条卡片选中效果 */
+    .reserve-trait-card {
+      transition: all 0.3s ease;
+    }
+    
+    /* 按钮禁用状态 */
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    /* 统一按钮样式 */
+    .btn-primary {
+      background: linear-gradient(to right, #1e40af, #1e3a8a);
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--border-radius-md);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+      background: linear-gradient(to right, #1e3a8a, #1e3a8a);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    .btn-secondary {
+      background: #374151;
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--border-radius-md);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-secondary:hover:not(:disabled) {
+      background: #4b5563;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    /* 统一卡片样式 */
+    .card-standard {
+      background: white;
+      border-radius: var(--border-radius-lg);
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      transition: all 0.3s ease;
+    }
+    
+    .card-standard:hover {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    /* 响应式字体大小 */
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      h2 {
+        font-size: 1.5rem;
+      }
+      
+      .text-xl {
+        font-size: 1.125rem;
+      }
+    }
+    
+    /* 加载动画 */
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    
+    .animate-spin {
+      animation: spin 1s linear infinite;
+    }
+    
+    /* 脉冲动画 */
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
+    
+    .animate-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    /* 悬停效果 - 移除过度缩放 */
+    .hover\:scale-102:hover {
+      transform: scale(1.01);
+    }
+    
+    /* 渐变文字 */
+    .bg-clip-text {
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+    
+    /* 确保body占满全屏 */
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    }
+    
+    /* 移动端优化 */
+    @media (max-width: 768px) {
+      .grid {
+        gap: 0.75rem;
+      }
+      
+      .p-8 {
+        padding: 1.5rem;
+      }
+      
+      .p-12 {
+        padding: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 主应用容器 -->
+  <div id="app"></div>
+  
+  <!-- 加载主控制器 -->
+  <script type="module" src="./js/main.js"></script>
 </body>
 </html>
