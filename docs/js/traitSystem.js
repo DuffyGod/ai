@@ -210,6 +210,21 @@ export function getRarityTextClass(rarity) {
 }
 
 /**
+ * 获取稀有度标签的背景色类名
+ * @param {string} rarity - 稀有度
+ * @returns {string} Tailwind CSS类名
+ */
+export function getRarityBgClass(rarity) {
+  const colorMap = {
+    common: 'bg-gray-200',
+    rare: 'bg-blue-200',
+    epic: 'bg-indigo-200',
+    legendary: 'bg-amber-200'
+  };
+  return colorMap[rarity] || colorMap.common;
+}
+
+/**
  * 获取稀有度的中文名称
  * @param {string} rarity - 稀有度
  * @returns {string} 中文名称

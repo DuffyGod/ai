@@ -5,7 +5,7 @@
 
 import { formatAttributeDisplay } from './attributeSystem.js';
 import { formatAssetsChange, formatAttributeChanges } from './eventSystem.js';
-import { getRarityColorClass, getRarityName, getRarityTextClass } from './traitSystem.js';
+import { createTraitCard, updateTraitCardSelection } from './traitCard.js';
 
 // 用于跟踪是否已经初始化页面
 let isPageInitialized = false;
@@ -251,27 +251,6 @@ function createEventCard(event) {
 }
 
 /**
- * 创建保留词条卡片（与选择界面格式一致）
- * @param {Object} trait - 词条对象
- * @returns {string} HTML字符串
- */
-function createReserveTraitCard(trait) {
-  const colorClass = getRarityColorClass(trait.rarity);
-  const rarityName = getRarityName(trait.rarity);
-  const textClass = getRarityTextClass(trait.rarity);
-  
-  return `
-    <div class="reserve-trait-card bg-white rounded-lg shadow-md p-2 cursor-pointer hover:shadow-lg transition-all duration-300 border-2 ${colorClass}" data-trait-id="${trait.id}">
-      <div class="flex items-center gap-2">
-        <span class="text-xs font-bold ${textClass} px-2 py-1 rounded-md bg-white whitespace-nowrap">${rarityName}</span>
-        <h3 class="text-sm font-bold text-gray-800 whitespace-nowrap">${trait.name}</h3>
-        <span class="text-xs text-gray-600 truncate">${trait.description}</span>
-      </div>
-    </div>
-  `;
-}
-
-/**
  * 获取属性简称
  */
 function getAttributeShortName(key) {
@@ -317,7 +296,7 @@ function createEndingEventCard(endingEvent, state) {
         <h4 class="text-base font-bold text-white mb-2">保留一个词条用于下一局</h4>
         <p class="text-xs text-gray-300 mb-3">选择一个词条，它将在下次游戏的10连抽中必定出现</p>
         <div class="grid grid-cols-1 gap-2 mb-4 max-w-2xl mx-auto" id="ending-reserve-traits-grid">
-          ${state.selectedTraits.map(trait => createReserveTraitCard(trait)).join('')}
+          ${state.selectedTraits.map(trait => createTraitCard(trait, { cardClass: 'reserve-trait-card' })).join('')}
         </div>
         
         <!-- 返回按钮 -->
@@ -345,13 +324,12 @@ function bindEndingInteractions(state, onReturn) {
       const traitId = card.dataset.traitId;
       const trait = state.selectedTraits.find(t => t.id === traitId);
       
-      // 检查是否点击的是已选中的卡片（取消选中）
-      const isCurrentlySelected = card.classList.contains('ring-4');
+      // 使用正确的类名判断选中状态
+      const isCurrentlySelected = card.classList.contains('bg-blue-100');
       
       // 取消所有选中状态
       traitCards.forEach(c => {
-        c.classList.remove('ring-4', 'ring-blue-600', 'bg-blue-200');
-        c.style.transform = '';
+        updateTraitCardSelection(c, false);
       });
       
       if (isCurrentlySelected) {
@@ -359,7 +337,7 @@ function bindEndingInteractions(state, onReturn) {
         reservedTrait = null;
       } else {
         // 选中当前卡片，使用与词条选择界面完全一致的样式
-        card.classList.add('ring-4', 'ring-blue-600', 'bg-blue-200');
+        updateTraitCardSelection(card, true);
         reservedTrait = trait;
       }
     });

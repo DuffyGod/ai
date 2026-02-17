@@ -77,16 +77,16 @@
     
     /* 词条卡片选中效果 */
     .trait-card {
-      transition: all 0.3s ease;
-    }
-    
-    .trait-card.selected {
-      transform: scale(1.02);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: center center;
+      will-change: transform, filter;
     }
     
     /* 保留词条卡片选中效果 */
     .reserve-trait-card {
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: center center;
+      will-change: transform, filter;
     }
     
     /* 按钮禁用状态 */
