@@ -3,8 +3,7 @@
  * 负责渲染游戏体验阶段和结局界面
  */
 
-import { formatAttributeDisplay } from './attributeSystem.js';
-import { formatAssetsChange, formatAttributeChanges } from './eventSystem.js';
+import { formatParamChanges, DECISION_PARAMS } from './parameterSystem.js';
 import { createTraitCard, updateTraitCardSelection } from './traitCard.js';
 
 // 用于跟踪是否已经初始化页面
@@ -30,36 +29,15 @@ export function renderExperiencePage(state, onNextTurn) {
       <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <!-- 顶部信息栏 -->
         <div id="top-info-bar" class="bg-gradient-to-r from-slate-800 to-slate-700 shadow-lg sticky top-0 z-10">
-          <div class="max-w-7xl mx-auto px-4 py-2">
-            <div class="flex flex-wrap items-center justify-between gap-3">
-              <!-- 回合和资产 -->
-              <div class="flex items-center gap-4">
-                <div>
-                  <span class="text-xs text-gray-300">回合</span>
-                  <div id="turn-display" class="text-lg font-bold text-blue-400">${state.turn}</div>
+          <div class="max-w-7xl mx-auto px-4 py-4">
+            <!-- 决策参数卡片（居中展示，加大宽度） -->
+            <div class="flex justify-center gap-4">
+              ${Object.entries(state.decisionParams).filter(([key]) => key !== 'ether' || state.etherActivated).map(([key, value]) => `
+                <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg px-6 py-3 shadow-md min-w-[100px]">
+                  <div class="text-sm text-blue-100 text-center">${DECISION_PARAMS[key]}</div>
+                  <div class="text-2xl font-bold text-white text-center">${value}</div>
                 </div>
-                <div>
-                  <span class="text-xs text-gray-300">资产</span>
-                  <div id="assets-display" class="text-lg font-bold ${state.assets >= 0 ? 'text-green-400' : 'text-red-400'}">${state.assets}</div>
-                </div>
-              </div>
-              
-              <!-- 属性显示 -->
-              <div id="attributes-display" class="flex flex-wrap gap-3">
-                ${Object.entries(state.attributes).map(([key, value]) => {
-                  const allocatedPoints = state.allocatedPoints?.[key] || 0;
-                  return `
-                  <div class="text-center">
-                    <div class="text-xs text-gray-300">
-                      ${getAttributeShortName(key)}${allocatedPoints > 0 ? `<span class="text-purple-400 ml-1">(+${allocatedPoints})</span>` : ''}
-                    </div>
-                    <div class="text-sm font-bold ${getAttributeColorByValue(value)}">
-                      ${value}
-                    </div>
-                  </div>
-                  `;
-                }).join('')}
-              </div>
+              `).join('')}
             </div>
           </div>
         </div>
@@ -136,35 +114,22 @@ export function renderExperiencePage(state, onNextTurn) {
  * @param {Object} state - 游戏状态
  */
 function updateTopBar(state) {
-  // 更新回合数
-  const turnDisplay = document.getElementById('turn-display');
-  if (turnDisplay) {
-    turnDisplay.textContent = state.turn;
-  }
-  
-  // 更新资产
-  const assetsDisplay = document.getElementById('assets-display');
-  if (assetsDisplay) {
-    assetsDisplay.textContent = state.assets;
-    assetsDisplay.className = `text-lg font-bold ${state.assets >= 0 ? 'text-green-400' : 'text-red-400'}`;
-  }
-  
-  // 更新属性显示
-  const attributesDisplay = document.getElementById('attributes-display');
-  if (attributesDisplay) {
-    attributesDisplay.innerHTML = Object.entries(state.attributes).map(([key, value]) => {
-      const allocatedPoints = state.allocatedPoints?.[key] || 0;
-      return `
-      <div class="text-center">
-        <div class="text-xs text-gray-300">
-          ${getAttributeShortName(key)}${allocatedPoints > 0 ? `<span class="text-purple-400 ml-1">(+${allocatedPoints})</span>` : ''}
-        </div>
-        <div class="text-sm font-bold ${getAttributeColorByValue(value)}">
-          ${value}
+  // 完整重新渲染顶部栏
+  const topBar = document.getElementById('top-info-bar');
+  if (topBar) {
+    topBar.innerHTML = `
+      <div class="max-w-7xl mx-auto px-4 py-4">
+        <!-- 决策参数卡片（居中展示，加大宽度） -->
+        <div class="flex justify-center gap-4">
+          ${Object.entries(state.decisionParams).filter(([key]) => key !== 'ether' || state.etherActivated).map(([key, value]) => `
+            <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg px-6 py-3 shadow-md min-w-[100px]">
+              <div class="text-sm text-blue-100 text-center">${DECISION_PARAMS[key]}</div>
+              <div class="text-2xl font-bold text-white text-center">${value}</div>
+            </div>
+          `).join('')}
         </div>
       </div>
-      `;
-    }).join('');
+    `;
   }
 }
 
@@ -223,55 +188,143 @@ export function resetExperiencePage() {
  */
 function createEventCard(event) {
   const effects = event.effects || {};
-  const assetsChange = effects.assetsChange || 0;
-  const attributeChanges = effects.attributeChanges || {};
   
-  // 构建效果文本
-  let effectsText = '';
-  if (assetsChange !== 0 || Object.keys(attributeChanges).length > 0) {
-    const parts = [];
-    if (assetsChange !== 0) {
-      const sign = assetsChange > 0 ? '+' : '';
-      const color = assetsChange > 0 ? 'text-green-600' : 'text-red-600';
-      parts.push(`<span class="${color}">资产${sign}${assetsChange}</span>`);
+  // 不再显示读取参数标签
+  let readParamsHtml = '';
+  
+  // 构建参数变化文本（每个参数使用独立的中括号）
+  let effectsHtml = '';
+  const changes = [];
+  
+  // 定义负面参数列表
+  const negativeParams = ['regulation', 'anxiety'];
+  
+  // 遍历所有效果
+  for (const [key, value] of Object.entries(effects.paramChanges || {})) {
+    if (value !== 0) {
+      const paramName = getParamDisplayName(key);
+      const sign = value > 0 ? '+' : '';
+      
+      // 根据参数的正负面属性决定颜色
+      let color;
+      if (negativeParams.includes(key)) {
+        // 负面参数：增加用红色，降低用绿色
+        color = value > 0 ? 'text-red-600' : 'text-green-600';
+      } else {
+        // 正面参数：增加用绿色，降低用红色
+        color = value > 0 ? 'text-green-600' : 'text-red-600';
+      }
+      
+      changes.push(`<span class="${color}">[${paramName}${sign}${value}]</span>`);
     }
-    if (Object.keys(attributeChanges).length > 0) {
-      parts.push(formatAttributeChanges(attributeChanges));
+  }
+  
+  if (changes.length > 0) {
+    effectsHtml = ` ${changes.join(' ')}`;
+  }
+  
+  // 构建判断条件文本（统一展示，用颜色区分是否满足）
+  let conditionsHtml = '';
+  
+  // 判定事件（judgment类型）：显示判定条件
+  if (event.type === 'judgment' && event.condition) {
+    const condition = event.condition;
+    const paramName = getParamDisplayName(condition.param);
+    const operatorSymbol = {
+      'gte': '≥',
+      'lte': '≤',
+      'gt': '>',
+      'lt': '<',
+      'eq': '='
+    }[condition.operator] || '?';
+    
+    // 根据是否通过判定决定颜色：通过为绿色，未通过为灰色
+    const colorClass = event.isPassed ? 'text-green-600' : 'text-gray-400';
+    
+    conditionsHtml = `<span class="${colorClass} font-medium">[${paramName}${operatorSymbol}${condition.value}]</span> `;
+  }
+  // 普通事件：显示所有条件，用颜色区分是否满足
+  else if (event.conditions && Object.keys(event.conditions).length > 0) {
+    const conditionTags = [];
+    
+    for (const [key, value] of Object.entries(event.conditions)) {
+      // 解析条件键（如 earth_gte, water_lte 等）
+      const match = key.match(/^(.+)_(gte|lte|gt|lt|eq)$/);
+      if (match) {
+        const param = match[1];
+        const operator = match[2];
+        const paramName = getParamDisplayName(param);
+        
+        // 获取操作符符号
+        const operatorSymbol = {
+          'gte': '≥',
+          'lte': '≤',
+          'gt': '>',
+          'lt': '<',
+          'eq': '='
+        }[operator] || '?';
+        
+        // 检查条件是否满足（从event.conditionResults中获取）
+        const isSatisfied = event.conditionResults && event.conditionResults[key];
+        
+        // 统一显示所有条件：满足为绿色，不满足为灰色
+        const colorClass = isSatisfied ? 'text-green-600' : 'text-gray-400';
+        conditionTags.push(`<span class="${colorClass} font-medium">[${paramName}${operatorSymbol}${value}]</span>`);
+      }
     }
-    effectsText = ` [${parts.join(' ')}]`;
+    
+    if (conditionTags.length > 0) {
+      conditionsHtml = conditionTags.join(' ') + ' ';
+    }
   }
   
   return `
     <div class="bg-white rounded-lg shadow-md p-3 hover:shadow-lg transition-shadow duration-200 animate-fadeIn">
       <p class="text-sm text-gray-700 leading-relaxed">
-        <span class="font-bold text-blue-700">第${event.turn}回合：</span>${event.description}${effectsText}
+        <span class="font-bold text-blue-700">第${event.turn}回合：</span>${readParamsHtml}${conditionsHtml}${event.description || '发生了一些事情...'}${effectsHtml}
       </p>
     </div>
   `;
 }
 
 /**
- * 获取属性简称
+ * 获取参数显示名称
+ * @param {string} param - 参数键
+ * @returns {string} 显示名称
  */
-function getAttributeShortName(key) {
+function getParamDisplayName(param) {
   const names = {
-    efficiency: '效率',
-    cognition: '认知',
-    controllability: '可控',
-    adaptability: '适应',
-    explainability: '解释'
+    // 能力属性
+    foundation: '基础',
+    thinking: '思维',
+    plasticity: '可塑性',
+    performance: '性能',
+    principle: '原理',
+    // 调节参数
+    money: '钱',
+    users: '用户',
+    data: '数据',
+    // 放大参数
+    coding: '编程',
+    text: '文本',
+    voice: '语音',
+    image: '图像',
+    video: '视频',
+    robot: '机器人',
+    research: '科研',
+    // 客观参数
+    market: '市场',
+    regulation: '监管',
+    reputation: '风评',
+    anxiety: '焦虑',
+    // 决策参数
+    earth: '地',
+    water: '水',
+    wind: '风',
+    fire: '火',
+    ether: '以太'
   };
-  return names[key] || key;
-}
-
-/**
- * 根据属性值获取颜色
- */
-function getAttributeColorByValue(value) {
-  if (value >= 70) return 'text-green-400';
-  if (value >= 50) return 'text-blue-400';
-  if (value >= 30) return 'text-yellow-400';
-  return 'text-red-400';
+  return names[param] || param;
 }
 
 /**

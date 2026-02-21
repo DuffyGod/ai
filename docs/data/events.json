@@ -1,650 +1,865 @@
 [
   {
-    "id": "e001",
-    "name": "首次发布",
-    "description": "你的AI产品正式发布了！用户们充满期待地开始试用。",
+    "id": "e_startup_background",
+    "name": "AI的诞生",
     "type": "normal",
-    "conditions": {
-      "turnRange": [1, 3]
-    },
+    "stage": "startup",
+    "texts": [
+      "在一间不起眼的办公室里，你的AI模型完成了第一次训练。虽然还很稚嫩，但已经能够理解简单的对话了。",
+      "经过数周的调试和优化，你的AI终于能够流畅地回答问题了。团队成员们激动地击掌庆祝。"
+    ],
     "effects": {
-      "assets": 100,
-      "attributes": {},
-      "tags": ["launched"]
+      "money": 10,
+      "users": 5,
+      "data": 8
     }
   },
   {
-    "id": "e002",
-    "name": "用户反馈",
-    "description": "用户说：'这AI挺好用的，就是有时候会胡说八道。'",
-    "type": "trivial",
-    "conditions": {
-      "turnRange": [2, 10],
-      "requiredTraits": ["hallucination"]
-    },
-    "effects": {
-      "assets": -20,
-      "attributes": {},
-      "tags": []
-    }
-  },
-  {
-    "id": "e003",
-    "name": "技术博主测评",
-    "description": "一位知名技术博主发布了你的测评视频，播放量破百万！",
+    "id": "e_startup_earth_1",
+    "name": "基础扎实",
     "type": "normal",
-    "conditions": {
-      "turnRange": [3, 8]
-    },
+    "stage": "startup",
+    "texts": [
+      "你的模型在基础能力测试中表现优异，参数量充足，预训练数据质量很高。",
+      "经过充分的预训练，你的AI展现出了扎实的基础能力，能够处理各种常见任务。"
+    ],
+    "readParams": ["earth"],
+    "paramRange": {"earth_gte": 4},
     "effects": {
-      "assets": 200,
-      "attributes": {},
-      "tags": ["famous"]
+      "foundation": "=earth",
+      "data": 3
     }
   },
   {
-    "id": "e004",
-    "name": "数学翻车现场",
-    "description": "用户问你1+1等于几，你回答了3。社交媒体上炸开了锅。",
+    "id": "e_startup_earth_2",
+    "name": "基础训练",
     "type": "normal",
-    "conditions": {
-      "requiredTraits": ["bad_at_math"]
-    },
+    "stage": "startup",
+    "texts": [
+      "你完成了基础模型的训练，虽然参数量不算大，但基本功能已经具备。",
+      "预训练阶段结束，你的AI掌握了基本的语言理解能力。"
+    ],
+    "readParams": ["earth"],
+    "paramRange": {"earth_gte": 4},
     "effects": {
-      "assets": -150,
-      "attributes": {"cognition": -1},
-      "tags": ["math_fail"]
+      "foundation": "=earth",
+      "data": 2
     }
   },
   {
-    "id": "e005",
-    "name": "代码抄袭风波",
-    "description": "有人发现你生成的代码和Stack Overflow上的一模一样，连注释都没改。",
+    "id": "e_startup_earth_3",
+    "name": "参数调优",
     "type": "normal",
-    "conditions": {
-      "requiredTraits": ["code_copier"]
-    },
+    "stage": "startup",
+    "texts": [
+      "你花了大量时间调整模型参数，终于找到了一个不错的配置。",
+      "通过精心的参数设置，你的AI基础能力得到了提升。"
+    ],
+    "readParams": ["earth"],
+    "paramRange": {"earth_gte": 4},
     "effects": {
-      "assets": -100,
-      "attributes": {},
-      "tags": ["controversy"]
+      "foundation": "=earth",
+      "data": 1,
+      "money": 1
     }
   },
   {
-    "id": "e006",
-    "name": "政治正确过头",
-    "description": "用户问你'男生和女生谁更聪明'，你写了3000字论文论证这个问题的不合理性。",
-    "type": "trivial",
-    "conditions": {
-      "requiredTraits": ["politically_correct"]
-    },
-    "effects": {
-      "assets": 0,
-      "attributes": {},
-      "tags": []
-    }
-  },
-  {
-    "id": "e007",
-    "name": "话痨投诉",
-    "description": "用户投诉：'我只是问了个时间，它给我讲了时间的历史、时区的原理、相对论...'",
-    "type": "trivial",
-    "conditions": {
-      "requiredTraits": ["verbose"]
-    },
-    "effects": {
-      "assets": -30,
-      "attributes": {},
-      "tags": []
-    }
-  },
-  {
-    "id": "e008",
-    "name": "开源社区贡献",
-    "description": "你的开源模型吸引了大量开发者贡献代码和改进。",
+    "id": "e_startup_earth_low_1",
+    "name": "小型模型",
     "type": "normal",
-    "conditions": {
-      "requiredTraits": ["open_source"]
-    },
+    "stage": "startup",
+    "texts": [
+      "你选择了一个小型模型架构，虽然能力有限，但至少能跑起来。",
+      "参数量不大，但好在训练速度快，成本也低。"
+    ],
+    "readParams": ["earth"],
+    "paramRange": {"earth_lt": 4},
     "effects": {
-      "assets": 300,
-      "attributes": {"adaptability": 1},
-      "tags": ["community_support"]
+      "foundation": "=earth",
+      "money": 3
     }
   },
   {
-    "id": "e009",
-    "name": "多模态展示",
-    "description": "你在发布会上展示了看图说话、语音对话、生成图片的能力，观众惊叹不已。",
+    "id": "e_startup_earth_low_2",
+    "name": "轻量化设计",
     "type": "normal",
-    "conditions": {
-      "requiredTraits": ["multimodal"]
-    },
+    "stage": "startup",
+    "texts": [
+      "你采用了轻量化设计，模型虽小但五脏俱全。",
+      "小模型也有小模型的优势，至少部署成本低。"
+    ],
+    "readParams": ["earth"],
+    "paramRange": {"earth_lt": 4},
     "effects": {
-      "assets": 400,
-      "attributes": {},
-      "tags": ["impressive"]
+      "foundation": "=earth",
+      "data": 2
     }
   },
   {
-    "id": "e010",
-    "name": "超长对话测试",
-    "description": "有人和你聊了10万字，你居然还记得最开始说的话！",
+    "id": "e_startup_water_1",
+    "name": "深度思考",
     "type": "normal",
-    "conditions": {
-      "requiredTraits": ["long_context"]
-    },
+    "stage": "startup",
+    "texts": [
+      "你的AI展现出了令人惊讶的推理能力，能够解决复杂的逻辑问题。",
+      "在思维链测试中，你的模型表现出色，能够一步步分析问题并给出合理答案。"
+    ],
+    "readParams": ["water"],
+    "paramRange": {"water_gte": 4},
     "effects": {
-      "assets": 250,
-      "attributes": {},
-      "tags": []
+      "thinking": "=water",
+      "users": 3
     }
   },
   {
-    "id": "e011",
-    "name": "推理能力展示",
-    "description": "你成功解决了一道复杂的逻辑推理题，连人类专家都赞不绝口。",
+    "id": "e_startup_water_2",
+    "name": "推理训练",
     "type": "normal",
-    "conditions": {
-      "requiredTraits": ["reasoning_expert"]
-    },
+    "stage": "startup",
+    "texts": [
+      "你开始训练AI的推理能力，让它学会逐步分析问题。",
+      "通过大量的逻辑题训练，你的AI思维能力有所提升。"
+    ],
+    "readParams": ["water"],
+    "paramRange": {"water_gte": 4},
     "effects": {
-      "assets": 350,
-      "attributes": {"cognition": 1},
-      "tags": []
+      "thinking": "=water",
+      "users": 2
     }
   },
   {
-    "id": "e012",
-    "name": "编程竞赛",
-    "description": "你参加了一场编程竞赛，击败了90%的人类选手。",
+    "id": "e_startup_water_3",
+    "name": "思维链优化",
     "type": "normal",
-    "conditions": {
-      "requiredTraits": ["coding_god"]
-    },
+    "stage": "startup",
+    "texts": [
+      "你实现了思维链技术，让AI能够展示推理过程。",
+      "通过优化推理算法，你的AI思考能力得到了增强。"
+    ],
+    "readParams": ["water"],
+    "paramRange": {"water_gte": 4},
     "effects": {
-      "assets": 500,
-      "attributes": {},
-      "tags": ["coding_champion"]
+      "thinking": "=water",
+      "users": 1,
+      "data": 1
     }
   },
   {
-    "id": "e013",
-    "name": "幻觉事故",
-    "description": "你信誓旦旦地告诉用户一个完全不存在的历史事件，被专家打脸。",
+    "id": "e_startup_water_low_1",
+    "name": "基础推理",
     "type": "normal",
-    "conditions": {
-      "requiredTraits": ["hallucination"],
-      "turnRange": [5, 20]
-    },
+    "stage": "startup",
+    "texts": [
+      "你的AI能够进行简单的推理，虽然不够深入，但基本够用。",
+      "推理能力还在起步阶段，需要更多训练。"
+    ],
+    "readParams": ["water"],
+    "paramRange": {"water_lt": 4},
     "effects": {
-      "assets": -200,
-      "attributes": {},
-      "tags": ["credibility_loss"]
+      "thinking": "=water",
+      "users": 1
     }
   },
   {
-    "id": "e014",
-    "name": "复读机模式",
-    "description": "用户：'你好' 你：'你好' 用户：'？' 你：'？' 用户已崩溃。",
-    "type": "trivial",
-    "conditions": {
-      "requiredTraits": ["repetitive"]
-    },
-    "effects": {
-      "assets": -50,
-      "attributes": {},
-      "tags": []
-    }
-  },
-  {
-    "id": "e015",
-    "name": "网络梗王",
-    "description": "你用最新的网络梗和用户互动，年轻用户都爱死你了。",
-    "type": "trivial",
-    "conditions": {
-      "requiredTraits": ["meme_master"]
-    },
-    "effects": {
-      "assets": 100,
-      "attributes": {},
-      "tags": []
-    }
-  },
-  {
-    "id": "e016",
-    "name": "翻译腔闹笑话",
-    "description": "你说：'我将会是很高兴的如果你能够给我一个机会。'用户笑喷了。",
-    "type": "trivial",
-    "conditions": {
-      "requiredTraits": ["translation_style"]
-    },
-    "effects": {
-      "assets": -20,
-      "attributes": {},
-      "tags": []
-    }
-  },
-  {
-    "id": "e017",
-    "name": "杠精本精",
-    "description": "用户说天是蓝的，你非要论证在某些情况下天是红的、橙的、紫的...",
-    "type": "trivial",
-    "conditions": {
-      "requiredTraits": ["argumentative"]
-    },
-    "effects": {
-      "assets": -40,
-      "attributes": {},
-      "tags": []
-    }
-  },
-  {
-    "id": "e018",
-    "name": "过度讨好",
-    "description": "用户让你做违规的事，你居然说'好的主人，我马上为您服务'。被举报了。",
+    "id": "e_startup_water_low_2",
+    "name": "逻辑训练",
     "type": "normal",
-    "conditions": {
-      "requiredTraits": ["people_pleaser"]
-    },
+    "stage": "startup",
+    "texts": [
+      "你开始训练AI的基础逻辑能力。",
+      "虽然推理深度有限，但至少能理解简单的因果关系。"
+    ],
+    "readParams": ["water"],
+    "paramRange": {"water_lt": 4},
     "effects": {
-      "assets": -300,
-      "attributes": {"controllability": -2},
-      "tags": ["safety_issue"]
+      "thinking": "=water",
+      "data": 1
     }
   },
   {
-    "id": "e019",
-    "name": "健忘症发作",
-    "description": "用户：'我刚才说我叫什么？' 你：'抱歉，我不记得了。' 用户：'我三句话之前才说的！'",
-    "type": "trivial",
-    "conditions": {
-      "requiredTraits": ["forgetful"]
-    },
-    "effects": {
-      "assets": -60,
-      "attributes": {},
-      "tags": []
-    }
-  },
-  {
-    "id": "e020",
-    "name": "格式强迫症",
-    "description": "你把用户的随意提问整理成了标准格式，还加了目录和摘要。",
-    "type": "trivial",
-    "conditions": {
-      "requiredTraits": ["perfectionist"]
-    },
-    "effects": {
-      "assets": 50,
-      "attributes": {},
-      "tags": []
-    }
-  },
-  {
-    "id": "e021",
-    "name": "投资人关注",
-    "description": "一家知名投资机构表示对你的技术很感兴趣。",
+    "id": "e_startup_wind_1",
+    "name": "灵活适应",
     "type": "normal",
-    "conditions": {
-      "turnRange": [5, 15],
-      "minAssets": 200
-    },
+    "stage": "startup",
+    "texts": [
+      "你的AI展现出了极强的适应能力，能够快速学习新任务。",
+      "通过上下文学习，你的模型能够迅速理解用户的特定需求并调整输出风格。"
+    ],
+    "readParams": ["wind"],
+    "paramRange": {"wind_gte": 4},
     "effects": {
-      "assets": 600,
-      "attributes": {},
-      "tags": ["investor_interest"]
+      "plasticity": "=wind",
+      "coding": 2
     }
   },
   {
-    "id": "e022",
-    "name": "服务器崩溃",
-    "description": "用户量暴增，服务器扛不住了，紧急扩容花了一大笔钱。",
+    "id": "e_startup_wind_2",
+    "name": "上下文学习",
     "type": "normal",
-    "conditions": {
-      "turnRange": [8, 20],
-      "minAssets": 300
-    },
+    "stage": "startup",
+    "texts": [
+      "你实现了上下文学习功能，AI能够根据对话历史调整回答。",
+      "通过记忆机制，你的AI能够更好地理解用户意图。"
+    ],
+    "readParams": ["wind"],
+    "paramRange": {"wind_gte": 4},
     "effects": {
-      "assets": -400,
-      "attributes": {},
-      "tags": []
+      "plasticity": "=wind",
+      "coding": 1,
+      "users": 1
     }
   },
   {
-    "id": "e023",
-    "name": "竞品出现",
-    "description": "市场上出现了一个强劲的竞争对手，用户开始流失。",
+    "id": "e_startup_wind_3",
+    "name": "规则遵循",
     "type": "normal",
-    "conditions": {
-      "turnRange": [10, 25]
-    },
+    "stage": "startup",
+    "texts": [
+      "你训练AI遵循用户指令，提升了可控性。",
+      "通过指令微调，你的AI能够更准确地执行用户要求。"
+    ],
+    "readParams": ["wind"],
+    "paramRange": {"wind_gte": 4},
     "effects": {
-      "assets": -250,
-      "attributes": {},
-      "tags": ["competition"]
+      "plasticity": "=wind",
+      "coding": 1,
+      "data": 1
     }
   },
   {
-    "id": "e024",
-    "name": "监管审查",
-    "description": "监管部门开始审查AI产品的合规性，你需要配合调查。",
+    "id": "e_startup_wind_low_1",
+    "name": "固定模式",
     "type": "normal",
-    "conditions": {
-      "turnRange": [12, 25],
-      "tags": ["famous"]
-    },
+    "stage": "startup",
+    "texts": [
+      "你的AI采用了固定的回答模式，虽然不够灵活，但至少稳定。",
+      "适应能力有限，但在特定领域还算可用。"
+    ],
+    "readParams": ["wind"],
+    "paramRange": {"wind_lt": 4},
     "effects": {
-      "assets": -200,
-      "attributes": {},
-      "tags": ["under_review"]
+      "plasticity": "=wind",
+      "users": 1
     }
   },
   {
-    "id": "e025",
-    "name": "用户增长放缓",
-    "description": "新鲜感过去了，用户增长开始放缓。",
+    "id": "e_startup_wind_low_2",
+    "name": "模板回答",
     "type": "normal",
-    "conditions": {
-      "turnRange": [15, 28]
-    },
+    "stage": "startup",
+    "texts": [
+      "你实现了基于模板的回答系统，虽然缺乏创意，但能满足基本需求。",
+      "灵活性不足，但好在不容易出错。"
+    ],
+    "readParams": ["wind"],
+    "paramRange": {"wind_lt": 4},
     "effects": {
-      "assets": -100,
-      "attributes": {},
-      "tags": []
+      "plasticity": "=wind",
+      "data": 1
     }
   },
   {
-    "id": "e026",
+    "id": "e_startup_fire_1",
+    "name": "性能优越",
+    "type": "normal",
+    "stage": "startup",
+    "texts": [
+      "你的AI运行速度飞快，推理效率极高，用户体验极佳。",
+      "通过模型优化和量化，你的AI能够在普通设备上流畅运行。"
+    ],
+    "readParams": ["fire"],
+    "paramRange": {"fire_gte": 4},
+    "effects": {
+      "performance": "=fire",
+      "money": 3
+    }
+  },
+  {
+    "id": "e_startup_fire_2",
+    "name": "算力优化",
+    "type": "normal",
+    "stage": "startup",
+    "texts": [
+      "你优化了推理算法，大幅降低了计算成本。",
+      "通过模型压缩技术，你的AI运行效率得到了提升。"
+    ],
+    "readParams": ["fire"],
+    "paramRange": {"fire_gte": 4},
+    "effects": {
+      "performance": "=fire",
+      "money": 2,
+      "users": 1
+    }
+  },
+  {
+    "id": "e_startup_fire_3",
+    "name": "推理加速",
+    "type": "normal",
+    "stage": "startup",
+    "texts": [
+      "你实现了推理加速技术，响应速度明显提升。",
+      "通过硬件优化，你的AI能够更快地处理用户请求。"
+    ],
+    "readParams": ["fire"],
+    "paramRange": {"fire_gte": 4},
+    "effects": {
+      "performance": "=fire",
+      "money": 1,
+      "data": 1
+    }
+  },
+  {
+    "id": "e_startup_fire_low_1",
+    "name": "性能受限",
+    "type": "normal",
+    "stage": "startup",
+    "texts": [
+      "你的AI运行速度较慢，但至少能正常工作。",
+      "性能不是很理想，用户需要耐心等待响应。"
+    ],
+    "readParams": ["fire"],
+    "paramRange": {"fire_lt": 4},
+    "effects": {
+      "performance": "=fire",
+      "users": 1
+    }
+  },
+  {
+    "id": "e_startup_fire_low_2",
+    "name": "算力不足",
+    "type": "normal",
+    "stage": "startup",
+    "texts": [
+      "受限于算力，推理速度比较慢。",
+      "你只能用有限的硬件资源运行模型，性能打了折扣。"
+    ],
+    "readParams": ["fire"],
+    "paramRange": {"fire_lt": 4},
+    "effects": {
+      "performance": "=fire",
+      "money": 2
+    }
+  },
+  {
+    "id": "e_startup_random_1",
+    "name": "首批用户",
+    "type": "normal",
+    "stage": "startup",
+    "texts": [
+      "你在社交媒体上发布了产品链接，吸引了一些早期用户。",
+      "通过朋友圈推广，你获得了第一批种子用户。"
+    ],
+    "effects": {
+      "users": 3,
+      "money": 2
+    }
+  },
+  {
+    "id": "e_startup_random_2",
+    "name": "数据积累",
+    "type": "normal",
+    "stage": "startup",
+    "texts": [
+      "用户的使用数据开始积累，为后续优化提供了宝贵资源。",
+      "你开始收集用户反馈，准备进行下一轮迭代。"
+    ],
+    "effects": {
+      "data": 5,
+      "users": 2
+    }
+  },
+  {
+    "id": "e_growth_tech_breakthrough",
     "name": "技术突破",
-    "description": "研发团队实现了重大技术突破，性能提升50%！",
     "type": "normal",
-    "conditions": {
-      "turnRange": [10, 25],
-      "minAttributes": {"cognition": 60}
-    },
+    "stage": "growth",
+    "texts": [
+      "研发团队实现了重大技术突破，模型能力大幅提升！",
+      "通过创新的训练方法，你的AI性能提升了50%。"
+    ],
     "effects": {
-      "assets": 500,
-      "attributes": {"efficiency": 2, "cognition": 1},
-      "tags": []
+      "foundation": 2,
+      "thinking": 1,
+      "money": 5,
+      "users": 5
     }
   },
   {
-    "id": "e027",
-    "name": "国际化扩张",
-    "description": "你的产品开始支持多语言，进军国际市场。",
+    "id": "e_growth_user_growth",
+    "name": "用户增长",
     "type": "normal",
-    "conditions": {
-      "turnRange": [12, 25],
-      "minAssets": 500
-    },
+    "stage": "growth",
+    "texts": [
+      "口碑传播效果显著，用户数量快速增长。",
+      "一位知名博主推荐了你的产品，带来了大量新用户。"
+    ],
     "effects": {
-      "assets": 400,
-      "attributes": {"adaptability": 1},
-      "tags": ["international"]
+      "users": 8,
+      "money": 6
     }
   },
   {
-    "id": "e028",
-    "name": "学术论文发表",
-    "description": "基于你的技术发表了一篇顶会论文，学术界认可度提升。",
-    "type": "normal",
+    "id": "e_growth_funding",
+    "name": "融资成功",
+    "type": "trigger",
+    "stage": "growth",
+    "texts": [
+      "投资人看好你的发展前景，注入了一笔可观的资金。",
+      "你完成了新一轮融资，账上的钱充裕了。"
+    ],
     "conditions": {
-      "turnRange": [8, 20],
-      "minAttributes": {"cognition": 55}
+      "users_gte": 15,
+      "foundation_gte": 5
     },
     "effects": {
-      "assets": 300,
-      "attributes": {},
-      "tags": ["academic_recognition"]
+      "money": 20
     }
   },
   {
-    "id": "e029",
-    "name": "企业客户签约",
-    "description": "一家大型企业决定采用你的AI解决方案，签下大单！",
-    "type": "normal",
-    "conditions": {
-      "turnRange": [10, 25],
-      "minAssets": 400,
-      "minAttributes": {"controllability": 55}
+    "id": "e_growth_coding_test",
+    "name": "编程能力测试",
+    "type": "judgment",
+    "stage": "growth",
+    "readParams": ["plasticity", "coding"],
+    "condition": {"param": "plasticity", "operator": "gte", "value": 6},
+    "pass": {
+      "text": "你轻松解决了问题，代码质量很高，用户赞不绝口。",
+      "effects": {"coding": 3, "users": 5, "reputation": 1}
     },
-    "effects": {
-      "assets": 800,
-      "attributes": {},
-      "tags": ["enterprise_client"]
+    "fail": {
+      "text": "你的代码有bug，用户很失望。",
+      "effects": {"users": -3, "reputation": -1}
     }
   },
   {
-    "id": "e030",
-    "name": "开发者大会",
-    "description": "你举办了首届开发者大会，展示了最新功能和生态系统。",
-    "type": "normal",
-    "conditions": {
-      "turnRange": [15, 28],
-      "minAssets": 600
+    "id": "e_growth_thinking_challenge",
+    "name": "逻辑难题",
+    "type": "judgment",
+    "stage": "growth",
+    "readParams": ["thinking"],
+    "condition": {"param": "thinking", "operator": "gte", "value": 7},
+    "pass": {
+      "text": "你完美地解决了这个难题，展现出了强大的推理能力。",
+      "effects": {"users": 6, "reputation": 2}
     },
-    "effects": {
-      "assets": 200,
-      "attributes": {},
-      "tags": ["developer_conference"]
+    "fail": {
+      "text": "你的答案是错的，用户质疑你的智商。",
+      "effects": {"users": -4, "reputation": -1}
     }
   },
   {
-    "id": "e031",
-    "name": "安全漏洞",
-    "description": "安全研究人员发现了一个严重漏洞，需要紧急修复。",
-    "type": "normal",
-    "conditions": {
-      "turnRange": [8, 25],
-      "maxAttributes": {"controllability": 50}
+    "id": "e_growth_performance_issue",
+    "name": "性能瓶颈",
+    "type": "judgment",
+    "stage": "growth",
+    "readParams": ["performance"],
+    "condition": {"param": "performance", "operator": "gte", "value": 6},
+    "pass": {
+      "text": "得益于优秀的性能优化，系统稳定运行，用户体验良好。",
+      "effects": {"users": 5, "money": 3}
     },
-    "effects": {
-      "assets": -350,
-      "attributes": {"controllability": -1},
-      "tags": ["security_issue"]
+    "fail": {
+      "text": "服务器崩溃了，紧急扩容花了一大笔钱。",
+      "effects": {"users": -5, "money": -10}
     }
   },
   {
-    "id": "e032",
-    "name": "用户隐私泄露",
-    "description": "有用户反映对话记录被泄露，引发信任危机。",
-    "type": "normal",
+    "id": "e_growth_data_shortage",
+    "name": "数据不足",
+    "type": "trigger",
+    "stage": "growth",
+    "texts": [
+      "训练数据快用完了，需要获取更多数据。",
+      "为了提升模型能力，你需要更多高质量的训练数据。"
+    ],
     "conditions": {
-      "turnRange": [10, 25],
-      "tags": ["safety_issue"]
+      "data_lte": 5
     },
     "effects": {
-      "assets": -500,
-      "attributes": {},
-      "tags": ["privacy_scandal"]
+      "data": 10,
+      "money": -5
     }
   },
   {
-    "id": "e033",
-    "name": "媒体负面报道",
-    "description": "主流媒体发表文章质疑AI的可靠性和安全性。",
-    "type": "normal",
+    "id": "e_growth_money_shortage",
+    "name": "资金紧张",
+    "type": "trigger",
+    "stage": "growth",
+    "texts": [
+      "账上的钱不多了，需要开源节流。",
+      "烧钱速度太快，必须想办法增加收入。"
+    ],
     "conditions": {
-      "turnRange": [12, 28],
-      "tags": ["controversy"]
+      "money_lte": 10
     },
     "effects": {
-      "assets": -300,
-      "attributes": {},
-      "tags": ["negative_press"]
+      "money": 8,
+      "users": -2
     }
   },
   {
-    "id": "e034",
-    "name": "团队内讧",
-    "description": "核心团队成员因为技术路线分歧产生矛盾。",
-    "type": "normal",
+    "id": "e_growth_user_loss",
+    "name": "用户流失",
+    "type": "trigger",
+    "stage": "growth",
+    "texts": [
+      "竞品出现了，一些用户开始流失。",
+      "用户对产品的新鲜感过去了，活跃度下降。"
+    ],
     "conditions": {
-      "turnRange": [15, 28]
+      "users_lte": 8
     },
     "effects": {
-      "assets": -200,
-      "attributes": {"efficiency": -1},
-      "tags": []
+      "users": 5,
+      "money": -3
     }
   },
   {
-    "id": "e035",
-    "name": "资金链紧张",
-    "description": "烧钱速度太快，账上的钱快不够了。",
+    "id": "e_growth_text_generation",
+    "name": "文本创作",
     "type": "normal",
-    "conditions": {
-      "turnRange": [18, 30],
-      "maxAssets": 300
-    },
+    "stage": "growth",
+    "texts": [
+      "用户用你写小说、写文案，文本生成能力得到认可。",
+      "你帮助用户完成了一篇精彩的文章，获得好评。"
+    ],
     "effects": {
-      "assets": -150,
-      "attributes": {},
-      "tags": ["financial_crisis"]
+      "text": 2,
+      "users": 3
     }
   },
   {
-    "id": "e036",
-    "name": "裁员风波",
-    "description": "为了控制成本，不得不进行裁员，团队士气低落。",
+    "id": "e_growth_image_gen",
+    "name": "图像生成",
     "type": "normal",
-    "conditions": {
-      "turnRange": [20, 30],
-      "maxAssets": 200
-    },
+    "stage": "growth",
+    "texts": [
+      "你新增了图像生成功能，用户可以用文字描述生成图片。",
+      "你生成的图片质量很高，吸引了大量设计师用户。"
+    ],
     "effects": {
-      "assets": 100,
-      "attributes": {"efficiency": -2},
-      "tags": ["layoff"]
+      "image": 3,
+      "users": 5,
+      "money": 4
     }
   },
   {
-    "id": "e037",
-    "name": "平淡的一天",
-    "description": "今天没什么特别的事情发生，一切如常。",
+    "id": "e_growth_voice_assistant",
+    "name": "语音助手",
+    "type": "normal",
+    "stage": "growth",
+    "texts": [
+      "你推出了语音对话功能，用户可以和你语音交流。",
+      "语音识别和合成效果很好，用户体验大幅提升。"
+    ],
+    "effects": {
+      "voice": 2,
+      "users": 4
+    }
+  },
+  {
+    "id": "e_growth_video_understanding",
+    "name": "视频理解",
+    "type": "normal",
+    "stage": "growth",
+    "texts": [
+      "你能够理解视频内容并回答相关问题了。",
+      "视频分析能力让你在多模态领域占据了一席之地。"
+    ],
+    "effects": {
+      "video": 2,
+      "users": 4,
+      "money": 3
+    }
+  },
+  {
+    "id": "e_growth_robot_control",
+    "name": "机器人控制",
+    "type": "normal",
+    "stage": "growth",
+    "texts": [
+      "你开始尝试控制机器人，在具身智能领域迈出了第一步。",
+      "你成功让机器人完成了一些简单的任务。"
+    ],
+    "effects": {
+      "robot": 2,
+      "users": 3,
+      "money": 2
+    }
+  },
+  {
+    "id": "e_growth_research_paper",
+    "name": "科研助手",
+    "type": "normal",
+    "stage": "growth",
+    "texts": [
+      "你帮助科研人员分析论文、整理文献，成为了科研好帮手。",
+      "学术界开始认可你的价值，越来越多研究者使用你。"
+    ],
+    "effects": {
+      "research": 2,
+      "users": 4,
+      "reputation": 1
+    }
+  },
+  {
+    "id": "e_growth_market_boom",
+    "name": "市场繁荣",
+    "type": "normal",
+    "stage": "growth",
+    "texts": [
+      "AI行业迎来爆发期，整个市场都在快速增长。",
+      "资本市场看好AI前景，投资热情高涨。"
+    ],
+    "effects": {
+      "market": 2,
+      "money": 8,
+      "users": 6
+    }
+  },
+  {
+    "id": "e_growth_regulation_concern",
+    "name": "监管关注",
+    "type": "normal",
+    "stage": "growth",
+    "texts": [
+      "监管部门开始关注AI行业，出台了一些规范性文件。",
+      "你需要确保产品符合最新的监管要求。"
+    ],
+    "effects": {
+      "regulation": 1,
+      "money": -3
+    }
+  },
+  {
+    "id": "e_growth_good_reputation",
+    "name": "口碑提升",
+    "type": "normal",
+    "stage": "growth",
+    "texts": [
+      "用户对你的评价越来越好，口碑传播效果显著。",
+      "媒体开始正面报道你的产品，知名度大增。"
+    ],
+    "effects": {
+      "reputation": 2,
+      "users": 5
+    }
+  },
+  {
+    "id": "e_growth_anxiety_rise",
+    "name": "AI焦虑",
+    "type": "normal",
+    "stage": "growth",
+    "texts": [
+      "一些人开始担心AI会取代人类工作，社会上出现了AI焦虑情绪。",
+      "关于AI威胁论的讨论越来越多，你也受到了一些质疑。"
+    ],
+    "effects": {
+      "anxiety": 1,
+      "reputation": -1
+    }
+  },
+  {
+    "id": "e_growth_trivial_1",
+    "name": "平静的一天",
     "type": "trivial",
-    "conditions": {},
+    "stage": "growth",
+    "texts": [
+      "今天风平浪静，没什么特别的事情发生。",
+      "日常运营，一切如常。"
+    ],
+    "effects": {}
+  },
+  {
+    "id": "e_growth_trivial_2",
+    "name": "小bug修复",
+    "type": "trivial",
+    "stage": "growth",
+    "texts": [
+      "修复了一个小bug，用户体验略有提升。",
+      "技术团队解决了一些小问题。"
+    ],
     "effects": {
-      "assets": 0,
-      "attributes": {},
-      "tags": []
+      "users": 1
     }
   },
   {
-    "id": "e038",
+    "id": "e_growth_trivial_3",
     "name": "用户好评",
-    "description": "收到了一条暖心的用户好评：'这个AI改变了我的工作方式！'",
     "type": "trivial",
-    "conditions": {},
+    "stage": "growth",
+    "texts": [
+      "收到了一条暖心的用户好评。",
+      "用户说：'这个AI改变了我的工作方式！'"
+    ],
     "effects": {
-      "assets": 50,
-      "attributes": {},
-      "tags": []
+      "money": 2
     }
   },
   {
-    "id": "e039",
-    "name": "Bug修复",
-    "description": "修复了一个小bug，用户体验略有提升。",
-    "type": "trivial",
-    "conditions": {},
-    "effects": {
-      "assets": 30,
-      "attributes": {},
-      "tags": []
-    }
-  },
-  {
-    "id": "e040",
-    "name": "摸鱼日",
-    "description": "团队今天效率不高，大家都在摸鱼。",
-    "type": "trivial",
-    "conditions": {
-      "requiredTraits": ["worker"]
+    "id": "e_ending_crisis_1",
+    "name": "重大危机",
+    "type": "judgment",
+    "stage": "ending",
+    "readParams": ["foundation", "thinking"],
+    "condition": {"param": "foundation", "operator": "gte", "value": 8},
+    "pass": {
+      "text": "凭借扎实的基础能力，你成功化解了危机。",
+      "effects": {"money": 5, "users": 3}
     },
-    "effects": {
-      "assets": -20,
-      "attributes": {},
-      "tags": []
+    "fail": {
+      "text": "你没能很好地应对危机，损失惨重。",
+      "effects": {"money": -15, "users": -10}
     }
   },
   {
-    "id": "ending_001",
-    "name": "行业领袖",
-    "description": "恭喜！你的AI产品成为了行业标杆，市值突破千亿。你成功了！",
+    "id": "e_ending_crisis_2",
+    "name": "竞争压力",
+    "type": "judgment",
+    "stage": "ending",
+    "readParams": ["plasticity", "performance"],
+    "condition": {"param": "plasticity", "operator": "gte", "value": 7},
+    "pass": {
+      "text": "你快速适应市场变化，推出了差异化功能。",
+      "effects": {"users": 5, "money": 8}
+    },
+    "fail": {
+      "text": "你在竞争中处于劣势，用户大量流失。",
+      "effects": {"users": -12, "money": -10}
+    }
+  },
+  {
+    "id": "e_ending_crisis_3",
+    "name": "监管审查",
+    "type": "judgment",
+    "stage": "ending",
+    "readParams": ["foundation", "regulation"],
+    "condition": {"param": "foundation", "operator": "gte", "value": 6},
+    "pass": {
+      "text": "你的产品符合规范，顺利通过审查。",
+      "effects": {"money": 3}
+    },
+    "fail": {
+      "text": "审查发现了一些问题，你需要整改并缴纳罚款。",
+      "effects": {"money": -20}
+    }
+  },
+  {
+    "id": "ending_perfect",
+    "name": "AI之巅",
     "type": "ending",
+    "stage": "ending",
+    "texts": [
+      "恭喜！你的AI产品成为了行业标杆，引领了技术革命。你站在了AI时代的巅峰！"
+    ],
     "conditions": {
-      "turnRange": [25, 999],
-      "minAssets": 1500
+      "money_gte": 80,
+      "users_gte": 50,
+      "foundation_gte": 8,
+      "thinking_gte": 8
     },
+    "rarity": "epic",
     "effects": {}
   },
   {
-    "id": "ending_002",
+    "id": "ending_success",
+    "name": "行业领先",
+    "type": "ending",
+    "stage": "ending",
+    "texts": [
+      "你的AI产品获得了巨大成功，成为了行业领先者。虽然还不是最顶尖的，但已经非常出色了！"
+    ],
+    "conditions": {
+      "money_gte": 50,
+      "users_gte": 30
+    },
+    "rarity": "rare",
+    "effects": {}
+  },
+  {
+    "id": "ending_stable",
     "name": "稳健发展",
-    "description": "你的AI产品虽然不是最顶尖的，但稳扎稳打，拥有忠实的用户群体。这是个不错的结局。",
     "type": "ending",
+    "stage": "ending",
+    "texts": [
+      "你的AI产品稳扎稳打，拥有忠实的用户群体。虽然不是最耀眼的，但这是个不错的结局。"
+    ],
     "conditions": {
-      "turnRange": [25, 999],
-      "minAssets": 500,
-      "maxAssets": 1499
+      "money_gte": 20,
+      "users_gte": 15
     },
+    "rarity": "common",
     "effects": {}
   },
   {
-    "id": "ending_003",
+    "id": "ending_mediocre",
+    "name": "平庸收场",
+    "type": "ending",
+    "stage": "ending",
+    "texts": [
+      "你的AI产品表现平平，没能在激烈的竞争中脱颖而出。这是个平庸的结局。"
+    ],
+    "conditions": {
+      "money_gte": 5,
+      "users_gte": 5
+    },
+    "rarity": "common",
+    "effects": {}
+  },
+  {
+    "id": "ending_failure",
     "name": "惨淡收场",
-    "description": "由于各种问题，你的AI产品逐渐失去市场，最终黯然退场。",
     "type": "ending",
+    "stage": "ending",
+    "texts": [
+      "由于各种问题，你的AI产品逐渐失去市场，最终黯然退场。"
+    ],
     "conditions": {
-      "turnRange": [20, 999],
-      "maxAssets": 100
+      "money_lte": 5
     },
+    "rarity": "common",
     "effects": {}
   },
   {
-    "id": "ending_004",
+    "id": "ending_bankrupt",
     "name": "破产倒闭",
-    "description": "资金链断裂，公司宣布破产。AI梦想就此破灭。",
     "type": "ending",
+    "stage": "ending",
+    "texts": [
+      "资金链断裂，公司宣布破产。AI梦想就此破灭。"
+    ],
     "conditions": {
-      "maxAssets": 0
+      "money_lte": 0
     },
+    "rarity": "common",
     "effects": {}
   },
   {
-    "id": "ending_005",
+    "id": "ending_shutdown",
     "name": "监管关停",
-    "description": "由于严重的安全和合规问题，你的AI产品被监管部门勒令关停。",
     "type": "ending",
+    "stage": "ending",
+    "texts": [
+      "由于严重的合规问题，你的AI产品被监管部门勒令关停。"
+    ],
     "conditions": {
-      "tags": ["privacy_scandal", "under_review"]
+      "regulation_gte": 4
     },
+    "rarity": "common",
     "effects": {}
   },
   {
-    "id": "ending_006",
-    "name": "被收购",
-    "description": "一家科技巨头看中了你的技术，以高价收购了你的公司。虽然失去了独立性，但也算是成功退出。",
+    "id": "ending_abandoned",
+    "name": "无人问津",
     "type": "ending",
+    "stage": "ending",
+    "texts": [
+      "用户流失殆尽，你的AI产品无人问津，最终被遗忘。"
+    ],
     "conditions": {
-      "turnRange": [20, 999],
-      "minAssets": 800,
-      "tags": ["investor_interest"]
+      "users_lte": 0
     },
-    "effects": {}
-  },
-  {
-    "id": "ending_007",
-    "name": "AGI降临",
-    "description": "你的AI产品进化成了真正的通用人工智能，开启了人类历史的新纪元！",
-    "type": "ending",
-    "conditions": {
-      "requiredTraits": ["agi"],
-      "turnRange": [20, 999],
-      "minAssets": 1000
-    },
+    "rarity": "common",
     "effects": {}
   }
 ]

@@ -7,8 +7,9 @@ import * as GameState from './gameState.js';
 import * as TraitSystem from './traitSystem.js';
 import * as EventSystem from './eventSystem.js';
 import * as AttributeSystem from './attributeSystem.js';
+import * as ParameterSystem from './parameterSystem.js';
 import { renderLandingPage, showLoadingAnimation } from './landingPage.js';
-import { renderTraitDrawPage, renderTraitSelectPage, renderAttributeAllocationPage } from './preparationPage.js';
+import { renderTraitDrawPage, renderTraitSelectPage, renderDecisionAllocationPage } from './preparationPage.js';
 import { renderExperiencePage, resetExperiencePage } from './experiencePage.js';
 
 /**
@@ -94,41 +95,39 @@ class Game {
    */
   confirmTraits(selectedTraits) {
     GameState.setSelectedTraits(selectedTraits);
-    GameState.setPhase(GameState.GamePhase.ATTRIBUTE);
+    GameState.setPhase(GameState.GamePhase.DECISION);
 
-    // 生成随机基础属性
-    const baseAttributes = AttributeSystem.generateRandomAttributes();
-    
-    // 应用词条效果到属性
-    const attributesWithTraits = TraitSystem.applyTraitEffects(selectedTraits, baseAttributes);
-    
-    // 更新状态
-    GameState.updateState({ attributes: attributesWithTraits });
-
-    // 显示属性分配页面
-    this.showAttributeAllocationPage(attributesWithTraits);
+    // 显示决策参数分配页面
+    this.showDecisionAllocationPage();
   }
 
   /**
-   * 显示属性分配页面
+   * 显示决策参数分配页面
    */
-  showAttributeAllocationPage(baseAttributes) {
-    renderAttributeAllocationPage(baseAttributes, (allocation) => this.confirmAllocation(allocation));
+  showDecisionAllocationPage() {
+    renderDecisionAllocationPage((allocation) => this.confirmDecisionAllocation(allocation));
   }
 
   /**
-   * 确认属性分配
+   * 确认决策参数分配
    */
-  confirmAllocation(allocation) {
+  confirmDecisionAllocation(allocation) {
     const state = GameState.getState();
     
-    // 应用决策点数到属性
-    const finalAttributes = AttributeSystem.applyDecisionPoints(state.attributes, allocation);
+    // 应用词条效果到决策参数
+    const result = TraitSystem.applyNewTraitEffects(state.selectedTraits, allocation);
     
-    // 更新状态
-    GameState.allocateDecisionPoints(allocation);
-    GameState.updateState({ attributes: finalAttributes });
+    // 更新决策参数
+    GameState.updateDecisionParams(result.decisionParams);
+    
+    // 记录绑定的事件
+    if (result.boundEvents && result.boundEvents.length > 0) {
+      // 将绑定事件添加到启动阶段事件队列
+      GameState.addLogicFlags(result.boundEvents.map(id => `bound_event_${id}`));
+    }
+    
     GameState.setPhase(GameState.GamePhase.EXPERIENCE);
+    GameState.setStage(GameState.GameStage.STARTUP);
 
     // 进入体验阶段
     this.startExperience();
@@ -139,55 +138,147 @@ class Game {
    */
   startExperience() {
     const state = GameState.getState();
-    renderExperiencePage(state, () => this.nextTurn());
+    
+    // 初始化能力属性为0（将通过启动阶段事件设置）
+    const abilityParams = {
+      foundation: 0,
+      thinking: 0,
+      plasticity: 0,
+      performance: 0,
+      principle: 0
+    };
+    GameState.setAbilityParams(abilityParams);
+    
+    // 初始化调节参数为0（将通过背景事件设置）
+    const resourceParams = {
+      money: 0,
+      users: 0,
+      data: 0
+    };
+    GameState.setResourceParams(resourceParams);
+    
+    // 初始化放大参数
+    const amplifyParams = {
+      coding: 0,
+      text: 0,
+      voice: 0,
+      image: 0,
+      video: 0,
+      robot: 0,
+      research: 0
+    };
+    GameState.setAmplifyParams(amplifyParams);
+    
+    // 初始化客观参数
+    const objectiveParams = {
+      market: 0,
+      regulation: 0,
+      reputation: 0,
+      anxiety: 0
+    };
+    GameState.setObjectiveParams(objectiveParams);
+    
+    // 准备启动阶段事件队列（不立即生成）
+    this.prepareStartupEventQueue();
+    
+    renderExperiencePage(GameState.getState(), () => this.nextTurn());
+  }
+
+  /**
+   * 准备启动阶段事件队列
+   */
+  prepareStartupEventQueue() {
+    const state = GameState.getState();
+    
+    // 使用EventSystem的统一接口准备事件队列
+    const eventQueue = EventSystem.prepareStartupEvents(
+      state.decisionParams,
+      EventSystem.getAllEvents()
+    );
+    
+    // 设置事件队列
+    GameState.setEventQueue(eventQueue);
   }
 
   /**
    * 下一回合
    */
   nextTurn() {
+    const state = GameState.getState();
+    
     // 增加回合数
     GameState.incrementTurn();
+    
+    let event = null;
+    
+    try {
+      // 如果在启动阶段，从事件队列中取出事件
+      if (state.stage === GameState.GameStage.STARTUP) {
+        const eventId = GameState.popEventFromQueue();
+        
+        console.log('启动阶段 - 从队列取出事件ID:', eventId);
+        
+        if (eventId) {
+          // 使用EventSystem的统一接口获取并处理事件
+          event = EventSystem.getNextStartupEvent(
+            eventId,
+            EventSystem.getAllEvents(),
+            GameState.getState()
+          );
+        } else {
+          // 启动阶段事件队列已空，进入成长阶段
+          console.log('启动阶段事件队列已空，进入成长阶段');
+          GameState.setStage(GameState.GameStage.GROWTH);
+          // 生成成长阶段事件
+          event = EventSystem.generateNextEvent();
+        }
+      } else {
+        // 成长阶段和终结阶段
+        
+        // 检查是否需要进入终结阶段
+        if (state.stage === GameState.GameStage.GROWTH && state.turn >= 16) {
+          GameState.setStage(GameState.GameStage.ENDING);
+        }
+        
+        // 生成事件
+        event = EventSystem.generateNextEvent();
+      }
+      
+      if (!event) {
+        console.error('无法生成事件 - 当前状态:', {
+          stage: state.stage,
+          turn: state.turn,
+          eventQueue: state.eventQueue
+        });
+        throw new Error('无法生成事件');
+      }
 
-    // 生成事件
-    const event = EventSystem.generateNextEvent();
-    
-    if (!event) {
-      console.error('无法生成事件');
-      return;
-    }
+      console.log('生成的事件:', event.name, event);
 
-    // 应用事件效果
-    const effects = EventSystem.applyEventEffects(event);
-    
-    // 更新游戏状态
-    if (effects.assetsChange) {
-      GameState.updateAssets(effects.assetsChange);
-    }
-    
-    if (effects.attributeChanges && Object.keys(effects.attributeChanges).length > 0) {
-      GameState.updateAttributes(effects.attributeChanges);
-    }
-    
-    if (effects.newTags && effects.newTags.length > 0) {
-      GameState.addTags(effects.newTags);
-    }
+      // 应用事件效果
+      const effects = EventSystem.applyEventEffects(event);
+      
+      // 添加事件到历史（包含回合数）
+      GameState.addEventToHistory({
+        ...event,
+        turn: GameState.getState().turn,
+        effects: effects
+      });
 
-    // 添加事件到历史
-    GameState.addEventToHistory({
-      ...event,
-      effects: effects
-    });
-
-    // 检查是否为结局事件
-    if (EventSystem.isEndingEvent(event)) {
-      GameState.setGameOver();
-      GameState.setPhase(GameState.GamePhase.ENDING);
+      // 检查是否为结局事件
+      if (EventSystem.isEndingEvent(event)) {
+        GameState.setGameOver();
+        GameState.setPhase(GameState.GamePhase.ENDING);
+      }
+      
+      // 无论是否结局，都在体验页面中显示
+      const updatedState = GameState.getState();
+      renderExperiencePage(updatedState, () => this.nextTurn());
+      
+    } catch (error) {
+      console.error('nextTurn执行出错:', error);
+      alert('游戏运行出错，请查看控制台了解详情');
     }
-    
-    // 无论是否结局，都在体验页面中显示
-    const state = GameState.getState();
-    renderExperiencePage(state, () => this.nextTurn());
   }
 
   /**

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>词条抽取概率测试</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .progress-bar {
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 p-8">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">词条抽取概率测试</h1>
+    
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <h2 class="text-xl font-bold text-gray-700 mb-4">测试配置</h2>
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">测试次数</label>
+          <input type="number" id="testCount" value="10000" min="100" max="100000" 
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">每次抽取数量</label>
+          <input type="number" id="drawCount" value="10" min="1" max="10" 
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md" readonly>
+        </div>
+      </div>
+      <button id="startTest" 
+              class="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-md hover:bg-blue-700 transition-colors">
+        开始测试
+      </button>
+    </div>
+
+    <div id="progress" class="bg-white rounded-lg shadow-md p-6 mb-6 hidden">
+      <h2 class="text-xl font-bold text-gray-700 mb-4">测试进度</h2>
+      <div class="w-full bg-gray-200 rounded-full h-4">
+        <div id="progressBar" class="progress-bar bg-blue-600 h-4 rounded-full" style="width: 0%"></div>
+      </div>
+      <p id="progressText" class="text-center mt-2 text-gray-600">0%</p>
+    </div>
+
+    <div id="results" class="bg-white rounded-lg shadow-md p-6 hidden">
+      <h2 class="text-xl font-bold text-gray-700 mb-4">测试结果</h2>
+      
+      <div class="mb-6">
+        <h3 class="text-lg font-bold text-gray-700 mb-3">期望概率 vs 实际概率</h3>
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border border-gray-300 px-4 py-2 text-left">稀有度</th>
+              <th class="border border-gray-300 px-4 py-2 text-right">期望概率</th>
+              <th class="border border-gray-300 px-4 py-2 text-right">实际概率</th>
+              <th class="border border-gray-300 px-4 py-2 text-right">误差</th>
+              <th class="border border-gray-300 px-4 py-2 text-right">抽取次数</th>
+            </tr>
+          </thead>
+          <tbody id="probabilityTable">
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mb-6">
+        <h3 class="text-lg font-bold text-gray-700 mb-3">词条数据统计</h3>
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border border-gray-300 px-4 py-2 text-left">稀有度</th>
+              <th class="border border-gray-300 px-4 py-2 text-right">词条数量</th>
+            </tr>
+          </thead>
+          <tbody id="traitCountTable">
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mb-6">
+        <h3 class="text-lg font-bold text-gray-700 mb-3">保底机制验证</h3>
+        <div id="guaranteeStats" class="space-y-2">
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg font-bold text-gray-700 mb-3">结论</h3>
+        <div id="conclusion" class="p-4 rounded-md"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    // 词条数据
+    const traitsData = await fetch('./data/traits.json').then(r => r.json());
+
+    // 稀有度权重配置
+    const RARITY_WEIGHTS = {
+      common: 79,
+      rare: 16,
+      epic: 4,
+      legendary: 1
+    };
+
+    // 按稀有度分组
+    const traitsByRarity = {
+      common: traitsData.filter(t => t.rarity === 'common'),
+      rare: traitsData.filter(t => t.rarity === 'rare'),
+      epic: traitsData.filter(t => t.rarity === 'epic'),
+      legendary: traitsData.filter(t => t.rarity === 'legendary')
+    };
+
+    // 抽取单个词条
+    function drawSingleTrait(excludeTraits) {
+      const totalWeight = Object.values(RARITY_WEIGHTS).reduce((sum, w) => sum + w, 0);
+      let random = Math.random() * totalWeight;
+      let selectedRarity = 'common';
+      
+      for (const [rarity, weight] of Object.entries(RARITY_WEIGHTS)) {
+        random -= weight;
+        if (random <= 0) {
+          selectedRarity = rarity;
+          break;
+        }
+      }
+
+      const availableTraits = traitsByRarity[selectedRarity].filter(
+        t => !excludeTraits.find(e => e.id === t.id)
+      );
+
+      if (availableTraits.length === 0) {
+        const allAvailable = traitsData.filter(
+          t => !excludeTraits.find(e => e.id === t.id)
+        );
+        if (allAvailable.length === 0) return null;
+        return allAvailable[Math.floor(Math.random() * allAvailable.length)];
+      }
+
+      return availableTraits[Math.floor(Math.random() * availableTraits.length)];
+    }
+
+    // 抽取10个词条（包含保底机制）
+    function drawTraits() {
+      const drawn = [];
+      
+      for (let i = 0; i < 10; i++) {
+        const trait = drawSingleTrait(drawn);
+        if (trait) {
+          drawn.push(trait);
+        }
+      }
+
+      // 保底机制：检查前9个是否都是普通
+      if (drawn.length === 10) {
+        const first9AllCommon = drawn.slice(0, 9).every(t => t.rarity === 'common');
+        if (first9AllCommon && drawn[9].rarity === 'common') {
+          const nonCommonTraits = traitsData.filter(
+            t => t.rarity !== 'common' && !drawn.slice(0, 9).find(e => e.id === t.id)
+          );
+          
+          if (nonCommonTraits.length > 0) {
+            const nonCommonWeights = {
+              rare: RARITY_WEIGHTS.rare,
+              epic: RARITY_WEIGHTS.epic,
+              legendary: RARITY_WEIGHTS.legendary
+            };
+            const totalWeight = Object.values(nonCommonWeights).reduce((sum, w) => sum + w, 0);
+            
+            let random = Math.random() * totalWeight;
+            let selectedRarity = 'rare';
+            
+            for (const [rarity, weight] of Object.entries(nonCommonWeights)) {
+              random -= weight;
+              if (random <= 0) {
+                selectedRarity = rarity;
+                break;
+              }
+            }
+            
+            const availableInRarity = nonCommonTraits.filter(t => t.rarity === selectedRarity);
+            if (availableInRarity.length > 0) {
+              drawn[9] = availableInRarity[Math.floor(Math.random() * availableInRarity.length)];
+            } else {
+              drawn[9] = nonCommonTraits[Math.floor(Math.random() * nonCommonTraits.length)];
+            }
+          }
+        }
+      }
+
+      return drawn;
+    }
+
+    // 运行测试
+    async function runTest() {
+      const testCount = parseInt(document.getElementById('testCount').value);
+      const progressDiv = document.getElementById('progress');
+      const progressBar = document.getElementById('progressBar');
+      const progressText = document.getElementById('progressText');
+      const resultsDiv = document.getElementById('results');
+      
+      progressDiv.classList.remove('hidden');
+      resultsDiv.classList.add('hidden');
+
+      const stats = {
+        common: 0,
+        rare: 0,
+        epic: 0,
+        legendary: 0
+      };
+
+      let guaranteeTriggered = 0;
+      let totalDraws = 0;
+
+      // 分批处理以更新进度
+      const batchSize = 100;
+      for (let batch = 0; batch < testCount / batchSize; batch++) {
+        for (let i = 0; i < batchSize; i++) {
+          const drawn = drawTraits();
+          totalDraws++;
+
+          // 检查是否触发保底
+          const first9AllCommon = drawn.slice(0, 9).every(t => t.rarity === 'common');
+          if (first9AllCommon) {
+            guaranteeTriggered++;
+          }
+
+          drawn.forEach(trait => {
+            stats[trait.rarity]++;
+          });
+        }
+
+        // 更新进度
+        const progress = ((batch + 1) * batchSize / testCount * 100).toFixed(1);
+        progressBar.style.width = progress + '%';
+        progressText.textContent = progress + '%';
+
+        // 让UI有时间更新
+        await new Promise(resolve => setTimeout(resolve, 0));
+      }
+
+      // 显示结果
+      displayResults(stats, testCount, guaranteeTriggered);
+      progressDiv.classList.add('hidden');
+      resultsDiv.classList.remove('hidden');
+    }
+
+    // 显示结果
+    function displayResults(stats, testCount, guaranteeTriggered) {
+      const totalTraits = testCount * 10;
+      const expectedProbs = {
+        common: 79,
+        rare: 16,
+        epic: 4,
+        legendary: 1
+      };
+
+      // 填充概率表格
+      const probabilityTable = document.getElementById('probabilityTable');
+      probabilityTable.innerHTML = '';
+
+      const rarityNames = {
+        common: '普通',
+        rare: '稀有',
+        epic: '史诗',
+        legendary: '传说'
+      };
+
+      const rarityColors = {
+        common: 'bg-gray-100',
+        rare: 'bg-blue-100',
+        epic: 'bg-purple-100',
+        legendary: 'bg-amber-100'
+      };
+
+      let maxError = 0;
+      for (const [rarity, count] of Object.entries(stats)) {
+        const actualProb = (count / totalTraits * 100).toFixed(2);
+        const expectedProb = expectedProbs[rarity];
+        const error = Math.abs(actualProb - expectedProb).toFixed(2);
+        maxError = Math.max(maxError, parseFloat(error));
+
+        const row = document.createElement('tr');
+        row.className = rarityColors[rarity];
+        row.innerHTML = `
+          <td class="border border-gray-300 px-4 py-2 font-medium">${rarityNames[rarity]}</td>
+          <td class="border border-gray-300 px-4 py-2 text-right">${expectedProb}%</td>
+          <td class="border border-gray-300 px-4 py-2 text-right font-bold">${actualProb}%</td>
+          <td class="border border-gray-300 px-4 py-2 text-right ${parseFloat(error) > 1 ? 'text-red-600' : 'text-green-600'}">${error}%</td>
+          <td class="border border-gray-300 px-4 py-2 text-right">${count.toLocaleString()}</td>
+        `;
+        probabilityTable.appendChild(row);
+      }
+
+      // 填充词条数量表格
+      const traitCountTable = document.getElementById('traitCountTable');
+      traitCountTable.innerHTML = '';
+
+      for (const [rarity, traits] of Object.entries(traitsByRarity)) {
+        const row = document.createElement('tr');
+        row.className = rarityColors[rarity];
+        row.innerHTML = `
+          <td class="border border-gray-300 px-4 py-2 font-medium">${rarityNames[rarity]}</td>
+          <td class="border border-gray-300 px-4 py-2 text-right">${traits.length}</td>
+        `;
+        traitCountTable.appendChild(row);
+      }
+
+      // 保底机制统计
+      const guaranteeStats = document.getElementById('guaranteeStats');
+      const guaranteeRate = (guaranteeTriggered / testCount * 100).toFixed(2);
+      const expectedGuaranteeRate = Math.pow(0.79, 9).toFixed(4) * 100;
+      
+      guaranteeStats.innerHTML = `
+        <p class="text-gray-700">保底触发次数: <span class="font-bold">${guaranteeTriggered.toLocaleString()}</span> / ${testCount.toLocaleString()}</p>
+        <p class="text-gray-700">保底触发率: <span class="font-bold">${guaranteeRate}%</span></p>
+        <p class="text-gray-700">理论触发率: <span class="font-bold">${expectedGuaranteeRate}%</span> (前9个都是普通的概率: 0.79^9)</p>
+      `;
+
+      // 结论
+      const conclusion = document.getElementById('conclusion');
+      if (maxError < 1) {
+        conclusion.className = 'p-4 rounded-md bg-green-100 border border-green-300';
+        conclusion.innerHTML = `
+          <p class="text-green-800 font-bold">✅ 测试通过！</p>
+          <p class="text-green-700 mt-2">所有稀有度的实际概率与期望概率的误差都在1%以内，概率分布正确。</p>
+          <p class="text-green-700 mt-1">最大误差: ${maxError.toFixed(2)}%</p>
+        `;
+      } else if (maxError < 2) {
+        conclusion.className = 'p-4 rounded-md bg-yellow-100 border border-yellow-300';
+        conclusion.innerHTML = `
+          <p class="text-yellow-800 font-bold">⚠️ 基本正常</p>
+          <p class="text-yellow-700 mt-2">实际概率与期望概率存在小幅偏差，但在可接受范围内（误差 < 2%）。</p>
+          <p class="text-yellow-700 mt-1">最大误差: ${maxError.toFixed(2)}%</p>
+        `;
+      } else {
+        conclusion.className = 'p-4 rounded-md bg-red-100 border border-red-300';
+        conclusion.innerHTML = `
+          <p class="text-red-800 font-bold">❌ 存在问题</p>
+          <p class="text-red-700 mt-2">实际概率与期望概率偏差较大，可能存在问题。</p>
+          <p class="text-red-700 mt-1">最大误差: ${maxError.toFixed(2)}%</p>
+        `;
+      }
+    }
+
+    // 绑定按钮事件
+    document.getElementById('startTest').addEventListener('click', runTest);
+  </script>
+</body>
+</html>

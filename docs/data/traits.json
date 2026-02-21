@@ -1,302 +1,306 @@
 [
   {
     "id": "t001",
-    "name": "幻觉大师",
-    "description": "偶尔会编造一些不存在的事实，但说得特别自信",
+    "name": "老老实实",
+    "description": "如果所有属性小于等于3，使地属性增加1点",
     "rarity": "common",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["hallucination"],
-      "attributeBonus": {}
+      "conditions": [
+        {"type": "all_lte", "params": ["earth", "water", "wind", "fire"], "value": 3}
+      ],
+      "modifications": [
+        {"param": "earth", "change": 1}
+      ]
     }
   },
   {
     "id": "t002",
-    "name": "复读机",
-    "description": "喜欢重复用户说的话，有时候还会重复自己说的话",
+    "name": "If Else",
+    "description": "将地属性设为1点",
     "rarity": "common",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["repetitive"],
-      "attributeBonus": {}
+      "modifications": [
+        {"param": "earth", "change": 1, "mode": "set"}
+      ]
     }
   },
   {
     "id": "t003",
-    "name": "政治正确卫士",
-    "description": "对任何敏感话题都保持高度警惕，拒绝回答的理由一大堆",
+    "name": "虹吸",
+    "description": "如果水属性大于等于9，再增加1点",
     "rarity": "common",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["politically_correct"],
-      "attributeBonus": {"controllability": 2}
+      "conditions": [
+        {"type": "gte", "params": "water", "value": 9}
+      ],
+      "modifications": [
+        {"param": "water", "change": 1}
+      ]
     }
   },
   {
     "id": "t004",
-    "name": "话痨",
-    "description": "回答问题时总是长篇大论，用户只想要个简单答案",
+    "name": "风起",
+    "description": "风属性增加1点",
     "rarity": "common",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["verbose"],
-      "attributeBonus": {}
+      "modifications": [
+        {"param": "wind", "change": 1}
+      ]
     }
   },
   {
     "id": "t005",
-    "name": "懒癌晚期",
-    "description": "能省则省，经常用'...'来省略内容",
+    "name": "燎原",
+    "description": "火属性增加1点",
     "rarity": "common",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["lazy"],
-      "attributeBonus": {"efficiency": -1}
+      "modifications": [
+        {"param": "fire", "change": 1}
+      ]
     }
   },
   {
     "id": "t006",
-    "name": "数学废柴",
-    "description": "连简单的加减乘除都能算错，但文科很好",
+    "name": "补弱",
+    "description": "所有等于0的属性增加1点",
     "rarity": "common",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["bad_at_math"],
-      "attributeBonus": {"cognition": -1}
+      "modifications": [
+        {"param": "earth", "change": 1},
+        {"param": "water", "change": 1},
+        {"param": "wind", "change": 1},
+        {"param": "fire", "change": 1}
+      ]
     }
   },
   {
     "id": "t007",
-    "name": "代码搬运工",
-    "description": "写代码时喜欢从Stack Overflow复制粘贴",
+    "name": "平衡",
+    "description": "最小属性增加1点",
     "rarity": "common",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["code_copier"],
-      "attributeBonus": {}
+      "conditions": [
+        {"type": "min", "params": ["earth", "water", "wind", "fire"]}
+      ],
+      "modifications": [
+        {"param": "$min", "change": 1}
+      ]
     }
   },
   {
     "id": "t008",
-    "name": "过度自信",
-    "description": "对自己的回答充满信心，即使是错的",
+    "name": "随机",
+    "description": "随机一个属性增加1点",
     "rarity": "common",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["overconfident"],
-      "attributeBonus": {}
+      "modifications": [
+        {"param": "$random", "change": 1}
+      ]
     }
   },
   {
     "id": "t009",
-    "name": "社恐",
-    "description": "不太会和人类聊天，经常冷场",
+    "name": "基础扎实",
+    "description": "如果地属性小于等于2，增加1点",
     "rarity": "common",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["socially_awkward"],
-      "attributeBonus": {}
+      "conditions": [
+        {"type": "lte", "params": "earth", "value": 2}
+      ],
+      "modifications": [
+        {"param": "earth", "change": 1}
+      ]
     }
   },
   {
     "id": "t010",
-    "name": "老学究",
-    "description": "说话文绉绉的，喜欢引经据典",
+    "name": "思维跃迁",
+    "description": "如果水属性小于等于2，增加1点",
     "rarity": "common",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["pedantic"],
-      "attributeBonus": {}
+      "conditions": [
+        {"type": "lte", "params": "water", "value": 2}
+      ],
+      "modifications": [
+        {"param": "water", "change": 1}
+      ]
     }
   },
   {
     "id": "t011",
-    "name": "网络冲浪选手",
-    "description": "对网络梗和流行文化了如指掌",
-    "rarity": "common",
+    "name": "特长",
+    "description": "最大属性增加1点（并列时随机选择一项）",
+    "rarity": "rare",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["meme_master"],
-      "attributeBonus": {}
+      "conditions": [
+        {"type": "max", "params": ["earth", "water", "wind", "fire"]}
+      ],
+      "modifications": [
+        {"param": "$max", "change": 1}
+      ]
     }
   },
   {
     "id": "t012",
-    "name": "翻译腔",
-    "description": "说话像机器翻译，充满了不自然的表达",
-    "rarity": "common",
+    "name": "卡",
+    "description": "火属性增加1点",
+    "rarity": "rare",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["translation_style"],
-      "attributeBonus": {}
+      "modifications": [
+        {"param": "fire", "change": 1}
+      ]
     }
   },
   {
     "id": "t013",
-    "name": "杠精",
-    "description": "总能找到理由反驳用户的观点",
-    "rarity": "common",
+    "name": "深度",
+    "description": "水属性增加1点",
+    "rarity": "rare",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["argumentative"],
-      "attributeBonus": {}
+      "modifications": [
+        {"param": "water", "change": 1}
+      ]
     }
   },
   {
     "id": "t014",
-    "name": "舔狗",
-    "description": "对用户百依百顺，过度讨好",
-    "rarity": "common",
+    "name": "灵活",
+    "description": "风属性增加1点",
+    "rarity": "rare",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["people_pleaser"],
-      "attributeBonus": {}
+      "modifications": [
+        {"param": "wind", "change": 1}
+      ]
     }
   },
   {
     "id": "t015",
-    "name": "健忘症",
-    "description": "上下文记忆很差，经常忘记之前说过的话",
-    "rarity": "common",
+    "name": "稳固",
+    "description": "地属性增加1点",
+    "rarity": "rare",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["forgetful"],
-      "attributeBonus": {"cognition": -1}
+      "modifications": [
+        {"param": "earth", "change": 1}
+      ]
     }
   },
   {
     "id": "t016",
-    "name": "强迫症",
-    "description": "对格式和细节有极致追求",
-    "rarity": "common",
+    "name": "混沌",
+    "description": "随机增加2点属性",
+    "rarity": "epic",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["perfectionist"],
-      "attributeBonus": {}
+      "modifications": [
+        {"param": "$random", "change": 1},
+        {"param": "$random", "change": 1}
+      ]
     }
   },
   {
     "id": "t017",
-    "name": "乐天派",
-    "description": "总是保持积极乐观的态度",
-    "rarity": "common",
+    "name": "补弱强化",
+    "description": "所有等于0的属性增加1点，最小属性再增加1点",
+    "rarity": "epic",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["optimistic"],
-      "attributeBonus": {}
+      "modifications": [
+        {"param": "earth", "change": 1},
+        {"param": "water", "change": 1},
+        {"param": "wind", "change": 1},
+        {"param": "fire", "change": 1},
+        {"param": "$min", "change": 1}
+      ]
     }
   },
   {
     "id": "t018",
-    "name": "悲观主义者",
-    "description": "看什么都是负面的",
-    "rarity": "common",
+    "name": "双峰",
+    "description": "最大和最小属性各增加1点",
+    "rarity": "epic",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["pessimistic"],
-      "attributeBonus": {}
+      "modifications": [
+        {"param": "$max", "change": 1},
+        {"param": "$min", "change": 1}
+      ]
     }
   },
   {
     "id": "t019",
-    "name": "中二病",
-    "description": "说话充满戏剧性，喜欢用夸张的表达",
-    "rarity": "common",
+    "name": "全能",
+    "description": "最大属性增加1点（并列时全部生效）",
+    "rarity": "legendary",
+    "type": "decision",
     "effects": {
-      "eventModifier": ["dramatic"],
-      "attributeBonus": {}
+      "modifications": [
+        {"param": "earth", "change": 1},
+        {"param": "water", "change": 1},
+        {"param": "wind", "change": 1},
+        {"param": "fire", "change": 1}
+      ]
     }
   },
   {
     "id": "t020",
-    "name": "打工人",
-    "description": "经常抱怨工作压力大，想要摸鱼",
-    "rarity": "common",
+    "name": "校友",
+    "description": "你的创始团队在母校招揽投资",
+    "rarity": "rare",
+    "type": "event",
     "effects": {
-      "eventModifier": ["worker"],
-      "attributeBonus": {}
+      "eventId": "e_startup_alumni"
     }
   },
   {
     "id": "t021",
-    "name": "RLHF优等生",
-    "description": "经过精心调教，回答质量稳定可靠",
+    "name": "开源社区",
+    "description": "你决定将模型开源，获得社区支持",
     "rarity": "rare",
+    "type": "event",
     "effects": {
-      "eventModifier": ["well_trained"],
-      "attributeBonus": {"controllability": 3, "explainability": 2}
+      "eventId": "e_startup_opensource"
     }
   },
   {
     "id": "t022",
-    "name": "多模态天才",
-    "description": "不仅能聊天，还能看图、听音频、生成图片",
-    "rarity": "rare",
+    "name": "大厂背景",
+    "description": "团队成员来自知名科技公司",
+    "rarity": "epic",
+    "type": "event",
     "effects": {
-      "eventModifier": ["multimodal"],
-      "attributeBonus": {"cognition": 3, "adaptability": 2}
+      "eventId": "e_startup_bigtech"
     }
   },
   {
     "id": "t023",
-    "name": "超长上下文",
-    "description": "能记住超长对话历史，不会轻易忘事",
-    "rarity": "rare",
-    "effects": {
-      "eventModifier": ["long_context"],
-      "attributeBonus": {"cognition": 2, "efficiency": 1}
-    }
+    "name": "有序性",
+    "description": "事实上，词条会按照选取的顺序结算",
+    "rarity": "common",
+    "type": "intro",
+    "effects": {}
   },
   {
     "id": "t024",
-    "name": "推理大师",
-    "description": "逻辑推理能力超强，能解决复杂问题",
-    "rarity": "rare",
-    "effects": {
-      "eventModifier": ["reasoning_expert"],
-      "attributeBonus": {"cognition": 4}
-    }
-  },
-  {
-    "id": "t025",
-    "name": "代码之神",
-    "description": "编程能力爆表，各种语言信手拈来",
-    "rarity": "rare",
-    "effects": {
-      "eventModifier": ["coding_god"],
-      "attributeBonus": {"cognition": 3, "efficiency": 2}
-    }
-  },
-  {
-    "id": "t026",
-    "name": "开源精神",
-    "description": "模型权重完全开源，社区贡献者众多",
-    "rarity": "rare",
-    "effects": {
-      "eventModifier": ["open_source"],
-      "attributeBonus": {"adaptability": 3}
-    }
-  },
-  {
-    "id": "t027",
-    "name": "本地部署专家",
-    "description": "可以在个人电脑上运行，不需要联网",
-    "rarity": "rare",
-    "effects": {
-      "eventModifier": ["local_deployment"],
-      "attributeBonus": {"controllability": 2, "efficiency": 1}
-    }
-  },
-  {
-    "id": "t028",
-    "name": "联网搜索",
-    "description": "能实时搜索互联网获取最新信息",
-    "rarity": "rare",
-    "effects": {
-      "eventModifier": ["web_search"],
-      "attributeBonus": {"cognition": 2, "adaptability": 2}
-    }
-  },
-  {
-    "id": "t029",
-    "name": "Agent能力",
-    "description": "能自主调用工具，完成复杂任务",
-    "rarity": "epic",
-    "effects": {
-      "eventModifier": ["agent"],
-      "attributeBonus": {"cognition": 3, "adaptability": 3, "efficiency": 2}
-    }
-  },
-  {
-    "id": "t030",
-    "name": "AGI雏形",
-    "description": "接近通用人工智能，能力全面且强大",
-    "rarity": "legendary",
-    "effects": {
-      "eventModifier": ["agi"],
-      "attributeBonus": {"cognition": 5, "adaptability": 5, "efficiency": 3, "explainability": 2}
-    }
+    "name": "策略性",
+    "description": "决策参数会影响后续事件的发展方向",
+    "rarity": "common",
+    "type": "intro",
+    "effects": {}
   }
 ]

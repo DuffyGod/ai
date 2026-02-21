@@ -1,10 +1,15 @@
 /**
  * 准备阶段UI模块
- * 负责渲染词条抽取、选择和属性分配界面
+ * 负责渲染词条抽取、选择和决策参数分配界面
  */
 
 import { createTraitCard, updateTraitCardSelection } from './traitCard.js';
-import { createAllocationControl, ATTRIBUTE_NAMES } from './attributeSystem.js';
+import { 
+  getAvailableDecisionParams, 
+  createDecisionAllocationControl,
+  DECISION_PARAMS,
+  DECISION_PARAM_DESCRIPTIONS
+} from './parameterSystem.js';
 
 /**
  * 渲染词条抽取界面（10连抽）
@@ -145,21 +150,20 @@ export function renderTraitSelectPage(traits, onConfirm) {
 }
 
 /**
- * 渲染属性分配界面
- * @param {Object} baseAttributes - 基础属性
+ * 渲染决策参数分配界面
  * @param {Function} onConfirm - 确认分配的回调函数
  */
-export function renderAttributeAllocationPage(baseAttributes, onConfirm) {
+export function renderDecisionAllocationPage(onConfirm) {
   const container = document.getElementById('app');
   
+  // 获取可用的决策参数（根据以太激活状态）
+  const availableParams = getAvailableDecisionParams();
+  
   // 初始化分配状态
-  const allocation = {
-    efficiency: 0,
-    cognition: 0,
-    controllability: 0,
-    adaptability: 0,
-    explainability: 0
-  };
+  const allocation = {};
+  availableParams.forEach(param => {
+    allocation[param] = 0;
+  });
   
   let remainingPoints = 10;
   
@@ -170,73 +174,65 @@ export function renderAttributeAllocationPage(baseAttributes, onConfirm) {
     
     container.innerHTML = `
       <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 py-6">
-        <div class="max-w-4xl mx-auto">
-          <!-- 标题区 -->
-          <div class="bg-white rounded-lg shadow-lg p-4 mb-4 text-center">
-            <h1 class="text-2xl font-bold text-gray-800 mb-1">决策点数分配</h1>
-            <p class="text-sm text-gray-600">分配10个决策点数，影响后续事件的发展方向和结果</p>
-          </div>
-          
+        <div class="max-w-3xl mx-auto">
           <!-- 已选词条展示区 -->
           ${selectedTraits.length > 0 ? `
-          <div class="bg-white rounded-lg shadow-lg p-4 mb-4">
-            <h2 class="text-sm font-bold text-gray-700 mb-3 text-center">已选词条</h2>
-            <div class="grid grid-cols-1 gap-2 max-w-3xl mx-auto">
+          <div class="bg-white rounded-lg shadow-lg p-3 mb-3">
+            <h2 class="text-xs font-bold text-gray-700 mb-2 text-center">已选词条</h2>
+            <div class="grid grid-cols-1 gap-2 max-w-2xl mx-auto">
               ${selectedTraits.map(trait => createTraitCard(trait, { selectable: false })).join('')}
             </div>
           </div>
           ` : ''}
           
-          <!-- 属性分配网格（包含剩余点数） -->
-          <div class="bg-white rounded-lg shadow-lg p-4 mb-4">
-            <div class="flex items-center justify-between mb-3">
+          <!-- 决策参数分配区 -->
+          <div class="bg-white rounded-lg shadow-lg p-3 mb-3">
+            <div class="flex items-center justify-between mb-2">
               <h2 class="text-sm font-bold text-gray-700">决策点数分配</h2>
-              <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg px-4 py-1 border-2 border-purple-300">
+              <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded px-3 py-0.5 border border-purple-300">
                 <span class="text-xs text-gray-600">剩余: </span>
-                <span id="remaining-points" class="text-xl font-bold text-purple-700">10</span>
+                <span id="remaining-points" class="text-lg font-bold text-purple-700">10</span>
               </div>
             </div>
-            <div class="space-y-2" id="allocation-grid">
-              ${Object.keys(ATTRIBUTE_NAMES).map(key => 
-                createOptimizedAllocationControl(key, 0)
+            <div class="space-y-1.5" id="allocation-grid">
+              ${availableParams.map(param => 
+                createDecisionAllocationControl(param, 0)
               ).join('')}
             </div>
           </div>
           
           <!-- 按钮区 -->
-          <div class="flex gap-3 justify-center">
-            <button id="random-allocation-btn" class="bg-gradient-to-r from-amber-600 to-orange-600 text-white text-base font-bold py-3 px-8 rounded-md hover:from-amber-700 hover:to-orange-700 transition-all duration-300 shadow-md hover:shadow-lg">
+          <div class="flex gap-2 justify-center">
+            <button id="random-allocation-btn" class="bg-gradient-to-r from-amber-600 to-orange-600 text-white text-sm font-bold py-2.5 px-6 rounded-md hover:from-amber-700 hover:to-orange-700 transition-all duration-300 shadow-md hover:shadow-lg">
               随机分配
             </button>
-            <button id="confirm-allocation-btn" disabled class="bg-gradient-to-r from-blue-800 to-blue-700 text-white text-base font-bold py-3 px-8 rounded-md hover:from-blue-900 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+            <button id="confirm-allocation-btn" disabled class="bg-gradient-to-r from-blue-800 to-blue-700 text-white text-sm font-bold py-2.5 px-6 rounded-md hover:from-blue-900 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
               开始体验
             </button>
           </div>
-          <p class="text-gray-300 text-xs text-center mt-2">请分配完所有点数后开始</p>
+          <p class="text-gray-300 text-xs text-center mt-1.5">请分配完所有点数后开始</p>
         </div>
       </div>
     `;
     
     // 随机分配函数
     function randomAllocate() {
-      // 如果有剩余点数，只分配剩余的；否则重新分配所有点数
-      const pointsToAllocate = remainingPoints > 0 ? remainingPoints : 10;
-      
       if (remainingPoints === 0) {
         // 重置所有分配
-        Object.keys(allocation).forEach(key => {
-          allocation[key] = 0;
+        availableParams.forEach(param => {
+          allocation[param] = 0;
         });
         remainingPoints = 10;
+        updateUI();
+        return; // 仅重置，不自动随机分配
       }
       
-      // 随机分配点数
-      const attrs = Object.keys(allocation);
-      let remaining = pointsToAllocate;
+      // 随机分配剩余点数
+      let remaining = remainingPoints;
       
       while (remaining > 0) {
-        const randomAttr = attrs[Math.floor(Math.random() * attrs.length)];
-        allocation[randomAttr]++;
+        const randomParam = availableParams[Math.floor(Math.random() * availableParams.length)];
+        allocation[randomParam]++;
         remaining--;
       }
       
@@ -248,24 +244,30 @@ export function renderAttributeAllocationPage(baseAttributes, onConfirm) {
     function updateUI() {
       document.getElementById('remaining-points').textContent = remainingPoints;
       
-      // 更新所有属性显示
-      Object.keys(allocation).forEach(key => {
-        const valueEl = document.querySelector(`.allocation-value[data-attr="${key}"]`);
+      // 更新所有参数显示
+      availableParams.forEach(param => {
+        const valueEl = document.querySelector(`.allocation-value[data-param="${param}"]`);
         if (valueEl) {
-          valueEl.textContent = allocation[key];
+          valueEl.textContent = allocation[param];
         }
         
         // 更新按钮状态
-        const minusBtn = document.querySelector(`.allocation-btn-minus[data-attr="${key}"]`);
-        const plusBtn = document.querySelector(`.allocation-btn-plus[data-attr="${key}"]`);
+        const minusBtn = document.querySelector(`.allocation-btn-minus[data-param="${param}"]`);
+        const plusBtn = document.querySelector(`.allocation-btn-plus[data-param="${param}"]`);
         
         if (minusBtn) {
-          minusBtn.disabled = allocation[key] <= 0;
+          minusBtn.disabled = allocation[param] <= 0;
         }
         if (plusBtn) {
           plusBtn.disabled = remainingPoints <= 0;
         }
       });
+      
+      // 更新随机分配按钮文本
+      const randomBtn = document.getElementById('random-allocation-btn');
+      if (randomBtn) {
+        randomBtn.textContent = remainingPoints === 0 ? '重置点数' : '随机分配';
+      }
       
       // 更新确认按钮
       const confirmBtn = document.getElementById('confirm-allocation-btn');
@@ -275,9 +277,9 @@ export function renderAttributeAllocationPage(baseAttributes, onConfirm) {
     // 绑定加号按钮
     document.querySelectorAll('.allocation-btn-plus').forEach(btn => {
       btn.addEventListener('click', () => {
-        const attr = btn.dataset.attr;
+        const param = btn.dataset.param;
         if (remainingPoints > 0) {
-          allocation[attr]++;
+          allocation[param]++;
           remainingPoints--;
           updateUI();
         }
@@ -287,9 +289,9 @@ export function renderAttributeAllocationPage(baseAttributes, onConfirm) {
     // 绑定减号按钮
     document.querySelectorAll('.allocation-btn-minus').forEach(btn => {
       btn.addEventListener('click', () => {
-        const attr = btn.dataset.attr;
-        if (allocation[attr] > 0) {
-          allocation[attr]--;
+        const param = btn.dataset.param;
+        if (allocation[param] > 0) {
+          allocation[param]--;
           remainingPoints++;
           updateUI();
         }
@@ -314,61 +316,4 @@ export function renderAttributeAllocationPage(baseAttributes, onConfirm) {
       });
     }
   });
-}
-
-/**
- * 创建优化的属性分配控件HTML（一行展示所有信息）
- * @param {string} key - 属性键
- * @param {number} allocatedPoints - 已分配点数
- * @returns {string} HTML字符串
- */
-function createOptimizedAllocationControl(key, allocatedPoints) {
-  const attributeNames = {
-    efficiency: '效率与规模',
-    cognition: '认知能力',
-    controllability: '可控度',
-    adaptability: '适应能力',
-    explainability: '可解释性'
-  };
-  
-  const attributeDescriptions = {
-    efficiency: '处理任务的速度和可扩展性',
-    cognition: '理解和推理的能力',
-    controllability: '遵守规则和安全约束的程度',
-    adaptability: '适应新场景和任务的能力',
-    explainability: '解释决策过程的透明度'
-  };
-  
-  const name = attributeNames[key] || key;
-  const description = attributeDescriptions[key] || '';
-  
-  return `
-    <div class="bg-gradient-to-r from-gray-50 to-blue-50 p-3 rounded-lg border border-gray-200 hover:border-purple-400 hover:shadow-md transition-all">
-      <div class="flex items-center justify-between gap-3">
-        <!-- 属性信息 -->
-        <div class="flex-1 min-w-0">
-          <div class="flex items-baseline gap-2">
-            <h4 class="text-sm font-bold text-gray-800">${name}</h4>
-            <p class="text-xs text-gray-500 truncate">${description}</p>
-          </div>
-        </div>
-        
-        <!-- 点数控制 -->
-        <div class="flex items-center gap-2 flex-shrink-0">
-          <button class="allocation-btn-minus w-8 h-8 rounded-full bg-red-500 text-white hover:bg-red-600 active:scale-95 transition-all disabled:bg-gray-300 disabled:cursor-not-allowed font-bold text-lg flex items-center justify-center" 
-                  data-attr="${key}" 
-                  ${allocatedPoints <= 0 ? 'disabled' : ''}>
-            −
-          </button>
-          <div class="w-12 text-center">
-            <span class="text-2xl font-bold text-purple-600 allocation-value" data-attr="${key}">${allocatedPoints}</span>
-          </div>
-          <button class="allocation-btn-plus w-8 h-8 rounded-full bg-green-500 text-white hover:bg-green-600 active:scale-95 transition-all disabled:bg-gray-300 disabled:cursor-not-allowed font-bold text-lg flex items-center justify-center" 
-                  data-attr="${key}">
-            +
-          </button>
-        </div>
-      </div>
-    </div>
-  `;
 }
