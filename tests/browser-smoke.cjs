@@ -30,8 +30,12 @@ async function main() {
 
       await page.goto(baseURL, { waitUntil: 'networkidle' });
       await button('new').waitFor();
-      assert.equal(await page.locator('h1').innerText(), '你醒来时，\n世界还没有决定\n你的用途。');
-      assert.equal(await page.locator('.signal-panel').evaluate(element => getComputedStyle(element).backgroundColor), 'rgb(28, 37, 36)');
+      assert.equal(await page.locator('h1').innerText(), 'AI 发展模拟器');
+      const inViewport = async locator => {
+        const box = await locator.boundingBox();
+        assert.ok(box && box.y >= 0 && box.y + box.height <= sample.height, 'Main action outside first viewport');
+      };
+      await inViewport(button('new'));
       await noOverflow(); await shot('landing');
       await button('notebook').click();
       assert.equal(await page.locator('#archive-dialog').evaluate(dialog => dialog.open), true);
@@ -41,15 +45,29 @@ async function main() {
 
       async function start() {
         await button('new').click();
-        await button('draw').click();
         assert.equal(await page.locator('.trait').count(), 10);
-        assert.equal(await button('start').isDisabled(), true);
+        assert.equal(await page.locator('.attribute-panel').count(), 0);
+        assert.equal(await button('next-step').isDisabled(), true);
         for (const id of ['echo', 'friendly', 'frugal']) await button('trait', id).click();
         assert.match(await page.locator('#selected-count').innerText(), /3 \/ 3/);
+        await noOverflow(); await shot('traits');
+        await button('next-step').click();
+        assert.equal(await page.locator('[data-action="trait"]').count(), 0);
+        assert.equal(await button('start').isEnabled(), true);
+        await button('subtract', 'memory').click();
+        assert.equal(await button('start').isDisabled(), true);
+        await button('back-step').click();
+        assert.equal(await page.locator('.trait[aria-pressed="true"]').count(), 3);
+        await button('next-step').click();
+        assert.match(await page.locator('#remaining-points').innerText(), /剩余 1 点/);
         await button('balance').click();
+        await inViewport(button('start'));
         await noOverflow(); await shot('genesis');
         await button('start').click();
         assert.equal((await getSave()).run.turn, 0);
+        await inViewport(button('advance', 'listen'));
+        assert.equal(await page.locator('.extra-details').evaluate(element => element.open), false);
+        await shot('playing');
       }
       await start();
       const shortChoices = { name: 'keep', checksum: 'skip', address: 'answer', lease: 'archive' };
@@ -58,8 +76,9 @@ async function main() {
         let state = (await getSave()).run;
         assert.equal(state.turn, i);
         if (state.pending) {
-          assert.equal(await button('advance', 'serve').isDisabled(), true);
+          assert.equal(await button('advance', 'serve').count(), 0);
           if (state.pending === 'name') {
+            await inViewport(button('choose', 'keep'));
             await shot('decision');
             await page.reload({ waitUntil: 'networkidle' });
             await button('resume').click();

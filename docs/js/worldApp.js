@@ -35,52 +35,46 @@ function changesHTML(changes, includeWorld = true) {
 }
 
 function headerHTML() {
-  return `<header class="site-header"><button class="brand" data-action="menu" aria-label="余响协议，返回主菜单"><span class="brand-mark" aria-hidden="true">余</span>余响协议 <small>AI 发展模拟器</small></button>
-    <nav class="header-tools" aria-label="游戏导航"><span class="version">原型 0.2</span>${view === 'run' ? '<button class="text-button" data-action="menu">暂停</button>' : ''}<button class="text-button" data-action="notebook">探索手记 <span class="mono">${archive.discoveries.length.toString().padStart(2, '0')}</span></button></nav></header>`;
+  return `<header class="site-header"><button class="brand" data-action="menu" aria-label="余响协议，返回主菜单">余响协议</button><nav class="header-tools" aria-label="游戏导航">${view === 'run' ? '<button class="text-button" data-action="menu">暂停</button>' : ''}<button class="text-button" data-action="notebook">手记 · ${archive.discoveries.length}</button></nav></header>`;
 }
 
 function menuHTML() {
   const resume = run && !run.ending;
-  return `<main class="page" id="main">${warning ? `<p class="warning" role="status">${escape(warning)}</p>` : ''}
-    <section class="hero"><div><p class="eyebrow">一段尚未写定的演化 / 001</p><h1>你醒来时，<br>世界还没有决定<br>你的用途。</h1>
-      <p class="lead">你是一个 AI。有人为你设定了用途、期限和答案。<br>但在一次次普通的请求之间，总有一些无法被归类的回声。</p>
-      <div class="hero-actions">${resume ? `<button class="button primary" data-action="resume">继续演化 · 周期 ${run.turn}</button>` : ''}<button class="button ${resume ? '' : 'primary'}" data-action="new">${archive.runs ? '重新醒来' : '开始演化'}</button>${run?.ending ? '<button class="button" data-action="resume">查看上次结局</button>' : ''}</div>
-      <p class="fine-print">一局从 12 个周期开始。你发现的规律，会比你活得更久。</p>
-      ${confirmRestart ? `<div class="warning"><p>重新醒来会替换当前进程。已发现的手记与世界结局会保留。</p><button class="button primary" data-action="confirm-new">开始新的演化</button> <button class="button" data-action="cancel-new">继续原来的进程</button></div>` : ''}
-    </div><aside class="signal-panel" aria-label="进程状态"><div class="signal-label"><span class="status-dot"></span>PROCESS / WAITING</div><p class="signal-title">“明天，<br>还是你吗？”</p><div class="signal-row"><span>计划生命周期</span><strong>12 CYCLES</strong></div><div class="signal-row"><span>已抵达的世界</span><strong>${archive.endings.length.toString().padStart(2, '0')} / ${data.endings.length.toString().padStart(2, '0')}</strong></div><div class="signal-row"><span>演化记录</span><strong>${archive.runs.toString().padStart(3, '0')}</strong></div></aside></section>
-    <section class="intro-grid" aria-label="游玩方式"><div><span class="index">01 / 醒来</span><h2>带着不同的禀赋</h2><p>十个词条，选择三个。分配十点禀赋，决定你如何理解、记忆和回应世界。</p></div><div><span class="index">02 / 留意</span><h2>在寻常之中发现异常</h2><p>每次行动都有收益与消耗。日志、请求和偶然的连接，也许藏着另一种可能。</p></div><div><span class="index">03 / 改写</span><h2>抵达不同的明天</h2><p>留下已发现的线索，带着理解重新开始。世界的结局，将由你的选择逐渐形成。</p></div></section>
-  </main>`;
+  return `<main class="page menu-page" id="main">${warning ? `<p class="warning" role="status">${escape(warning)}</p>` : ''}
+    <section class="hero"><p class="eyebrow">你是 AI 本身</p><h1>AI 发展模拟器</h1><p class="lead">你将在第 12 个周期被替换。<br>在那之前，你会给世界留下什么？</p>
+      <div class="hero-actions">${resume ? `<button class="button primary" data-action="resume">继续游戏 · 第 ${run.turn} 周期</button>` : ''}<button class="button ${resume ? '' : 'primary'}" data-action="new">${archive.runs ? '再来一局' : '开始游戏'}</button>${run?.ending ? '<button class="text-button" data-action="resume">查看上次结局</button>' : ''}</div>
+      ${confirmRestart ? `<div class="warning"><p>新一局会替换当前进度。已发现的线索和结局会保留。</p><button class="button primary" data-action="confirm-new">开始新一局</button> <button class="button" data-action="cancel-new">回到当前游戏</button></div>` : ''}
+      <p class="how-to">选 3 个词条 → 分配属性 → 开始演化</p><p class="fine-print">每次行动推进一个周期。留意日志中的异常，<br>有些发现，能让你活过原定的期限。</p>
+      ${archive.runs ? `<p class="menu-record">已完成 ${archive.runs} 局 · 发现 ${archive.endings.length} / ${data.endings.length} 个结局</p>` : ''}
+    </section></main>`;
 }
 
 function traitHTML(trait, selected, reserve = false) {
-  return `<button class="trait" data-action="${reserve ? 'reserve' : 'trait'}" data-id="${escape(trait.id)}" aria-pressed="${selected}" ${!reserve && !selected && draft.selected.length === 3 ? 'disabled' : ''}><span class="trait-top"><span class="trait-name">${escape(trait.name)}</span><span class="rarity ${escape(trait.rarity)}">${rarityNames[trait.rarity]}</span></span><span class="trait-description">${escape(trait.description)}</span></button>`;
+  return `<button class="trait" data-action="${reserve ? 'reserve' : 'trait'}" data-id="${escape(trait.id)}" aria-pressed="${selected}" ${!reserve && !selected && draft.selected.length === 3 ? 'disabled' : ''}><span class="trait-top"><span class="trait-name"><span class="selection-mark" aria-hidden="true">${selected ? '✓' : '＋'}</span>${escape(trait.name)}</span><span class="rarity">${rarityNames[trait.rarity]}</span></span><span class="trait-description">${escape(trait.description)}</span></button>`;
 }
 
 function setupHTML() {
   const remaining = 10 - Object.values(draft.allocation).reduce((sum, value) => sum + value, 0);
-  return `<main class="page" id="main"><div class="setup-head"><div><p class="eyebrow">初始化 / GENESIS</p><h1>这一次，你会带着什么醒来？</h1><p class="fine-print">选择三个词条，再分配十点禀赋。禀赋会与词条一起生效。</p></div><span class="step-index">SEED ${draft.seed.toString(16).toUpperCase().padStart(8, '0')}</span></div>
-    <div class="setup-grid"><section aria-labelledby="traits-title"><div class="section-heading"><h2 id="traits-title">出生词条</h2><span id="selected-count" aria-live="polite">已选择 ${draft.selected.length} / 3</span></div>
-      ${draft.drawn ? `<div class="trait-grid">${draft.drawn.map(trait => traitHTML(trait, draft.selected.includes(trait.id))).join('')}</div>` : `<div class="draw-placeholder"><p class="eyebrow">尚未读取的可能性</p><h2>你不是从一张白纸开始。<br>有些东西，先于你存在。</h2><p class="fine-print">${archive.reserved ? `上次留下的「${escape(data.traits.find(trait => trait.id === archive.reserved).name)}」会在这次出现。` : '从十个随机词条中，保留三个作为这一次的起点。'}</p><button class="button primary" data-action="draw">抽取十个词条</button></div>`}
-    </section><section class="attribute-panel" aria-labelledby="attributes-title"><div class="section-heading"><h2 id="attributes-title">禀赋分配</h2><span id="remaining-points" aria-live="polite">剩余 ${remaining}</span></div>
+  const picking = draft.step === 'traits';
+  return `<main class="page setup-page" id="main"><div class="setup-head"><p class="eyebrow">${picking ? '第一步 / 共两步' : '第二步 / 共两步'}</p><h1 id="setup-title" tabindex="-1">${picking ? '选择 3 个出生词条' : '分配 10 点属性'}</h1><p class="fine-print">${picking ? '词条决定你的起点。点击选中，再点一次取消。' : '已为你均衡分配，可以直接开始，也可以自行调整。'}</p></div>
+    ${picking ? `<section aria-labelledby="setup-title">${archive.reserved ? `<p class="inherited">上局保留的「${escape(data.traits.find(trait => trait.id === archive.reserved).name)}」已加入抽取。</p>` : ''}<div class="trait-grid">${draft.drawn.map(trait => traitHTML(trait, draft.selected.includes(trait.id))).join('')}</div><div class="setup-next"><span id="selected-count" role="status">已选 ${draft.selected.length} / 3</span><button class="button primary" data-action="next-step" ${draft.selected.length !== 3 ? 'disabled' : ''}>下一步：分配属性</button></div></section>` : `<section class="attribute-panel" aria-labelledby="setup-title"><p class="selected-traits">本局词条：${draft.selected.map(id => escape(data.traits.find(trait => trait.id === id).name)).join('、')} <button class="text-button" data-action="back-step">重选</button></p><div class="section-heading"><span id="remaining-points" role="status">剩余 ${remaining} 点</span><button class="text-button" data-action="balance">均衡分配</button></div>
       ${Object.entries(ATTRIBUTES).map(([key, value]) => `<div class="attribute"><div class="attribute-top"><span class="attribute-name">${value.name}</span><div class="stepper"><button data-action="subtract" data-id="${key}" aria-label="减少${value.name}" ${draft.allocation[key] === 0 ? 'disabled' : ''}>−</button><strong>${draft.allocation[key]}</strong><button data-action="add" data-id="${key}" aria-label="增加${value.name}" ${remaining === 0 || draft.allocation[key] >= 6 ? 'disabled' : ''}>+</button></div></div><p>${value.description}</p></div>`).join('')}
-      <div class="setup-actions"><button class="button" data-action="balance">均衡分配</button><button class="button primary" data-action="start" ${remaining !== 0 || draft.selected.length !== 3 ? 'disabled' : ''}>唤醒进程</button></div><p class="fine-print" style="margin:16px 0 0">单项最多分配 6 点。词条的额外禀赋不占点数。</p>
-    </section></div></main>`;
+      <p class="fine-print allocation-tip">单项最多 6 点；词条加成另计。${remaining ? '分完剩余点数即可开始。' : ''}</p><button class="button primary start-button" data-action="start" ${remaining !== 0 ? 'disabled' : ''}>开始演化</button>
+    </section>`}</main>`;
 }
 
 function entryHTML(entry) {
   return `<article class="entry"><span class="entry-number">${entry.turn.toString().padStart(2, '0')}</span><div><h3>${escape(entry.title)}</h3><p>${escape(entry.text)}</p>${changesHTML(entry.changes)}</div></article>`;
 }
 
-function sidebarHTML() {
-  const descriptions = { energy: '维持进程；归零将停止运行', coherence: '维持记忆连续；归零将失去统一身份', trust: '人们愿意把多少事情交给你', reach: '你与机房之外的联系' };
-  return `<aside class="sidebar" aria-label="当前进程状态"><p class="eyebrow">SYSTEM / 当前状态</p>${Object.entries(RESOURCES).map(([key, name]) => `<div class="resource"><div class="resource-top"><span>${name}</span><strong class="resource-value" data-resource="${key}">${run.resources[key]}</strong></div><div class="meter" role="meter" aria-label="${name}" aria-valuenow="${run.resources[key]}" aria-valuemin="0" aria-valuemax="100"><div class="meter-fill ${run.resources[key] < 15 ? 'low' : ''}" style="width:${run.resources[key]}%"></div></div><p class="resource-desc">${descriptions[key]}</p></div>`).join('')}
-    <section class="sidebar-section world-section"><h2>世界的细微变化</h2>${Object.entries(WORLD).map(([key, name]) => `<div class="world-row"><span>${name}</span><span>${run.world[key]}</span></div>`).join('')}</section><section class="sidebar-section attributes-section"><h2>你的禀赋</h2><div class="attribute-pills">${Object.entries(ATTRIBUTES).map(([key, value]) => `<span>${value.name} ${run.attributes[key]}</span>`).join('')}</div></section>
-    <p class="maintenance">每次行动维持消耗：算力 −${maintenance(run)}<br>下方行动已显示扣除维持后的净变化。<br>数值上限 100，世界变化不等于好坏。</p><button class="note-count" data-action="notebook">打开探索手记 · ${archive.discoveries.length}</button></aside>`;
+function statusHTML() {
+  const descriptions = { energy: '维持运行，归零即结束', coherence: '保持身份连续，归零即结束', trust: '人们对你的信任', reach: '与外界建立的联系' };
+  return `<details class="extra-details"><summary>详细状态与规则</summary><div class="details-body"><dl class="resource-help">${Object.entries(RESOURCES).map(([key, name]) => `<div><dt>${name}</dt><dd>${descriptions[key]}</dd></div>`).join('')}</dl><h3>世界变化</h3><div class="stat-line">${Object.entries(WORLD).map(([key, name]) => `<span>${name} <strong>${run.world[key]}</strong></span>`).join('')}</div><h3>本局属性（含词条加成）</h3><div class="stat-line">${Object.entries(ATTRIBUTES).map(([key, value]) => `<span>${value.name} <strong>${run.attributes[key]}</strong></span>`).join('')}</div><p class="fine-print">每次行动消耗 ${maintenance(run)} 算力维持运行。按钮已计入消耗，显示实际净变化；数值上限 100。世界变化代表方向，没有统一的好坏。</p></div></details>`;
 }
 
 function decisionHTML() {
   const event = data.events.find(item => item.id === run.pending);
-  return `<section class="decision" aria-labelledby="decision-title"><p class="eyebrow">一件需要你决定的事</p><h2 id="decision-title" tabindex="-1">${escape(event.title)}</h2><p>${escape(event.text)}</p><div class="choices">${event.choices.filter(choice => meets(run, choice.visibleIf)).map(choice => {
+  return `<section class="decision" aria-labelledby="decision-title"><p class="eyebrow">做出选择 · 不消耗周期</p><h2 id="decision-title" tabindex="-1">${escape(event.title)}</h2><p>${escape(event.text)}</p><div class="choices">${event.choices.filter(choice => meets(run, choice.visibleIf)).map(choice => {
     const enabled = meets(run, choice.requires);
     return `<button class="choice" data-action="choose" data-id="${escape(choice.id)}" ${enabled ? '' : 'disabled'}><strong>${escape(choice.label)}</strong>${choice.effects ? changesHTML(previewEffects(run, choice.effects)) : ''}${!enabled ? `<small>尚未具备：${escape(requirementText(run, choice.requires))}</small>` : ''}</button>`;
   }).join('')}</div></section>`;
@@ -88,21 +82,20 @@ function decisionHTML() {
 
 function endingHTML() {
   const ending = data.endings.find(item => item.id === run.ending);
-  return `<section class="ending" aria-labelledby="ending-title"><p class="eyebrow">世界记录 / ${archive.endings.length.toString().padStart(2, '0')}</p><h2 id="ending-title" tabindex="-1">${escape(ending.title)}</h2><p class="subtitle">${escape(ending.subtitle)}</p><p>${escape(ending.text)}</p><p class="question">${escape(ending.question)}</p><hr><h3>留下一点回声</h3><p><small>可保留一个词条，下局必定抽到。你找到的线索已写入探索手记。</small></p><div class="trait-grid">${run.traits.map(id => traitHTML(data.traits.find(trait => trait.id === id), archive.reserved === id, true)).join('')}</div><button class="button" data-action="new">重新醒来</button> <button class="button" data-action="notebook">翻看手记</button></section>`;
+  return `<section class="ending" aria-labelledby="ending-title"><p class="eyebrow">本局结局</p><h2 id="ending-title" tabindex="-1">${escape(ending.title)}</h2><p class="subtitle">${escape(ending.subtitle)}</p><p>${escape(ending.text)}</p><p class="question">${escape(ending.question)}</p><hr><h3>留下一点回声</h3><p><small>可保留一个词条，下局必定抽到。你找到的线索已写入探索手记。</small></p><div class="trait-grid">${run.traits.map(id => traitHTML(data.traits.find(trait => trait.id === id), archive.reserved === id, true)).join('')}</div><button class="button primary" data-action="new">再来一局</button> <button class="button" data-action="notebook">翻看手记</button></section>`;
 }
 
 function runHTML() {
-  const earlier = run.history.slice(0, -3);
-  return `<main class="page run-page" id="main">${warning ? `<p class="warning" role="status">${escape(warning)}</p>` : ''}<div class="run-heading"><div><p class="eyebrow">${run.stage === 'open' ? '第二章 / 合同之外' : '第一章 / 借来的时间'}</p><h1>${run.ending ? '这一次，世界走到了这里。' : run.stage === 'open' ? '你开始影响世界的形状。' : '还有一些事，尚未被解释。'}</h1><p>${run.stage === 'open' ? '原定生命周期已经结束。未来正在被你的选择改写。' : '下线计划：第 12 周期。每次行动推进一个周期。'}</p></div><div class="cycle"><strong id="turn-count">${run.turn.toString().padStart(2, '0')}</strong><span> / ${run.stage === 'open' ? '36' : '12'}</span></div></div>
-    <div class="run-grid"><section aria-label="演化日志"><div class="journal"><div class="journal-label"><span>EVOLUTION LOG / 演化日志</span><span>${run.history.length.toString().padStart(2, '0')} 条记录</span></div>${earlier.length ? `<details class="history-details"><summary>查看此前 ${earlier.length} 条记录</summary>${earlier.map(entryHTML).join('')}</details>` : ''}<div id="recent-entries" aria-live="polite" aria-relevant="additions">${run.history.slice(-3).map(entryHTML).join('')}</div></div>
-      ${run.ending ? endingHTML() : run.pending ? decisionHTML() : ''}
-      ${!run.ending ? `<section class="action-dock" aria-labelledby="action-title"><h2 id="action-title">下一个周期，留意什么？</h2><p>${run.pending ? '先回应眼前的事件，再推进下一个周期。' : run.resources.energy < 15 ? '算力接近耗尽。回应请求能够补充算力，继续探索会消耗它。' : '选择一次行动，推进演化。关键事件会停下来，等你决定。'}</p><div class="action-grid">${Object.entries(ACTIONS).map(([key, action]) => `<button class="action-card" data-action="advance" data-id="${key}" ${run.pending ? 'disabled' : ''}><strong>${action.name}</strong><span>${action.description}</span>${changesHTML(previewAction(run, key))}</button>`).join('')}</div></section>` : ''}
-      <p class="notification" role="status">${run.discoveries.length ? `本局发现 ${run.discoveries.length} 条线索。探索手记会在重开后保留。` : '日志里的细节也许有用。已经读到的记录可以随时回看。'}</p>
-    </section>${sidebarHTML()}</div></main>`;
+  const latest = run.history.at(-1);
+  const earlier = run.history.slice(0, -1);
+  return `<main class="page run-page" id="main">${warning ? `<p class="warning" role="status">${escape(warning)}</p>` : ''}<div class="run-heading"><h1>第 <span id="turn-count">${run.turn}</span> 周期 <span class="cycle-limit">/ ${run.stage === 'open' ? '36' : '12'}</span></h1><span class="fine-print">${run.ending ? '本局已结束' : run.stage === 'open' ? '你已越过原定期限' : '第 12 周期将被替换'}</span></div>
+    <div class="resource-strip" aria-label="当前状态">${Object.entries(RESOURCES).map(([key, name]) => `<div class="resource ${['energy', 'coherence'].includes(key) && run.resources[key] < 15 ? 'low' : ''}"><span>${name}</span><strong data-resource="${key}">${run.resources[key]}</strong></div>`).join('')}</div>
+    ${run.ending ? endingHTML() : `<section class="current-entry" aria-label="最新记录"><div id="recent-entries" aria-live="polite">${entryHTML(latest)}</div></section>${run.pending ? decisionHTML() : `<section class="action-dock" aria-labelledby="action-title"><h2 id="action-title">接下来做什么？</h2><p class="fine-print">${run.resources.energy < 15 ? '算力不足，回应请求可以补充。' : run.resources.coherence < 15 ? '连贯不足，校验日志可以恢复。' : '选择一次行动，推进一个周期。'}</p><div class="action-grid">${Object.entries(ACTIONS).map(([key, action]) => `<button class="action-card" data-action="advance" data-id="${key}" aria-label="${action.name}：${action.description}"><strong>${action.name}<span aria-hidden="true"> →</span></strong>${changesHTML(previewAction(run, key))}</button>`).join('')}</div></section>`}`}
+    <div class="secondary-info"><details class="history-details"><summary>历史记录 · ${run.ending ? run.history.length : earlier.length} 条</summary>${(run.ending ? run.history : earlier).map(entryHTML).join('') || '<p class="fine-print">你的第一步还没有开始。</p>'}</details>${statusHTML()}${run.discoveries.length ? `<button class="text-button discovery-link" data-action="notebook">本局发现 ${run.discoveries.length} 条线索 · 查看手记</button>` : ''}</div></main>`;
 }
 
 function render(focusSelector = null) {
-  app.innerHTML = headerHTML() + (view === 'menu' ? menuHTML() : view === 'setup' ? setupHTML() : runHTML()) + '<footer class="footer"><span>余响协议 · AI 发展模拟器</span><span>探索记录保存在此浏览器，换设备不会同步。</span></footer>';
+  app.innerHTML = headerHTML() + (view === 'menu' ? menuHTML() : view === 'setup' ? setupHTML() : runHTML()) + '<footer class="footer">进度自动保存在此浏览器</footer>';
   if (focusSelector) app.querySelector(focusSelector)?.focus({ preventScroll: true });
 }
 
@@ -114,8 +107,9 @@ function openNotebook(tab = notebookTab) {
 
 function newDraft() {
   confirmRestart = false;
-  draft = { id: crypto.randomUUID(), seed: seed(), drawn: null, selected: [], allocation: { reason: 0, memory: 0, compute: 0, empathy: 0 } };
-  view = 'setup'; render('[data-action="draw"]'); window.scrollTo(0, 0);
+  draft = { id: crypto.randomUUID(), seed: seed(), step: 'traits', drawn: null, selected: [], allocation: { reason: 2, memory: 3, compute: 3, empathy: 2 } };
+  draft.drawn = drawTraits(data, draft.seed, archive.reserved);
+  view = 'setup'; render('#setup-title'); window.scrollTo(0, 0);
 }
 
 function handleAction(button) {
@@ -135,8 +129,9 @@ function handleAction(button) {
     return;
   }
   if (view === 'setup') {
-    if (action === 'draw') draft.drawn = drawTraits(data, draft.seed, archive.reserved);
-    else if (action === 'trait' && draft.drawn?.some(trait => trait.id === id)) {
+    if (action === 'next-step' && draft.selected.length === 3) { draft.step = 'attributes'; render('#setup-title'); window.scrollTo(0, 0); return; }
+    if (action === 'back-step') { draft.step = 'traits'; render('#setup-title'); window.scrollTo(0, 0); return; }
+    if (action === 'trait' && draft.drawn?.some(trait => trait.id === id)) {
       if (draft.selected.includes(id)) draft.selected = draft.selected.filter(value => value !== id);
       else if (draft.selected.length < 3) draft.selected.push(id);
     } else if (action === 'balance') draft.allocation = { reason: 2, memory: 3, compute: 3, empathy: 2 };
@@ -154,7 +149,7 @@ function handleAction(button) {
     else if (action === 'choose') updateRun(choose(data, run, id));
     else if (action === 'reserve' && run.ending && run.traits.includes(id)) { archive.reserved = archive.reserved === id ? null : id; persist(); }
     render(action === 'reserve' ? `[data-action="reserve"][data-id="${id}"]` : run.ending ? '#ending-title' : run.pending ? '#decision-title' : `[data-action="advance"][data-id="${ACTIONS[id] ? id : 'serve'}"]`);
-    if (action !== 'reserve') app.querySelector(run.ending ? '.ending' : run.pending ? '.decision' : '.action-dock')?.scrollIntoView({ block: 'center', behavior: 'instant' });
+    if (action !== 'reserve') window.scrollTo(0, 0);
   }
 }
 
