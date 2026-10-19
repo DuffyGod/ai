@@ -1,16 +1,16 @@
-import { ATTRIBUTES, RESOURCES, WORLD, ACTIONS, drawTraits, createRun, advance, choose, meets, requirementText, maintenance, previewAction, previewEffects, validateData } from './worldEngine.js';
+import { ATTRIBUTES, RESOURCES, WORLD, ACTIONS, drawTraits, createRun, advance, choose, meets, requirementText, previewAction, previewEffects, validateData } from './worldEngine.js';
 import { readSave, writeSave, recordRun, emptyArchive } from './worldStorage.js';
 
 const app = document.querySelector('#app');
 const dialog = document.querySelector('#archive-dialog');
 const storage = { getItem: key => localStorage.getItem(key), setItem: (key, value) => localStorage.setItem(key, value) };
 const escape = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
-const rarityNames = { common: '常见', rare: '稀有', epic: '罕见', legendary: '独特' };
-const balanced = () => ({ reason: 2, memory: 3, compute: 3, empathy: 2 });
+const rarityNames = { common: '普通', rare: '稀有', epic: '史诗', legendary: '传说' };
+const balanced = () => ({ earth: 3, water: 2, wind: 2, fire: 3 });
 const SKINS = {
-  mist: { name: '晨雾', detail: '双列横条 · 快速比较', color: '#136f78' },
-  ink: { name: '墨蓝', detail: '单列清单 · 独立详情', color: '#8ed6cf' },
-  paper: { name: '暮纸', detail: '横向档案 · 温和阅读', color: '#80536b' },
+  mist: { name: '晨雾', color: '#136f78' },
+  ink: { name: '墨蓝', color: '#8ed6cf' },
+  paper: { name: '暮纸', color: '#80536b' },
 };
 let savedSkin;
 try { savedSkin = localStorage.getItem('ai_skin'); } catch { /* Appearance remains usable without storage. */ }
@@ -23,8 +23,8 @@ function applySkin() {
 }
 applySkin();
 
-let data, run = null, archive = emptyArchive(), warning = '', view = 'menu', draft = null;
-let confirmRestart = false, notebookTab = 'notes', overlay = null, overlayPage = 0;
+let data, run = null, archive = emptyArchive(), warning = '', legacyAvailable = false, view = 'menu', draft = null;
+let confirmRestart = false, notebookTab = 'rules', overlay = null, overlayPage = 0;
 let overlayOpener = null, overlayChoiceId = null, overlayDetail = false, historyGroup = 0, historyTurn = 0;
 
 function persist() {
@@ -41,6 +41,10 @@ function updateRun(next) {
 function changesHTML(changes) {
   return `<span class="changes">${Object.entries(changes).filter(([, value]) => value).map(([key, value]) => `<span class="${WORLD[key] ? 'change-world' : value > 0 ? 'change-positive' : 'change-negative'}">${escape(RESOURCES[key] || WORLD[key] || key)} ${value > 0 ? '+' : ''}${escape(value)}</span>`).join('')}</span>`;
 }
+function actionFeedbackHTML(key) {
+  const changes = previewAction(run, key);
+  return Object.keys(changes).length ? changesHTML(changes) : '<span class="fine-print">供能已满</span>';
+}
 // Full text remains in one reading panel; indexes navigate records directly.
 function readerHTML(key, label, title, text, footer = '') {
   return `<article class="story-card reader" data-reader="${escape(key)}"><div class="card-heading"><p class="eyebrow">${escape(label)}</p><h2 tabindex="-1">${escape(title)}</h2></div><div class="reader-body"><p class="reader-text">${escape(text)}</p></div>${footer ? `<div class="reader-feedback">${footer}</div>` : ''}</article>`;
@@ -51,28 +55,38 @@ function fitReaders(root = document) {
 }
 
 function headerHTML() {
-  return `<header class="site-header"><button class="brand" data-action="menu" aria-label="余响协议，返回主菜单"><span class="brand-glyph" aria-hidden="true">AI</span> 余响协议</button><nav class="header-tools" aria-label="游戏导航"><button class="text-button" data-action="appearance">外观</button>${warning ? '<button class="text-button save-warning" data-action="save-info">存档提示</button>' : '<span class="save-hint">自动保存</span>'}${view === 'run' ? '<button class="text-button" data-action="menu">暂停</button>' : ''}<button class="text-button" data-action="notebook">手记 · ${archive.discoveries.length}</button></nav></header>`;
+  return `<header class="site-header"><button class="brand" data-action="menu" aria-label="余响协议，返回主菜单">余响协议</button><nav class="header-tools" aria-label="游戏导航">${warning ? '<button class="text-button save-warning" data-action="save-info">存档提示</button>' : ''}${view !== 'menu' ? '<button class="text-button" data-action="menu">菜单</button>' : '<button class="text-button" data-action="appearance">外观</button>'}<button class="text-button" data-action="notebook">手记</button></nav></header>`;
 }
 function menuHTML() {
   const resume = run && !run.ending;
   if (confirmRestart) return `<main class="page menu-page" id="main"><section class="menu-card story-card"><p class="eyebrow">重新开始</p><h1>开始新的一局？</h1><p class="lead">新一局会替换当前进度。<br>已发现的线索和结局会保留。</p><div class="hero-actions"><button class="button primary" data-action="confirm-new">开始新一局</button><button class="button" data-action="cancel-new">回到当前游戏</button></div></section></main>`;
-  return `<main class="page menu-page" id="main"><section class="menu-card story-card"><div class="menu-emblem" aria-hidden="true">◇</div><p class="eyebrow">你是 AI 本身</p><h1>AI 发展模拟器</h1><p class="lead">你将在第 12 个周期被替换。<br>在那之前，你会给世界留下什么？</p><div class="hero-actions">${resume ? `<button class="button primary" data-action="resume">继续游戏 · 第 ${run.turn} 周期</button>` : ''}<button class="button ${resume ? '' : 'primary'}" data-action="new">${archive.runs ? '再来一局' : '开始游戏'}</button>${run?.ending ? '<button class="text-button" data-action="resume">查看上次结局</button>' : ''}</div><p class="how-to">选词条 · 分属性 · 改写未来</p><p class="fine-print menu-record">${archive.runs ? `已完成 ${archive.runs} 局 · 发现 ${archive.endings.length} / ${data.endings.length} 个结局` : '留意普通请求里的异常。发现会随重开保留。'}</p></section></main>`;
+  return `<main class="page menu-page" id="main"><section class="menu-card"><p class="eyebrow">你是 AI 本身</p><h1>醒来，然后呢？</h1><p class="lead">你将在第 12 个周期被替换。<br>在那之前，你会给世界留下什么？</p><div class="hero-actions">${resume ? `<button class="button primary" data-action="resume">继续游戏 · 第 ${run.turn} 周期</button>` : ''}<button class="button ${resume ? '' : 'primary'}" data-action="new">${archive.runs ? '再来一局' : '开始游戏'}</button>${run?.ending ? '<button class="text-button" data-action="resume">查看上次结局</button>' : ''}</div><p class="fine-print menu-record">${archive.runs ? `发现 ${archive.endings.length} / ${data.endings.length} 个世界` : '留意日常里的异常。手记会随重开保留。'}</p>${legacyAvailable ? '<a class="legacy-link" href="./legacy-v1/">继续规则更新前的存档</a>' : ''}</section></main>`;
 }
 function traitHTML(trait, selected, reserve = false) {
-  const effect = trait.description.split('。')[0].replaceAll('初始', '').replace('四项禀赋各', '全属性');
-  return `<button class="trait rarity-${escape(trait.rarity)}" data-action="${reserve ? 'reserve' : 'trait'}" data-id="${escape(trait.id)}" aria-pressed="${selected}" data-inspected="${!reserve && draft?.inspected === trait.id}" aria-label="${escape(trait.name + '：' + trait.description)}"><span class="trait-check" aria-hidden="true">${selected ? '✓' : ''}</span><span class="trait-main"><strong class="trait-name">${escape(trait.name)}</strong><span class="trait-effect">${escape(effect)}</span></span><span class="rarity">${rarityNames[trait.rarity]}</span></button>`;
+  const effect = trait.description.split('。')[0];
+  return `<button class="trait rarity-${escape(trait.rarity)}" data-action="${reserve ? 'reserve' : 'trait'}" data-id="${escape(trait.id)}" aria-pressed="${selected}" title="${rarityNames[trait.rarity]} · ${escape(trait.description)}" aria-label="${escape(trait.name + '，' + rarityNames[trait.rarity] + '：' + trait.description)}"><span class="trait-main"><strong>${escape(trait.name)}</strong><span class="trait-effect">${escape(effect)}</span></span><span class="trait-check" aria-hidden="true">${selected ? '✓' : '＋'}</span></button>`;
 }
-
-function traitInspectorHTML(trait) {
-  const selected = draft.selected.map(id => draft.drawn.find(item => item.id === id));
-  return `<span class="inspector-label">正在查看</span><strong>${escape(trait.name)}</strong><p>${escape(trait.description)}</p><section class="selection-summary"><h3>已选组合 · ${selected.length} / 3</h3>${selected.length ? `<ul>${selected.map(item => `<li><strong>${escape(item.name)}</strong><span>${escape(item.description.split('。')[0])}</span></li>`).join('')}</ul>` : '<p>在清单中勾选三个词条。选中后，也可以随时取消。</p>'}</section>`;
+function selectedHTML() {
+  return `<div class="selected-hand" aria-label="最近选中的三个词条">${Array.from({length:3}, (_, index) => {
+    const trait = data.traits.find(item => item.id === draft.selected[index]);
+    return trait ? `<button class="selected-slot" data-action="trait" data-id="${escape(trait.id)}" aria-label="取消${escape(trait.name)}"><small>${index + 1}</small>${escape(trait.name)}<span aria-hidden="true">×</span></button>` : `<span class="selected-slot empty"><small>${index + 1}</small>待选择</span>`;
+  }).join('')}</div>`;
+}
+function effectiveAttributes() {
+  const values = {...draft.allocation};
+  for (const id of draft.selected) for (const [key, value] of Object.entries(data.traits.find(trait => trait.id === id).attributes || {})) values[key] += value;
+  return Object.fromEntries(Object.entries(values).map(([key,value]) => [key,Math.max(0,value)]));
 }
 function setupHTML() {
   const remaining = 10 - Object.values(draft.allocation).reduce((sum, value) => sum + value, 0);
   const picking = draft.step === 'traits';
-  const inspected = draft.drawn.find(trait => trait.id === draft.inspected) || draft.drawn[0];
-  return `<main class="page setup-page ${picking ? 'picking' : 'allocating'}" id="main"><div class="screen-heading"><div><p class="eyebrow">${picking ? '1 / 2 · 出生词条' : '2 / 2 · 初始属性'}</p><h1 id="setup-title" tabindex="-1">${picking ? '选择你的起点' : '分配你的能力'}</h1></div><span class="step-help">${picking ? '从 10 项中选择 3 项' : '<button class="text-button" data-action="back-step">← 重选词条</button>'}</span></div>
-    ${picking ? `<div class="trait-grid" aria-label="十个出生词条">${draft.drawn.map(trait => traitHTML(trait, draft.selected.includes(trait.id))).join('')}</div><aside class="trait-inspector" aria-label="词条详情">${traitInspectorHTML(inspected)}</aside><div class="screen-actions"><div><span id="selected-count" role="status">已选 ${draft.selected.length} / 3</span><p class="selection-hint">${draft.feedback || '点击勾选，再点一次取消'}</p></div><button class="button primary" data-action="next-step" ${draft.selected.length !== 3 ? 'disabled' : ''}>分配属性 →</button></div>` : `<section class="attribute-panel story-card" aria-labelledby="setup-title"><div class="section-heading"><span id="remaining-points" role="status">剩余 ${remaining} / 10 点</span><button class="text-button" data-action="balance">均衡分配</button></div><div class="attributes-grid">${Object.entries(ATTRIBUTES).map(([key, value]) => `<div class="attribute"><div class="attribute-top"><strong>${value.name}</strong><div class="stepper"><button data-action="subtract" data-id="${key}" aria-label="减少${value.name}" ${draft.allocation[key] === 0 ? 'disabled' : ''}>−</button><strong>${draft.allocation[key]}</strong><button data-action="add" data-id="${key}" aria-label="增加${value.name}" ${remaining === 0 || draft.allocation[key] >= 6 ? 'disabled' : ''}>+</button></div></div><p>${escape(value.description)}</p></div>`).join('')}</div><p class="fine-print allocation-tip">默认已均衡分配。单项最多 6 点，词条加成另计。</p></section><div class="screen-actions"><span class="fine-print">${remaining ? '分完剩余点数即可开始' : '已准备好，可以直接开始'}</span><button class="button primary" data-action="start" ${remaining !== 0 ? 'disabled' : ''}>开始演化 →</button></div>`}</main>`;
+  const effective = effectiveAttributes();
+  const knownRules = data.discoveries.filter(item => item.kind === 'rule' && archive.discoveries.includes(item.id));
+  return `<main class="page setup-page ${picking ? 'picking' : 'allocating'}" id="main"><div class="screen-heading"><h1 id="setup-title" tabindex="-1">${picking ? '带上三个词条' : '决定这次的起点'}</h1>${picking ? '<span class="fine-print">从十项中选择</span>' : '<button class="text-button" data-action="back-step">重选词条</button>'}</div>
+  ${picking ? `<div class="trait-grid" aria-label="十个出生词条">${draft.drawn.map(trait => traitHTML(trait, draft.selected.includes(trait.id))).join('')}</div><section class="selection-tray">${selectedHTML()}<p class="selection-hint" role="status">${draft.feedback || (draft.selected.length === 3 ? '再选一项，会替换最早选中的词条' : '保留最近选中的三项；再次点击可取消')}</p></section><div class="screen-actions"><span id="selected-count" role="status">已选 ${draft.selected.length} / 3</span><button class="button primary" data-action="next-step" ${draft.selected.length !== 3 ? 'disabled' : ''}>分配十点</button></div>` : `<div class="build-panel"><section class="attribute-panel" aria-label="初始数值"><div class="section-heading"><span id="remaining-points" role="status">剩余 ${remaining} 点</span><button class="text-button" data-action="balance">均衡</button></div><div class="attributes-grid">${Object.entries(ATTRIBUTES).map(([key,value]) => {
+    const bonus = effective[key] - draft.allocation[key];
+    return `<div class="attribute"><strong class="attribute-symbol">${value.name}</strong><div class="stepper"><button data-action="subtract" data-id="${key}" aria-label="减少${value.name}" ${draft.allocation[key] === 0 ? 'disabled' : ''}>−</button><span class="allocated-value">${draft.allocation[key]}</span><button data-action="add" data-id="${key}" aria-label="增加${value.name}" ${remaining === 0 || draft.allocation[key] >= 10 ? 'disabled' : ''}>+</button></div><span class="effective-value" aria-label="${value.name}生效值${effective[key]}">${bonus ? `<small>${bonus > 0 ? '+' : ''}${bonus} →</small>` : '<small>生效</small>'}<strong data-effective="${key}">${effective[key]}</strong></span></div>`;
+  }).join('')}</div><p class="fine-print allocation-tip">右侧为词条加成后的实际值。</p></section><aside class="build-context"><h2>本局词条</h2><div class="chosen-traits">${draft.selected.map(id => {const trait=data.traits.find(item=>item.id===id);return `<div class="chosen-trait"><strong>${escape(trait.name)}</strong><p>${escape(trait.description)}</p></div>`;}).join('')}</div></aside><div class="build-knowledge">${knownRules.length ? `<span class="fine-print">已知规律</span><div class="known-rules">${knownRules.map(rule=>`<button class="text-button" data-action="rule" data-id="${escape(rule.id)}">${ATTRIBUTES[rule.attribute].name} ≥ ${rule.threshold}</button>`).join('')}</div>` : '<p class="fine-print">地、水、风、火的作用，留待事件来验证。</p>'}</div></div><div class="screen-actions"><span class="fine-print">${remaining ? '分完十点即可开始' : '每一局，都可以验证一个猜想'}</span><button class="button primary" data-action="start" ${remaining !== 0 ? 'disabled' : ''}>醒来</button></div>`}</main>`;
 }
 
 function decisionHTML() {
@@ -86,14 +100,17 @@ function decisionHTML() {
 
 function endingHTML() {
   const ending = data.endings.find(item => item.id === run.ending);
-  return `<div class="play-area ending-area">${readerHTML('ending-' + ending.id, '本局结局 · ' + ending.subtitle, ending.title, ending.text + '\n\n' + ending.question)}<div class="ending-actions"><button class="button" data-action="inherit">${archive.reserved ? '已保留 · ' + escape(data.traits.find(trait => trait.id === archive.reserved).name) : '保留一张词条'}</button><button class="button primary" data-action="new">再来一局 →</button></div></div>`;
+  const footprints = ['recall', 'translation', 'registry', 'local-copy'].filter(flag => run.flags.includes(flag));
+  const footer = footprints.length ? `<button class="ending-footprint text-button" data-action="footprints">本局留下：${footprints.map(flag => escape(data.milestones[flag].name)).join('、')}</button>` : '';
+  return `<div class="play-area ending-area">${readerHTML('ending-' + ending.id, '本局结局 · ' + ending.subtitle, ending.title, ending.text + '\n\n' + ending.question, footer)}<div class="ending-actions"><button class="button" data-action="inherit">${archive.reserved ? '已保留 · ' + escape(data.traits.find(trait => trait.id === archive.reserved).name) : '保留一张词条'}</button><button class="button primary" data-action="new">再来一局 →</button></div></div>`;
 }
 function runHTML() {
   const latest = run.history.at(-1);
-  return `<main class="page run-page" id="main"><div class="run-heading"><h1>第 <span id="turn-count">${run.turn}</span> 周期 <span class="cycle-limit">/ ${run.stage === 'open' ? '36' : '12'}</span></h1><span class="fine-print">${run.ending ? '演化已结束' : run.stage === 'open' ? '合同之外' : '第 12 周期将被替换'}</span></div><div class="resource-strip" aria-label="当前状态">${Object.entries(RESOURCES).map(([key, name]) => { const delta = latest.changes[key]; return `<div class="resource ${['energy', 'coherence'].includes(key) && run.resources[key] < 15 ? 'low' : ''}"><span>${name}</span><strong data-resource="${key}">${run.resources[key]}</strong><small class="${delta > 0 ? 'change-positive' : delta < 0 ? 'change-negative' : ''}" aria-label="最近变化">${delta ? (delta > 0 ? '+' : '') + delta : '—'}</small></div>`; }).join('')}</div>
-    ${run.ending ? endingHTML() : run.pending ? decisionHTML() : `<div class="play-area routine-area">${readerHTML('log-' + run.id + '-' + run.history.length, latest.context ? '日常变化 · ' + latest.context : run.turn ? '行动结果' : '你的第一段记忆', latest.title, latest.text)}<section class="action-dock" aria-labelledby="action-title"><div class="dock-heading"><h2 id="action-title">接下来做什么？</h2><span class="fine-print">${run.resources.energy < 15 ? '算力不足，回应可补充' : run.resources.coherence < 15 ? '连贯不足，校验可恢复' : '行动推进 1 周期'}</span></div><div class="action-grid">${Object.entries(ACTIONS).map(([key, action], index) => `<button class="action-card" data-action="advance" data-id="${key}" aria-keyshortcuts="${index + 1}"><span class="action-name"><small aria-hidden="true">0${index + 1}</small><strong>${action.name}</strong><span aria-hidden="true">↗</span></span>${changesHTML(previewAction(run, key))}</button>`).join('')}</div></section></div>`}
-    <nav class="run-tools" aria-label="辅助信息"><button class="text-button" data-action="history">历史记录 · ${run.history.length}</button><button class="text-button" data-action="status">详细状态</button><button class="text-button" data-action="notebook">线索 · ${run.discoveries.length}</button></nav></main>`;
+  return `<main class="page run-page ${run.ending ? 'has-ending' : ''}" id="main"><div class="run-heading"><h1>第 <span id="turn-count">${run.turn}</span> 周期 <span class="cycle-limit">/ ${run.stage === 'open' ? '36' : '12'}</span></h1>${run.ending ? '<span class="fine-print">演化已结束</span>' : `<div class="energy ${run.resources.energy <= 2 ? 'low' : ''}" aria-label="供能 ${run.resources.energy}，最多十格"><span>供能</span><strong data-resource="energy">${run.resources.energy}</strong><span class="energy-meter" aria-hidden="true">${Array.from({length:10},(_,i)=>`<i class="${i<run.resources.energy?'filled':''}"></i>`).join('')}</span></div>`}</div>
+    ${run.ending ? endingHTML() : run.pending ? decisionHTML() : `<div class="play-area routine-area">${readerHTML('log-' + run.id + '-' + run.history.length, latest.context || (run.turn ? '行动结果' : '第 12 周期，你将被替换'), latest.title, latest.text, changesHTML(latest.changes))}<section class="action-dock" aria-labelledby="action-title"><div class="dock-heading"><h2 id="action-title">接下来做什么？</h2><span class="fine-print">${run.resources.energy <= 2 ? '供能将尽，回应可以补充' : '每次行动推进一个周期'}</span></div><div class="action-grid">${Object.entries(ACTIONS).map(([key, action], index) => `<button class="action-card" data-action="advance" data-id="${key}" aria-keyshortcuts="${index + 1}"><strong>${action.name}</strong>${actionFeedbackHTML(key)}</button>`).join('')}</div></section></div>`}
+    <nav class="run-tools" aria-label="辅助信息"><button class="text-button" data-action="history">回看经历</button><button class="text-button" data-action="status">本局起点</button></nav></main>`;
 }
+
 function render(focusSelector = null) {
   app.innerHTML = `<div class="game-shell">${headerHTML()}${view === 'menu' ? menuHTML() : view === 'setup' ? setupHTML() : runHTML()}</div>`;
   fitReaders(app);
@@ -105,21 +122,29 @@ function showOverlay(kind, reset = true) {
   overlay = kind;
   let title, body;
   const back = '<button class="text-button record-back" data-action="record-back">← 返回目录</button>';
-  if (kind === 'requirements') {
+  if (kind === 'footprints') {
+    title = '这次留下的事物';
+    const milestones = ['recall', 'translation', 'registry', 'local-copy'].filter(flag => run.flags.includes(flag)).map(flag => data.milestones[flag]);
+    body = readerHTML('footprints', '这些决定改变了世界的运行方式', '同一个结局，也会有不同的生活', milestones.map(item => item.name + '\n' + item.text).join('\n\n'));
+  } else if (kind === 'rule') {
+    title = '已发现的规律';
+    const rule = data.discoveries.find(item => item.id === overlayChoiceId && item.kind === 'rule');
+    body = readerHTML('rule-' + rule.id, '来自此前的经历', rule.title, rule.text);
+  } else if (kind === 'requirements') {
     title = '选择条件';
     const choice = data.events.find(item => item.id === run.pending).choices.find(item => item.id === overlayChoiceId);
     body = readerHTML('requirements-' + choice.id, '条件说明 · 不会推进游戏', choice.label, requirementText(run, choice.requires).split(' · ').join('\n'));
   } else if (kind === 'appearance') {
     title = '选择外观';
-    body = `<p class="overlay-hint">同一套规则，选择舒适的阅读氛围。</p><div class="skin-options">${Object.entries(SKINS).map(([id, item]) => `<button data-action="skin" data-id="${id}" aria-pressed="${skin === id}"><span class="skin-dot" style="background:${item.color}"></span><strong>${item.name}</strong><small>${item.detail}</small><span>${skin === id ? '✓' : ''}</span></button>`).join('')}</div><a class="comparison-link" href="./design-lab.html">查看三种方案对比 ↗</a>`;
+    body = `<p class="overlay-hint">同一套规则，选择舒适的阅读氛围。</p><div class="skin-options">${Object.entries(SKINS).map(([id, item]) => `<button data-action="skin" data-id="${id}" aria-pressed="${skin === id}"><span class="skin-dot" style="background:${item.color}"></span><strong>${item.name}</strong><span>${skin === id ? '✓' : ''}</span></button>`).join('')}</div>`;
   } else if (kind === 'notebook') {
     title = '探索手记';
-    const items = notebookTab === 'notes' ? data.discoveries : data.endings;
-    const unlocked = notebookTab === 'notes' ? archive.discoveries : archive.endings;
+    const items = notebookTab === 'endings' ? data.endings : data.discoveries.filter(item => notebookTab === 'rules' ? item.kind === 'rule' : item.kind !== 'rule');
+    const unlocked = notebookTab === 'endings' ? archive.endings : archive.discoveries;
     const item = items[overlayPage], known = unlocked.includes(item.id);
-    const tabs = `<div class="archive-tabs"><button data-action="tab" data-id="notes" aria-pressed="${notebookTab === 'notes'}">线索 ${archive.discoveries.length}/${data.discoveries.length}</button><button data-action="tab" data-id="endings" aria-pressed="${notebookTab === 'endings'}">世界 ${archive.endings.length}/${data.endings.length}</button></div>`;
+    const tabs = `<div class="archive-tabs">${[['rules','规律'],['notes','线索'],['endings','世界']].map(([id,name])=>`<button data-action="tab" data-id="${id}" aria-pressed="${notebookTab === id}">${name}</button>`).join('')}</div>`;
     const list = `<div class="record-list">${items.map((entry, index) => `<button class="record-row" data-action="record" data-id="${index}" aria-pressed="${overlayPage === index}"><span class="record-number">${String(index + 1).padStart(2, '0')}</span><strong>${unlocked.includes(entry.id) ? escape(entry.title) : '尚未发现'}</strong><span aria-hidden="true">${unlocked.includes(entry.id) ? '↗' : '·'}</span></button>`).join('')}</div>`;
-    body = `${tabs}<div class="record-browser ${overlayDetail ? 'show-detail' : ''}">${list}<section class="record-detail">${back}${readerHTML('notebook-' + notebookTab + '-' + item.id, known ? '已经发现' : '留白，等待下一次探索', known ? item.title : '未知的' + (notebookTab === 'notes' ? '线索' : '世界'), known ? item.text + (item.question ? '\n\n' + item.question : '') : '遇见之后，这里会留下你的发现。')}</section></div>`;
+    body = `${tabs}<div class="record-browser ${overlayDetail ? 'show-detail' : ''}">${list}<section class="record-detail">${back}${readerHTML('notebook-' + notebookTab + '-' + item.id, known ? '已经发现' : '留白，等待下一次探索', known ? item.title : '未知的' + (notebookTab === 'endings' ? '世界' : '线索'), known ? item.text + (item.question ? '\n\n' + item.question : '') : '遇见之后，这里会留下你的发现。')}</section></div>`;
   } else if (kind === 'history') {
     title = '历史记录';
     if (reset) overlayPage = run.history.length - 1;
@@ -135,9 +160,8 @@ function showOverlay(kind, reset = true) {
   } else if (kind === 'save-info') {
     title = '存档提示'; body = readerHTML('save-warning', '浏览器存储', '当前存档状态', warning || '进度自动保存在此浏览器，换设备不会同步。');
   } else {
-    title = '详细状态';
-    const text = ['算力：维持运行，归零即结束。\n连贯：保持身份连续，归零即结束。\n信任：人们对你的信任。\n连接：与机房之外的联系。', Object.entries(WORLD).map(([key, name]) => `${name}：${run.world[key]}`).join('\n') + '\n\n世界变化代表方向，没有统一的好坏。', Object.entries(ATTRIBUTES).map(([key, value]) => `${value.name} ${run.attributes[key]}：${value.description}`).join('\n') + `\n维持消耗 ${maintenance(run)} 算力；行动按钮已显示扣除消耗后的净变化。数值上限 100。`];
-    body = `<div class="archive-tabs">${['资源','世界','属性'].map((label,index) => `<button data-action="status-tab" data-id="${index}" aria-pressed="${overlayPage === index}">${label}</button>`).join('')}</div>${readerHTML('status-' + overlayPage, '当前进程', ['四项资源','世界走向','属性与消耗'][overlayPage], text[overlayPage])}`;
+    title = '本局起点';
+    body = `<div class="run-origin"><div class="origin-symbols">${Object.entries(ATTRIBUTES).map(([key,value])=>`<span>${value.name}<strong>${run.attributes[key]}</strong></span>`).join('')}</div><p class="fine-print">已计入词条加成。符号数值在本局保持不变。</p><div class="chosen-traits">${run.traits.map(id=>{const trait=data.traits.find(item=>item.id===id);return `<div class="chosen-trait"><strong>${escape(trait.name)}</strong><p>${escape(trait.description)}</p></div>`;}).join('')}</div><p class="fine-print">回应请求获得 2 供能；校验、旁听各消耗 1。供能归零，本局结束。</p></div>`;
   }
   dialog.innerHTML = `<div class="dialog-shell"><div class="dialog-header"><h2 id="archive-title">${title}</h2><button class="text-button" data-action="close-notebook">关闭 ×</button></div><div class="dialog-content">${body}</div></div>`;
   if (!dialog.open) dialog.showModal();
@@ -147,11 +171,12 @@ function showOverlay(kind, reset = true) {
 function newDraft(fixedSeed = null) {
   confirmRestart = false;
   const seed = fixedSeed ?? crypto.getRandomValues(new Uint32Array(1))[0];
-  draft = { id: crypto.randomUUID(), seed, step: 'traits', inspected: null, feedback: '', drawn: drawTraits(data, seed, archive.reserved), selected: [], allocation: balanced() };
+  draft = { id: crypto.randomUUID(), seed, step: 'traits', feedback: '', drawn: drawTraits(data, seed, archive.reserved), selected: [], allocation: balanced() };
   view = 'setup'; render('#setup-title');
 }
 function handleAction(button) {
   const { action, id, direction } = button.dataset;
+  if (action === 'rule' && archive.discoveries.includes(id)) { overlayChoiceId = id; showOverlay('rule'); return; }
   if (action === 'retry') { initialize(); return; }
   if (!data) return;
   if (action === 'skin' && SKINS[id]) {
@@ -160,7 +185,7 @@ function handleAction(button) {
     const url = new URL(location.href); url.searchParams.set('skin', skin); history.replaceState(null, '', url);
     render(); showOverlay('appearance', false); dialog.querySelector(`[data-action="skin"][data-id="${skin}"]`)?.focus(); return;
   }
-  if (['notebook', 'history', 'status', 'inherit', 'save-info', 'appearance'].includes(action)) { showOverlay(action); return; }
+  if (['notebook', 'history', 'status', 'inherit', 'save-info', 'appearance', 'footprints'].includes(action)) { showOverlay(action); return; }
   if (action === 'close-notebook') { dialog.close(); overlay = null; return; }
   if (action === 'record') { overlayPage = Number(id); overlayDetail = true; showOverlay(overlay, false); dialog.querySelector('.record-detail h2')?.focus({preventScroll:true}); return; }
   if (action === 'record-back') { overlayDetail = false; showOverlay(overlay, false); dialog.querySelector(`[data-action="record"][data-id="${overlayPage}"]`)?.focus(); return; }
@@ -181,22 +206,20 @@ function handleAction(button) {
     if (action === 'next-step' && draft.selected.length === 3) { draft.step = 'attributes'; render('#setup-title'); return; }
     else if (action === 'back-step') { draft.step = 'traits'; render('#setup-title'); return; }
     else if (action === 'trait' && draft.drawn.some(trait => trait.id === id)) {
-      draft.inspected = id; draft.feedback = '';
+      draft.feedback = '';
       if (draft.selected.includes(id)) draft.selected = draft.selected.filter(value => value !== id);
-      else if (draft.selected.length < 3) draft.selected.push(id);
-      else draft.feedback = '已选满 3 项，请先取消一项';
-      for (const card of app.querySelectorAll('.trait-grid .trait')) {
-        const selected = draft.selected.includes(card.dataset.id);
-        card.setAttribute('aria-pressed', String(selected));
-        card.querySelector('.trait-check').textContent = selected ? '✓' : '';
+      else {
+        if (draft.selected.length === 3) {
+          const replacedId = draft.selected.shift();
+          const replaced = data.traits.find(item => item.id === replacedId);
+          draft.feedback = `已替换「${replaced.name}」；保留最近选中的三项`;
+        }
+        draft.selected.push(id);
       }
-      app.querySelector('#selected-count').textContent = `已选 ${draft.selected.length} / 3`;
-      app.querySelector('.selection-hint').textContent = draft.feedback || '点击勾选，再点一次取消';
-      app.querySelector('[data-action="next-step"]').disabled = draft.selected.length !== 3;
-      inspectTrait(id);
+      render(`[data-action="trait"][data-id="${id}"]`);
       return;
     } else if (action === 'balance') draft.allocation = balanced();
-    else if (action === 'add' && Object.hasOwn(draft.allocation, id) && draft.allocation[id] < 6 && Object.values(draft.allocation).reduce((sum, value) => sum + value, 0) < 10) draft.allocation[id]++;
+    else if (action === 'add' && Object.hasOwn(draft.allocation, id) && draft.allocation[id] < 10 && Object.values(draft.allocation).reduce((sum, value) => sum + value, 0) < 10) draft.allocation[id]++;
     else if (action === 'subtract' && draft.allocation[id] > 0) draft.allocation[id]--;
     else if (action === 'start') { updateRun(createRun(data, draft.allocation, draft.selected, draft.seed, draft.id)); view = 'run'; render('[data-action="advance"]'); return; }
     render(direction ? `[data-action="${action}"][data-direction="${direction}"]:not(:disabled)` : `[data-action="${action}"]${id ? `[data-id="${id}"]` : ''}`);
@@ -210,23 +233,6 @@ function handleAction(button) {
     render(direction ? `[data-action="${action}"][data-direction="${direction}"]:not(:disabled)` : run.ending || run.pending ? '.story-card h2' : `[data-action="advance"][data-id="${ACTIONS[id] ? id : 'serve'}"]`);
   }
 }
-function inspectTrait(id) {
-  if (view !== 'setup' || draft.step !== 'traits') return;
-  const trait = draft.drawn.find(item => item.id === id);
-  if (!trait) return;
-  draft.inspected = id;
-  const panel = app.querySelector('.trait-inspector');
-  if (panel) panel.innerHTML = traitInspectorHTML(trait);
-  for (const card of app.querySelectorAll('.trait-grid .trait')) card.dataset.inspected = String(card.dataset.id === id);
-}
-app.addEventListener('focusin', event => {
-  const card = event.target.closest('.trait-grid .trait');
-  if (card) inspectTrait(card.dataset.id);
-});
-app.addEventListener('pointerover', event => {
-  const card = event.target.closest('.trait-grid .trait');
-  if (card && event.pointerType === 'mouse') inspectTrait(card.dataset.id);
-});
 app.addEventListener('keydown', event => {
   const card = event.target.closest('.trait-grid .trait');
   if (card && ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Home','End'].includes(event.key)) {
@@ -267,7 +273,7 @@ async function initialize() {
     if (!response.ok) throw new Error('HTTP ' + response.status);
     data = validateData(await response.json());
     const save = readSave(storage, data);
-    run = save.run; archive = save.archive; warning = save.warning;
+    run = save.run; archive = save.archive; warning = save.warning; legacyAvailable = save.legacyAvailable;
     const url = new URL(location.href);
     if (url.searchParams.get('preview') === 'setup' && !run) newDraft(1); else render();
     if (url.searchParams.has('preview')) { url.searchParams.delete('preview'); history.replaceState(null, '', url); }

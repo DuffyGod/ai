@@ -1,0 +1,64 @@
+{
+  "version": "0.3.0",
+  "date": "2026-10-19",
+  "sourceSHA256": {
+    "docs/js/worldApp.js": "b44b0b999dd02c4016572813473b33054fc692dfd3ec33e17905909cfa7b8aa7",
+    "docs/js/worldEngine.js": "6a703c4272659e42566748325bdb10d0156da5423b7c72ba4457f654bb7b7107",
+    "docs/js/worldStorage.js": "3dd3494ef2fb917e9cf082a1661dbb8c5b0cd01901a56b69b50bdf3c00e168d1",
+    "docs/css/world.css": "427285f4f74db75d7b61f123d3241f1b27fe79268c1dc0bf6e6d8d7075afa027",
+    "docs/css/skins.css": "0072cfce0e475508f775cd1663b5ce8890dc2a4a39779d880fa5102bb5fe15da",
+    "docs/data/worlds.json": "6b1b5bc152be91bdab3c17e771d55d59b95fd79051ab80e73af20f3a2987a123",
+    "tests/world.test.js": "5f33aaa9e638ab3f02d9df622cab4dabc0f1941418a60d0ffcd73b8f99d61bf2",
+    "tests/storage.test.js": "1b11298c2a9138511888dea1a9c721fca971d65bb996af3379145cc1d9b588d6",
+    "tests/browser-smoke.cjs": "b26001deb66321226eeb360044b1772106902aab42c9282687eaf47e968b8b3a"
+  },
+  "rules": {
+    "command": "npm test",
+    "passed": 37,
+    "failed": 0,
+    "coverage": [
+      "same-seed initial attribute 2/3 and 4/5 boundaries",
+      "all eight endings through player actions",
+      "supply bounds and deterministic reload",
+      "legacy archive migration and isolated saves"
+    ]
+  },
+  "browser": {
+    "command": "AI_PREVIEW_URL=http://127.0.0.1:8041 node tests/browser-smoke.cjs",
+    "engine": "Chromium",
+    "themes": [
+      "mist",
+      "ink",
+      "paper"
+    ],
+    "viewports": [
+      "320x568",
+      "390x664",
+      "1280x800",
+      "667x375"
+    ],
+    "matrixCases": 12,
+    "completePlayerRuns": 4,
+    "passed": true,
+    "log": [
+      "1280x800: real short/long play, FIFO, effective values, reload and inheritance passed",
+      "390x664: real short/long play, FIFO, effective values, reload and inheritance passed",
+      "mist 320x568: every event, ending, rule, note, history and dialog fits",
+      "mist 390x664: every event, ending, rule, note, history and dialog fits",
+      "mist 1280x800: every event, ending, rule, note, history and dialog fits",
+      "mist 667x375: every event, ending, rule, note, history and dialog fits",
+      "ink 320x568: every event, ending, rule, note, history and dialog fits",
+      "ink 390x664: every event, ending, rule, note, history and dialog fits",
+      "ink 1280x800: every event, ending, rule, note, history and dialog fits",
+      "ink 667x375: every event, ending, rule, note, history and dialog fits",
+      "paper 320x568: every event, ending, rule, note, history and dialog fits",
+      "paper 390x664: every event, ending, rule, note, history and dialog fits",
+      "paper 1280x800: every event, ending, rule, note, history and dialog fits",
+      "paper 667x375: every event, ending, rule, note, history and dialog fits",
+      "320x568: three epic descriptions and eight learned rules fit together",
+      "Storage denial passed",
+      "Legacy save link and original-rule continuation passed"
+    ]
+  },
+  "scope": "Local Chromium CSS viewports. Visual preference and replay motivation require player feedback."
+}
