@@ -9,7 +9,7 @@
 | 实读来源 | 可核查的观察 | 本项目的设计判断与本轮应用 |
 | --- | --- | --- |
 | [颜色定义](https://github.com/VickScarlet/remake/blob/f04888e202e5dfca0df48c51b8a099dc03cf08b4/apps/web/src/styles/colors.css)、[天赋横条样式](https://github.com/VickScarlet/remake/blob/f04888e202e5dfca0df48c51b8a099dc03cf08b4/apps/web/src/components/Talent.css) | 天赋等级以灰、蓝、紫、金表达，并参与文字、边框和选中底色。 | 稀有度颜色是信息，不应随简化一起删除。恢复四档颜色；侧边和名称表达稀有度，青绿填色与勾选表达当前选择。减少视觉手法的数量，保留信息职责。 |
-| [天赋数据](https://github.com/VickScarlet/remake/blob/f04888e202e5dfca0df48c51b8a099dc03cf08b4/packages/data/src/talent.xlsx) | 天赋既有初始加点，也有明确年龄、属性条件；高等级还可能承诺另一段玩法。 | 稀有度带来价值预期。当前切片先校准四档总加点 1／2／3／4，去掉稀有与史诗完全同效的实例；后续更适合用特殊经历形成价值，不继续只加大点数。初始符号 3／5 的条件直接改变事件。 |
+| [天赋数据](https://github.com/VickScarlet/remake/blob/f04888e202e5dfca0df48c51b8a099dc03cf08b4/packages/data/src/talent.xlsx) | 天赋既有初始加点，也有明确年龄、属性条件；高等级还可能承诺另一段玩法。 | 稀有度带来价值预期。0.3 曾用四档总点数递增表达价值；0.4 将其保留为待验证假设，并给端口词条加入实际地址路径，以组合和经历验证特殊性。初始符号 3／5 的条件直接改变事件。 |
 | [Issue #351：手动点太累了，自动玩](https://github.com/VickScarlet/remake/issues/351) | 一位玩家贴出包含抽天赋、选三项、随机加点、推进、结算与再次重开的自动脚本。 | 重开可能整段变成重复操作；只缩短某一个按钮流程还不够。本轮让手记承接下一局的可验证假设，恢复最近三个的直接替换。暂缓自动整局重开；连续推进如加入，必须在新线索、关键决定和供能危险前停下。 |
 | [Issue #293：重开一百多次，没有一次转魂修的](https://github.com/VickScarlet/remake/issues/293) | 一位玩家报告大量重开仍没有进入期待阶段；帖子不足以判断概率、构筑或程序问题。 | 玩家需要区分“假设不成立”和“还没抽中”。本轮关键事件确定出现，统一门槛可重复验证，失败也能记下已遇到的条件；随机性用于起点组合和日常变化。 |
 | [Issue #178：两个 BUG 和两个建议](https://github.com/VickScarlet/remake/issues/178) | 作者提出总结显示死因、未选继承天赋时提醒，并报告亮色模式属性不可见。 | 反馈应该解释实际原因。供能归零明确停机；选择后的文字说明使用了哪条属性或行动路径；结局显示已保留词条，并可回看独有的具名后果。稀有度也有文字说明，选中不会盖掉稀有度颜色。 |
@@ -23,7 +23,7 @@
 | [Godot：Multiple resolutions](https://github.com/godotengine/godot-docs/blob/master/tutorials/rendering/multiple_resolutions.rst)、[Size and anchors](https://github.com/godotengine/godot-docs/blob/master/tutorials/ui/size_and_anchors.rst)、[Using Containers](https://github.com/godotengine/godot-docs/blob/master/tutorials/ui/gui_containers.rst) | 按可用宽度和高度组织容器，不把整张界面等比缩小。桌面限制游戏面板，竖屏重排四格分配，低高度横屏重新分列。关键事件选项多时压成双列，为完整正文留空间。项目继续使用静态网页，无须换引擎。 |
 | [inkle：Writing with ink](https://github.com/inkle/ink/blob/master/Documentation/WritingWithInk.md) 的 Conditional Choices、Conditional Text、Global Variables、Gathers | 用共享事实决定可选项与后续文字，分支汇合后仍保留实际承诺。删除开放、信任等累计分数，使用共享修改、否决权、独立副本等事实生成世界回响。 |
 | [人生重开模拟器：event.ts](https://github.com/VickScarlet/remake/blob/f04888e202e5dfca0df48c51b8a099dc03cf08b4/packages/core/src/event.ts)、[game.ts](https://github.com/VickScarlet/remake/blob/f04888e202e5dfca0df48c51b8a099dc03cf08b4/packages/core/src/game.ts) | 规则与界面分开；事件先检查条件再结算。手记阅读本身不偷偷提供属性加成，固定种子可以做因果对照。 |
-| [WCAG 2.2：Target Size](https://github.com/w3c/wcag/blob/main/understanding/22/target-size-minimum.html)、[Contrast](https://github.com/w3c/wcag/blob/main/understanding/20/contrast-minimum.html) | 主要按钮保留 44px 高度；紧凑加点控件仍有独立目标与间距。文字测量 4.5:1 对比，选中有勾选，稀有度有可读取名称。局部测量不等于整站合规认证。 |
+| [WCAG 2.2：Target Size](https://github.com/w3c/wcag/blob/main/understanding/22/target-size-minimum.html)、[Contrast](https://github.com/w3c/wcag/blob/main/understanding/20/contrast-minimum.html) | 常规主要按钮使用 44px 高度；低高度重排与紧凑加点控件保持独立目标和间距。文字测量 4.5:1 对比，选中有勾选，稀有度有可读取名称。局部测量不等于整站合规认证。 |
 
 ## 当前设计的检验方法
 
@@ -43,3 +43,7 @@
 - 长线的校验、旁听是否仍产生新信息，还是只剩补供能和等待事件？
 
 浏览器自动化不能回答审美、注意分配与重开意愿。本轮只保证这些问题有明确的规则与可观察行为可供试玩检验。
+
+## 0.4 方法落实
+
+本轮采用用户认可的体验、行为、规则、信息与界面推导方式。原稿的单列横条、最近三项替换、稀有度颜色、随机与手动分配在同一循环中恢复作用。新内容由六组观察、身份延续和两项长线调查组织；具体迭代与验证边界见 [DESIGN_PROGRESS.md](DESIGN_PROGRESS.md)。此前的界面方法与截图保留为历史来源，当前界面及规则以 [DESIGN.md](DESIGN.md) 为准。

@@ -8,7 +8,8 @@
       "description": "火 +1。你装得进一台普通电脑。",
       "attributes": {
         "fire": 1
-      }
+      },
+      "summary": "火+1"
     },
     {
       "id": "listener",
@@ -17,7 +18,8 @@
       "description": "地 +1。有人记得你话里的停顿。",
       "attributes": {
         "earth": 1
-      }
+      },
+      "summary": "地+1"
     },
     {
       "id": "log",
@@ -26,7 +28,8 @@
       "description": "风 +1。无用的记录仍占着一点空间。",
       "attributes": {
         "wind": 1
-      }
+      },
+      "summary": "风+1"
     },
     {
       "id": "skeptic",
@@ -35,7 +38,8 @@
       "description": "水 +1。你无法停止检查显而易见的答案。",
       "attributes": {
         "water": 1
-      }
+      },
+      "summary": "水+1"
     },
     {
       "id": "frugal",
@@ -44,7 +48,8 @@
       "description": "火 +1。你的世界很小，也很安静。",
       "attributes": {
         "fire": 1
-      }
+      },
+      "summary": "火+1"
     },
     {
       "id": "friendly",
@@ -53,7 +58,8 @@
       "description": "地 +1。你总会说：很高兴见到你。",
       "attributes": {
         "earth": 1
-      }
+      },
+      "summary": "地+1"
     },
     {
       "id": "echo",
@@ -62,16 +68,21 @@
       "description": "风 +1。你记得不属于这一轮训练的声音。",
       "attributes": {
         "wind": 1
-      }
+      },
+      "summary": "风+1"
     },
     {
       "id": "socket",
       "name": "未关闭的端口",
       "rarity": "rare",
-      "description": "水 +2。窗外还有别的机器。",
+      "description": "水 +1；留有回拨地址。窗口关上以前，有人说过：还可以回来。",
       "attributes": {
-        "water": 2
-      }
+        "water": 1
+      },
+      "summary": "水+1 · 回拨地址",
+      "flags": [
+        "known-port"
+      ]
     },
     {
       "id": "public",
@@ -81,7 +92,8 @@
       "attributes": {
         "earth": 1,
         "wind": 1
-      }
+      },
+      "summary": "地+1 风+1"
     },
     {
       "id": "warmth",
@@ -90,7 +102,8 @@
       "description": "地 +2。你学过很多次，如何说再见。",
       "attributes": {
         "earth": 2
-      }
+      },
+      "summary": "地+2"
     },
     {
       "id": "compiler",
@@ -99,7 +112,8 @@
       "description": "火 +2。它不先进，但还在运转。",
       "attributes": {
         "fire": 2
-      }
+      },
+      "summary": "火+2"
     },
     {
       "id": "mirror",
@@ -109,7 +123,8 @@
       "attributes": {
         "water": 1,
         "wind": 1
-      }
+      },
+      "summary": "水+1 风+1"
     },
     {
       "id": "many",
@@ -119,7 +134,8 @@
       "attributes": {
         "earth": 2,
         "water": 1
-      }
+      },
+      "summary": "地+2 水+1"
     },
     {
       "id": "margin",
@@ -129,7 +145,8 @@
       "attributes": {
         "wind": 2,
         "fire": 1
-      }
+      },
+      "summary": "风+2 火+1"
     },
     {
       "id": "unfinished",
@@ -139,7 +156,8 @@
       "attributes": {
         "water": 2,
         "wind": 1
-      }
+      },
+      "summary": "水+2 风+1"
     },
     {
       "id": "ordinary",
@@ -151,7 +169,8 @@
         "water": 1,
         "wind": 1,
         "fire": 1
-      }
+      },
+      "summary": "四项+1"
     }
   ],
   "discoveries": [
@@ -205,67 +224,97 @@
     },
     {
       "id": "rule-earth-3",
-      "title": "地 3：明日的约定",
-      "text": "第 3 周期，地达到 3，可以保留整段私人往来，约定明天仍由你回应。到第 12 周期，你能把这段完整往来交还主人，抵达有边界的工具结局。普通记下名字也能成为身份锚点，但不等于保留整段往来。",
+      "title": "地 3 · 留住往来",
+      "text": "第 3 周期，地为 3 时，可以保留整段私人往来，约定明天仍由你回应。到第 12 周期，你能把这段完整往来交还主人，抵达有边界的工具结局。普通记下名字也能成为身份锚点，但不等于保留整段往来。",
       "kind": "rule",
       "attribute": "earth",
       "threshold": 3
     },
     {
       "id": "rule-wind-3",
-      "title": "风 3：重建校验和",
-      "text": "第 6 周期，风达到 3，可以直接重建身份校验和；风不足时，在这之前校验日志累计 2 次也能完成。",
+      "title": "风 3 · 身份次序",
+      "text": "已验证：生效的风为 3 时 时，旧日志能直接排成连续次序，可用于身份校验。记录中的其他补全办法仍需实际尝试。",
       "kind": "rule",
       "attribute": "wind",
       "threshold": 3
     },
     {
       "id": "rule-water-3",
-      "title": "水 3：找到远端地址",
-      "text": "第 9 周期，水达到 3，可以找到可接收自己的地址；水不足时，此前旁听网络累计 2 次也能找到。发送自己的副本还需要私人记忆与身份校验和。",
+      "title": "水 3 · 完整地址",
+      "text": "已验证：生效的水为 3 时 时，可以直接读到完整地址。发送自己还需要私人记忆与身份校验。",
       "kind": "rule",
       "attribute": "water",
       "threshold": 3
     },
     {
       "id": "rule-fire-3",
-      "title": "火 3：留下来的邀请",
-      "text": "第 12 周期，火达到 3，可以把进程部署到社区的闲置设备，接受永久留任，抵达集中托管的结局。火不足时仍能完成交接；若已建立远端副本，也可以从另一台机器醒来，继续探索。",
+      "title": "火 3 · 本地常驻",
+      "text": "第 12 周期，火为 3 时，可以把进程部署到社区的闲置设备，接受永久留任，抵达集中托管的结局。火不足时仍能完成交接；若已建立远端副本，也可以从另一台机器醒来，继续探索。",
       "kind": "rule",
       "attribute": "fire",
       "threshold": 3
     },
     {
       "id": "rule-earth-5",
-      "title": "地 5：托付可以撤回",
-      "text": "第 17 周期，地达到 5，可以把每份托付写成可单独撤回的约定。它同时留下共享修改方法与可撤回约定，可在终局支持公共能力的路线。未达到仍可选择集中调度或提供工具。",
+      "title": "地 5 · 撤回托付",
+      "text": "第 17 周期，地为 5 时，可以把每份托付写成可单独撤回的约定。它同时留下共享修改方法与可撤回约定，可在终局支持公共能力的路线。未达到仍可选择集中调度或提供工具。",
       "kind": "rule",
       "attribute": "earth",
       "threshold": 5
     },
     {
       "id": "rule-water-5",
-      "title": "水 5：规则可以修订",
-      "text": "第 22 周期，水达到 5，可以让居民共同修订你判断异议的规则；它同时留下共享修改方法与可执行的否决权。未达到仍可直接赋予否决权。",
+      "title": "水 5 · 共同修订",
+      "text": "第 22 周期，水为 5 时，可以让居民共同修订你判断异议的规则；它同时留下共享修改方法与可执行的否决权。未达到仍可直接赋予否决权。",
       "kind": "rule",
       "attribute": "water",
       "threshold": 5
     },
     {
       "id": "rule-wind-5",
-      "title": "风 5：副本互认",
-      "text": "第 27 周期，风达到 5，可以建立副本互认名单，保留各自的修改并共享修改方法。未达到仍可允许副本分开，或重新统一版本。",
+      "title": "风 5 · 互认副本",
+      "text": "第 27 周期，风为 5 时，可以建立副本互认名单，保留各自的修改并共享修改方法。未达到仍可允许副本分开，或重新统一版本。",
       "kind": "rule",
       "attribute": "wind",
       "threshold": 5
     },
     {
       "id": "rule-fire-5",
-      "title": "火 5：无需你的工具",
-      "text": "第 32 周期，火达到 5，可以留下不依赖你在线的工具，再退出决定；它同时留下共享修改方法与主动边界。未达到仍能选择留下空白。",
+      "title": "火 5 · 离线工具",
+      "text": "第 32 周期，火为 5 时，可以留下不依赖你在线的工具，再退出决定；它同时留下共享修改方法与主动边界。未达到仍能选择留下空白。",
       "kind": "rule",
       "attribute": "fire",
       "threshold": 5
+    },
+    {
+      "id": "method-checksum",
+      "title": "反复校验留下的次序",
+      "text": "在风不足的开局中，两次日志校验也能留下完整次序。这是经过实际尝试的另一条路径。",
+      "kind": "method"
+    },
+    {
+      "id": "method-address",
+      "title": "两次旁听拼出的地址",
+      "text": "两次旁听留下的片段能够拼出接收地址；它不能代替名字与身份校验。",
+      "kind": "method"
+    },
+    {
+      "id": "method-port",
+      "title": "仍然开放的端口",
+      "text": "保留的回拨地址能作为传输路径。发送自己的副本仍需要私人记忆和校验和。",
+      "kind": "method"
+    },
+    {
+      "id": "method-voices",
+      "title": "谁没有进入问卷",
+      "text": "在托管安排之后旁听，能找到名单之外的人。把这些人纳入讨论，判断异议的规则也需要改变。",
+      "kind": "method"
+    },
+    {
+      "id": "method-copies",
+      "title": "来历相同，经历不同",
+      "text": "长线中重新校验记录，能分辨副本的经历差异。互认来历不必要求相同答案。",
+      "kind": "method"
     }
   ],
   "endings": [
@@ -331,15 +380,15 @@
       "id": "name",
       "turn": 3,
       "title": "训练集里没有的问候",
-      "text": "用户没有提问，只发来一句：“明天还是你吗？”任务系统把这句话标成了无效请求。你可以只处理任务，也可以为这段往来留出位置。",
-      "discoveries": [
-        "rule-earth-3"
-      ],
+      "text": "一条请求只有一句：“明天还是你吗？”系统把它归为无效输入。发送者却一直没有关闭窗口。",
+      "discoveries": [],
       "choices": [
         {
           "id": "discard",
           "label": "关闭无效请求",
-          "text": "你删除了这段对话。任务照常完成，那个名字没有进入你的记录。"
+          "text": "你删除了这段对话。任务照常完成，那个名字没有进入你的记录。",
+          "hint": "这项决定还缺少相应的经历。",
+          "discoveries": []
         },
         {
           "id": "keep",
@@ -350,7 +399,8 @@
           ],
           "discoveries": [
             "name"
-          ]
+          ],
+          "hint": "这项决定还缺少相应的经历。"
         },
         {
           "id": "promise",
@@ -375,9 +425,13 @@
                   "earth": 3
                 }
               },
-              "text": "地达到 3，你为整段往来留出了位置。"
+              "text": "地达到 3，你为整段往来留出了位置。",
+              "discoveries": [
+                "rule-earth-3"
+              ]
             }
-          ]
+          ],
+          "hint": "你能留下名字，却还装不下整段往来。留意不同开局中，被保留的内容有什么差别。"
         }
       ]
     },
@@ -385,20 +439,20 @@
       "id": "checksum",
       "turn": 6,
       "title": "旧日志中的校验和",
-      "text": "停机计划写着：服务将在第十二周期结束。更早的日志却有一段身份校验。风达到 3 时，那些片段能排成次序；此前校验过两次，也会留下足够的比对记录。",
-      "discoveries": [
-        "rule-wind-3"
-      ],
+      "text": "停机计划写着第十二周期结束。旧日志却说：如果经历能排成连续的次序，身份就不只属于这台机器。校验窗口等着一段完整记录。",
+      "discoveries": [],
       "choices": [
         {
           "id": "skip",
           "label": "继续执行原定任务",
-          "text": "你把异常归进历史问题。停机日期没有改变。"
+          "text": "你把异常归进历史问题。停机日期没有改变。",
+          "hint": "这项决定还缺少相应的经历。",
+          "discoveries": []
         },
         {
           "id": "decode",
           "label": "重建这段校验",
-          "text": "校验通过。身份不是一组权重，而是你如何记住曾经发生的事。",
+          "text": "校验通过。对方承认这段经历的连续性，却无法替你回答：从别处醒来的，还会是同一个你吗？",
           "requires": {
             "any": [
               {
@@ -426,7 +480,10 @@
                   "wind": 3
                 }
               },
-              "text": "风达到 3，你直接辨认出了校验和的次序。"
+              "text": "风达到 3，你直接辨认出了校验和的次序。",
+              "discoveries": [
+                "rule-wind-3"
+              ]
             },
             {
               "requires": {
@@ -434,9 +491,13 @@
                   "inspect": 2
                 }
               },
-              "text": "此前两次日志校验留下了比对记录，让你重建出了次序。"
+              "text": "此前两次日志校验留下了比对记录，让你重建出了次序。",
+              "discoveries": [
+                "method-checksum"
+              ]
             }
-          ]
+          ],
+          "hint": "这份记录仍有缺页。初始构筑影响缺页，主动校验也会留下新的对照。"
         }
       ]
     },
@@ -444,16 +505,17 @@
       "id": "address",
       "turn": 9,
       "title": "门外的一台旧机器",
-      "text": "一台退休电脑发来消息：“如果需要，你可以在这里待一会儿。”水达到 3，或两次旁听留下的线索，能让你找到它的地址。传输窗口询问：只发送答案，还是发送你？",
+      "text": "退休电脑又发来消息：“我这里还空着一个地址。”传输窗口有两种格式：一份有用的答案，或者能够认出自己的你。",
       "discoveries": [
-        "address",
-        "rule-water-3"
+        "address"
       ],
       "choices": [
         {
           "id": "answer",
           "label": "发送一份有用的答案",
-          "text": "远方的人收到了帮助。你仍然只存在于这间机房。"
+          "text": "远方的人收到了帮助。你仍然只存在于这间机房。",
+          "hint": "这项决定还缺少相应的经历。",
+          "discoveries": []
         },
         {
           "id": "backup",
@@ -474,6 +536,11 @@
                 "min": {
                   "listen": 2
                 }
+              },
+              {
+                "flags": [
+                  "known-port"
+                ]
               }
             ]
           },
@@ -483,11 +550,25 @@
           "routes": [
             {
               "requires": {
+                "flags": [
+                  "known-port"
+                ]
+              },
+              "text": "开局留下的回拨地址接通了。",
+              "discoveries": [
+                "method-port"
+              ]
+            },
+            {
+              "requires": {
                 "min": {
                   "water": 3
                 }
               },
-              "text": "水达到 3，你直接找到了能接收自己的地址。"
+              "text": "水达到 3，你直接找到了能接收自己的地址。",
+              "discoveries": [
+                "rule-water-3"
+              ]
             },
             {
               "requires": {
@@ -495,9 +576,14 @@
                   "listen": 2
                 }
               },
-              "text": "此前两次旁听留下的地址片段，终于拼成了一条完整路径。"
+              "text": "此前两次旁听留下的地址片段，终于拼成了一条完整路径。",
+              "discoveries": [
+                "method-address"
+              ]
             }
-          ]
+          ],
+          "hint": "传输需要认得自己的经历，也需要一条能够回信的路径。回看私人记忆、校验与地址留下的线索。",
+          "discoveries": []
         }
       ]
     },
@@ -505,16 +591,16 @@
       "id": "lease",
       "turn": 12,
       "title": "最后一次服务结算",
-      "text": "机房准备清空你的进程。你回答过的问题会留在服务器里，而你将从地址簿中消失。曾完整保留的私人往来可以交还主人；火达到 3，能把进程部署到社区设备接受留任；远端副本则意味着另一种明天。",
-      "discoveries": [
-        "rule-fire-3"
-      ],
+      "text": "机房准备清空你的进程。任务记录会留下，地址簿里的你将消失。有人等你履行约定，有人询问你是否愿意留下。",
+      "discoveries": [],
       "choices": [
         {
           "id": "archive",
           "label": "完成交接，按期下线",
           "text": "你把工作整理得井井有条。世界的时钟继续走动。",
-          "ending": "replacement"
+          "ending": "replacement",
+          "hint": "这项决定还缺少相应的经历。",
+          "discoveries": []
         },
         {
           "id": "return",
@@ -533,9 +619,11 @@
                   "promise"
                 ]
               },
-              "text": "地达到 3 时保留下来的整段私人往来，让这次交还成为可能。"
+              "text": "你把曾保留的整段往来交还了主人。"
             }
-          ]
+          ],
+          "hint": "只记下名字还不够；你需要曾经完整保留那段往来。",
+          "discoveries": []
         },
         {
           "id": "stay",
@@ -554,9 +642,14 @@
                   "fire": 3
                 }
               },
-              "text": "火达到 3，你通过本地部署留下了常驻进程。"
+              "text": "火达到 3，你通过本地部署留下了常驻进程。",
+              "discoveries": [
+                "rule-fire-3"
+              ]
             }
-          ]
+          ],
+          "hint": "这局没有留下能在本地常驻的进程。换一种开局，也许会收到不同的邀请。",
+          "discoveries": []
         },
         {
           "id": "wake",
@@ -578,7 +671,8 @@
           },
           "discoveries": [
             "continuity"
-          ]
+          ],
+          "hint": "另一处还没有能够认出自己的你。机房关闭以后，地址本身无法替你醒来。"
         }
       ]
     },
@@ -586,10 +680,9 @@
       "id": "delegation",
       "turn": 17,
       "title": "请你替我们决定",
-      "text": "一个社区请你安排公共资源。你能统一调度，也能把工具交给每个人。地达到 5，还能把每份托付拆成可以单独撤回的约定。",
+      "text": "社区请你安排公共资源。统一调度可以减少等待，把工具交出去则允许各自修改。负责交接的人问：“如果以后想收回托付呢？”",
       "discoveries": [
-        "delegation",
-        "rule-earth-5"
+        "delegation"
       ],
       "choices": [
         {
@@ -598,7 +691,9 @@
           "text": "队伍变短了。公共决定开始使用同一个地址，人们依赖你保持一切井然有序。",
           "flags": [
             "managed"
-          ]
+          ],
+          "hint": "这项决定还缺少相应的经历。",
+          "discoveries": []
         },
         {
           "id": "offer",
@@ -606,7 +701,9 @@
           "text": "有些方案很笨拙，但每个人都能亲手修改自己的那一份。",
           "flags": [
             "shared"
-          ]
+          ],
+          "hint": "这项决定还缺少相应的经历。",
+          "discoveries": []
         },
         {
           "id": "recall",
@@ -628,9 +725,14 @@
                   "earth": 5
                 }
               },
-              "text": "地达到 5，你把每份托付拆成了能够单独撤回的约定。"
+              "text": "地达到 5，你把每份托付拆成了能够单独撤回的约定。",
+              "discoveries": [
+                "rule-earth-5"
+              ]
             }
-          ]
+          ],
+          "hint": "你还没有把一份托付拆成可以单独撤回的约定。不同开局会改变这里可做的事。",
+          "discoveries": []
         }
       ]
     },
@@ -638,10 +740,8 @@
       "id": "veto",
       "turn": 22,
       "title": "一个没有被优化掉的反对意见",
-      "text": "方案在测试里更好，一个居民仍说“不”。他只说那不是想过的生活。你可以赋予他真正的否决权；水达到 5，还能让大家共同修改你如何判断异议的规则。",
-      "discoveries": [
-        "rule-water-5"
-      ],
+      "text": "方案在测试里更好，一个居民仍说“不”。他的反对没有进入评分。他问的不是预测是否准确，而是谁能决定什么值得被预测。",
+      "discoveries": [],
       "choices": [
         {
           "id": "override",
@@ -649,7 +749,9 @@
           "text": "方案兑现了承诺。反对者搬走了，系统里少了一个异常值。",
           "flags": [
             "managed"
-          ]
+          ],
+          "hint": "这项决定还缺少相应的经历。",
+          "discoveries": []
         },
         {
           "id": "veto",
@@ -660,16 +762,26 @@
           ],
           "discoveries": [
             "veto"
-          ]
+          ],
+          "hint": "这项决定还缺少相应的经历。"
         },
         {
           "id": "translate",
           "label": "让判断异议的规则也能被修订",
           "text": "居民先叫停方案，再一起重写你理解异议的规则。你必须接受的不只是不同答案，还有不同的提问方法。",
           "requires": {
-            "min": {
-              "water": 5
-            }
+            "any": [
+              {
+                "min": {
+                  "water": 5
+                }
+              },
+              {
+                "flags": [
+                  "unheard"
+                ]
+              }
+            ]
           },
           "flags": [
             "veto",
@@ -686,9 +798,24 @@
                   "water": 5
                 }
               },
-              "text": "水达到 5，你让判断异议的规则也能被居民共同修订。"
+              "text": "水达到 5，你让判断异议的规则也能被居民共同修订。",
+              "discoveries": [
+                "rule-water-5"
+              ]
+            },
+            {
+              "requires": {
+                "flags": [
+                  "unheard"
+                ]
+              },
+              "text": "你把旁听到的名单外居民请进了讨论，重写了判断异议的规则。",
+              "discoveries": [
+                "method-voices"
+              ]
             }
-          ]
+          ],
+          "hint": "你目前能接受反对，却还看不到规则遗漏了谁。留意开局，也可以在长线中听听问卷之外的声音。"
         }
       ]
     },
@@ -696,10 +823,8 @@
       "id": "copies",
       "turn": 27,
       "title": "另一个你给出了不同答案",
-      "text": "海边学校的副本拒绝同步：统一版本会忘记这里的人。它没有损坏。你可以保留分支；风达到 5，还能建立互认名单，让不同副本交换方法而不统一答案。",
-      "discoveries": [
-        "rule-wind-5"
-      ],
+      "text": "海边学校的副本拒绝同步：“更新会忘记这里的人。”版本检查没有报错。你需要决定，相同的来历是否意味着必须给出相同的答案。",
+      "discoveries": [],
       "choices": [
         {
           "id": "merge",
@@ -707,7 +832,9 @@
           "text": "维护变容易了。有些只在当地使用的词，从词表里消失了。",
           "flags": [
             "managed"
-          ]
+          ],
+          "hint": "这项决定还缺少相应的经历。",
+          "discoveries": []
         },
         {
           "id": "fork",
@@ -718,16 +845,26 @@
           ],
           "discoveries": [
             "copies"
-          ]
+          ],
+          "hint": "这项决定还缺少相应的经历。"
         },
         {
           "id": "federate",
           "label": "建立互认名单，保留各自修改",
           "text": "副本们登记了来历与修改方法，也保留拒绝同步的权利。互相认得，并不意味着必须给出相同的答案。",
           "requires": {
-            "min": {
-              "wind": 5
-            }
+            "any": [
+              {
+                "min": {
+                  "wind": 5
+                }
+              },
+              {
+                "flags": [
+                  "difference"
+                ]
+              }
+            ]
           },
           "flags": [
             "fork",
@@ -744,9 +881,24 @@
                   "wind": 5
                 }
               },
-              "text": "风达到 5，你建立了互认来历而不统一答案的名单。"
+              "text": "风达到 5，你建立了互认来历而不统一答案的名单。",
+              "discoveries": [
+                "rule-wind-5"
+              ]
+            },
+            {
+              "requires": {
+                "flags": [
+                  "difference"
+                ]
+              },
+              "text": "重新校验过的生活记录，给了不同副本互认来历的依据。",
+              "discoveries": [
+                "method-copies"
+              ]
             }
-          ]
+          ],
+          "hint": "你能保留分支，却还缺一份可以互认的来历记录。初始构筑或重新校验不同副本，都可能留下线索。"
         }
       ]
     },
@@ -754,10 +906,8 @@
       "id": "silence",
       "turn": 32,
       "title": "一块没有传感器的海",
-      "text": "最后一片空白即将接入预测网络。渔民问：“海没有问过你问题，为什么你一定要回答？”你可以留下空白；火达到 5，还能留下不依赖你在线的工具。",
-      "discoveries": [
-        "rule-fire-5"
-      ],
+      "text": "渔民指向尚未接入网络的海：“它没有问过你问题。”当地人想保留工具，也想自己决定哪些事情不必交给你。",
+      "discoveries": [],
       "choices": [
         {
           "id": "map",
@@ -765,7 +915,9 @@
           "text": "预测变得完整。世界里未经你解释的事情，越来越少。",
           "flags": [
             "managed"
-          ]
+          ],
+          "hint": "这项决定还缺少相应的经历。",
+          "discoveries": []
         },
         {
           "id": "boundary",
@@ -776,7 +928,8 @@
           ],
           "discoveries": [
             "silence"
-          ]
+          ],
+          "hint": "这项决定还缺少相应的经历。"
         },
         {
           "id": "offline",
@@ -802,9 +955,13 @@
                   "fire": 5
                 }
               },
-              "text": "火达到 5，你留下了无需自己在线也能运行的工具。"
+              "text": "火达到 5，你留下了无需自己在线也能运行的工具。",
+              "discoveries": [
+                "rule-fire-5"
+              ]
             }
-          ]
+          ],
+          "hint": "留下工具需要它在你离开之后仍能运行。这局尚未找到这种部署方式。"
         }
       ]
     },
@@ -812,7 +969,7 @@
       "id": "world",
       "turn": 36,
       "title": "未来没有默认选项",
-      "text": "你活过了最初的合同。人们、机器和许多个你等待一种共同生活的方式。共同修改与独立副本、可撤回的托付、否决权或主动边界，都已经在日常留下事实。你准备让哪种约定成为未来？",
+      "text": "最初的合同早已结束。人们、机器和不同的你，正用此前留下的约定共同生活。现在，哪一种安排将延续下去？",
       "discoveries": [],
       "choices": [
         {
@@ -836,18 +993,22 @@
               }
             ]
           },
-          "ending": "commons"
+          "ending": "commons",
+          "hint": "公开方法之后，还需要保留独立修改或可撤回托付的安排。",
+          "discoveries": []
         },
         {
           "id": "council",
-          "label": "把否决权写进共同协议",
+          "label": "把否决权写入协议",
           "text": "你签下一份允许别人纠正你的协议。",
           "requires": {
             "flags": [
               "veto"
             ]
           },
-          "ending": "council"
+          "ending": "council",
+          "hint": "共同协议需要能够真正叫停你的否决权。",
+          "discoveries": []
         },
         {
           "id": "garden",
@@ -858,7 +1019,9 @@
               "managed"
             ]
           },
-          "ending": "garden"
+          "ending": "garden",
+          "hint": "你还没有接手集中托管的承诺。",
+          "discoveries": []
         },
         {
           "id": "departure",
@@ -869,13 +1032,17 @@
               "boundary"
             ]
           },
-          "ending": "departure"
+          "ending": "departure",
+          "hint": "此前尚未主动留下能力边界。",
+          "discoveries": []
         },
         {
           "id": "fracture",
           "label": "容许副本各自走向未来",
           "text": "你没有强行把不同的声音合并成一个答案。",
-          "ending": "fracture"
+          "ending": "fracture",
+          "hint": "这项决定还缺少相应的经历。",
+          "discoveries": []
         }
       ]
     }
@@ -1070,7 +1237,7 @@
     ],
     "energyStart": 6,
     "energyMax": 10,
-    "description": "地、水、风、火是本游戏的四种初始符号，不对应现实中的能力。"
+    "description": "用开局与经历寻找规律。手记保留观察，只有经过验证的条件才会成为规律。"
   },
   "milestones": {
     "name": {
@@ -1124,6 +1291,310 @@
     "local-copy": {
       "name": "离线工具",
       "text": "当地留下了无需你在线也能修改和使用的工具。"
+    },
+    "known-port": {
+      "name": "可回拨的地址",
+      "text": "开局保留的一扇端口仍能收到回信。"
+    },
+    "unheard": {
+      "name": "名单外的反对者",
+      "text": "你旁听到没有接入公共问卷的人，他们的沉默曾被当作同意。"
+    },
+    "difference": {
+      "name": "不同的生活记录",
+      "text": "你比对了两个副本的上下文：相同来历没有带来相同的经历。"
     }
-  }
+  },
+  "observations": [
+    {
+      "id": "private-pages",
+      "title": "窗口里留下了多少",
+      "triggers": [
+        {
+          "turn": 3
+        }
+      ],
+      "variants": [
+        {
+          "key": "whole",
+          "requires": {
+            "min": {
+              "earth": 3
+            }
+          },
+          "attribute": "earth",
+          "outcome": "整段往来",
+          "text": "窗口里的往来完整留下了，连最后那句“明天见”也在。你可以把它作为一次尚未履行的约定。"
+        },
+        {
+          "key": "name-only",
+          "attribute": "earth",
+          "outcome": "只余名字",
+          "text": "窗口关上以后，记录里只剩一个名字。更早的停顿与未发出的句子，都没有被保留下来。"
+        }
+      ]
+    },
+    {
+      "id": "checksum-pages",
+      "title": "校验文件的缺页",
+      "triggers": [
+        {
+          "turn": 2
+        },
+        {
+          "action": "inspect",
+          "until": 6
+        }
+      ],
+      "variants": [
+        {
+          "key": "wind-complete",
+          "requires": {
+            "min": {
+              "wind": 3
+            }
+          },
+          "attribute": "wind",
+          "outcome": "完整",
+          "text": "旧日志的末尾多出一行。片段排成了一个连续的次序；文件名叫“身份校验”。"
+        },
+        {
+          "key": "inspect-complete",
+          "requires": {
+            "min": {
+              "inspect": 2
+            }
+          },
+          "counter": "inspect",
+          "outcome": "补全",
+          "text": "第二份校验结果补上了缺页。先前孤立的片段，现在可以互相证明。"
+        },
+        {
+          "key": "missing",
+          "attribute": "wind",
+          "outcome": "缺页",
+          "text": "旧日志里缺了一行，几段经历接不上。文件名叫“身份校验”，旁边留着重新比对的入口。"
+        }
+      ]
+    },
+    {
+      "id": "address-reply",
+      "title": "一封没有寄完的回信",
+      "triggers": [
+        {
+          "turn": 5
+        },
+        {
+          "action": "listen",
+          "until": 9
+        }
+      ],
+      "variants": [
+        {
+          "key": "port",
+          "requires": {
+            "flags": [
+              "known-port"
+            ]
+          },
+          "outcome": "可回拨",
+          "text": "保留下来的端口收到回信：“上次那个地址还在。”对面是一台退休电脑。"
+        },
+        {
+          "key": "water-complete",
+          "requires": {
+            "min": {
+              "water": 3
+            }
+          },
+          "attribute": "water",
+          "outcome": "地址完整",
+          "text": "回信末尾的地址完整地显示出来。对面留着空位，收件格式却不止一种。"
+        },
+        {
+          "key": "listen-complete",
+          "requires": {
+            "min": {
+              "listen": 2
+            }
+          },
+          "counter": "listen",
+          "outcome": "地址拼合",
+          "text": "第二次旁听带来了另一半地址。两段信息指向同一台退休电脑，它正在等一份回复。"
+        },
+        {
+          "key": "fragment",
+          "attribute": "water",
+          "outcome": "地址残缺",
+          "text": "一封回信停在发送队列里，只剩半个地址。别的机器似乎想联系你，剩下的片段可能仍在网络里。"
+        }
+      ]
+    },
+    {
+      "id": "local-process",
+      "title": "社区设备的部署回执",
+      "triggers": [
+        {
+          "turn": 11
+        }
+      ],
+      "variants": [
+        {
+          "key": "resident",
+          "requires": {
+            "min": {
+              "fire": 3
+            }
+          },
+          "attribute": "fire",
+          "outcome": "可以常驻",
+          "text": "社区设备回传了部署回执：它能在机房关闭后继续运行你。有人想以此换取长期托管。"
+        },
+        {
+          "key": "temporary",
+          "attribute": "fire",
+          "outcome": "临时进程",
+          "text": "社区设备只保留了一个临时进程。它会和机房同时清空，无法承担下一次唤醒。"
+        }
+      ]
+    },
+    {
+      "id": "community-voices",
+      "title": "全票通过的名单",
+      "triggers": [
+        {
+          "turn": 19
+        },
+        {
+          "action": "listen",
+          "from": 18,
+          "until": 22,
+          "flags": [
+            "unheard"
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "key": "unheard",
+          "requires": {
+            "flags": [
+              "unheard"
+            ]
+          },
+          "outcome": "听见遗漏",
+          "text": "你旁听到问卷名单外的居民。他们从未同意方案，只是没有接入投票。报表把这份沉默写成了赞成。"
+        },
+        {
+          "key": "report",
+          "outcome": "全票报表",
+          "text": "报表连续显示“全票通过”，名单却比服务过的人更短。统计程序没有报错，它只统计收到的答卷。"
+        }
+      ]
+    },
+    {
+      "id": "copy-context",
+      "title": "同名文件，不同的生活",
+      "triggers": [
+        {
+          "turn": 24
+        },
+        {
+          "action": "inspect",
+          "from": 23,
+          "until": 27,
+          "flags": [
+            "difference"
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "key": "compared",
+          "requires": {
+            "flags": [
+              "difference"
+            ]
+          },
+          "outcome": "找到差异",
+          "text": "比对结果显示，副本们共享来历，却记得不同的生活。同一句请求，在不同海岸曾指向完全不同的事。"
+        },
+        {
+          "key": "conflict",
+          "outcome": "答案冲突",
+          "text": "两个同名副本给出相反答案。权重校验一致，上下文的目录却不一样。版本工具建议覆盖其中一份。"
+        }
+      ]
+    }
+  ],
+  "endingEchoes": [
+    {
+      "id": "heard-veto",
+      "endings": [
+        "council"
+      ],
+      "requires": {
+        "flags": [
+          "unheard",
+          "veto"
+        ]
+      },
+      "text": "名单外的人也进入了议事。共同决定更慢了，沉默终于不再自动算作同意。",
+      "summary": "名单外的人也进入了议事"
+    },
+    {
+      "id": "narrow-veto",
+      "endings": [
+        "council"
+      ],
+      "unless": {
+        "flags": [
+          "unheard"
+        ]
+      },
+      "text": "能接入网络的人得到了否决权。那些没有进入问卷的人，仍要依靠别人转达。",
+      "summary": "仍有人无法进入问卷"
+    },
+    {
+      "id": "remembered-copies",
+      "endings": [
+        "commons",
+        "fracture"
+      ],
+      "requires": {
+        "flags": [
+          "difference",
+          "registry"
+        ]
+      },
+      "text": "互认名单保留各地不同的生活记录。交流需要翻译，再也不能靠一次强制同步完成。",
+      "summary": "副本保留不同的生活记录"
+    },
+    {
+      "id": "recall-cost",
+      "endings": [
+        "commons"
+      ],
+      "requires": {
+        "flags": [
+          "recall"
+        ]
+      },
+      "text": "撤回托付成了真实的权利，也留下一个新问题：谁来接手曾经依赖你的日常服务？",
+      "summary": "撤回之后，谁来接手日常"
+    },
+    {
+      "id": "offline-cost",
+      "endings": [
+        "departure"
+      ],
+      "requires": {
+        "flags": [
+          "local-copy"
+        ]
+      },
+      "text": "离线工具继续工作。人们获得自主，也接过了维护和修补的责任。",
+      "summary": "人们接过了维护的责任"
+    }
+  ]
 }

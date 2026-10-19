@@ -1,0 +1,229 @@
+{
+  "version": "0.4.0",
+  "date": "2026-10-19",
+  "sourceSHA256": {
+    "docs/index.html": "e71b4ab8fcf153527d06e81d90dcd1ca3160eba7b1e3bba8dffa9dbb3bdd7bdd",
+    "docs/js/worldApp.js": "cd5ad1c7ee04edc9ddbd9ea0c4428e38f1c993b728bf0a71b6d9e418e7a8eac1",
+    "docs/js/worldEngine.js": "fcab0e5ceff1603ff3a1ef4fa981b23b849d70ecdd32a077e94757ec51c4bd76",
+    "docs/js/worldStorage.js": "ce42aeffe26d5b3610bd315ae045b88a7cae2085655e72fa652d2b63ed4b296d",
+    "docs/css/world.css": "45472592766612327ebc9c49f721da9bf803cf439236111d3a6e6beb2146e73c",
+    "docs/css/skins.css": "71dcd7795541ec770a91d2ecda23bdfb07a95dc4d6b5f437acd9ca1e4b740293",
+    "docs/data/worlds.json": "5bdd13e053082658da30b390754610235cbf2d098c3c45989cecac085e045b0c",
+    "tests/world.test.js": "9c8109d4cced6f475721e5f4cee7904ef5f09b60b0ab1512dbde7ae8a5e917ce",
+    "tests/storage.test.js": "a9a1a9033b6d0b8626b7ac0dd1016f158ce0442f1f9fedd8b133f80856729941",
+    "tests/discovery.test.js": "db5dcdd59ae698676598b425f54b691bb8bb8c5c844a8e91e6b7293f6802537e",
+    "tests/browser-smoke.cjs": "d132d0f31a12a2799044d10942254686c4479b0dc1ccf028ada0800bf982289c"
+  },
+  "rules": {
+    "command": "npm test",
+    "passed": 48,
+    "failed": 0,
+    "coverage": [
+      "same-seed initial attribute 2/3 and 4/5 boundaries; all eight endings",
+      "cross-run observations and identical-pool repeat experiments",
+      "unproven numeric conditions stay undisclosed; high values do not assert lower thresholds",
+      "routine fast progression equals individual steps in history, RNG and ending",
+      "late listening and inspection actually unlock choices and change ending echoes",
+      "v3 archive deduplication and isolated legacy save recovery"
+    ]
+  },
+  "browser": {
+    "command": "AI_PREVIEW_URL=http://127.0.0.1:8050 AI_BROWSER_RESULTS=/workspace/ai-dev-tools/results/discovery-final node tests/browser-smoke.cjs",
+    "engine": "local Chromium (/usr/bin/chromium)",
+    "measuredAt": "2026-10-19T11:35:02.944Z",
+    "results": [
+      {
+        "type": "journey",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "passed": true
+      },
+      {
+        "type": "journey",
+        "viewport": {
+          "width": 390,
+          "height": 664
+        },
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "mist",
+        "viewport": {
+          "width": 320,
+          "height": 568
+        },
+        "columns": 1,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "mist",
+        "viewport": {
+          "width": 390,
+          "height": 664
+        },
+        "columns": 1,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "mist",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "columns": 1,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "mist",
+        "viewport": {
+          "width": 667,
+          "height": 375
+        },
+        "columns": 2,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "ink",
+        "viewport": {
+          "width": 320,
+          "height": 568
+        },
+        "columns": 1,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "ink",
+        "viewport": {
+          "width": 390,
+          "height": 664
+        },
+        "columns": 1,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "ink",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "columns": 1,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "ink",
+        "viewport": {
+          "width": 667,
+          "height": 375
+        },
+        "columns": 2,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "paper",
+        "viewport": {
+          "width": 320,
+          "height": 568
+        },
+        "columns": 1,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "paper",
+        "viewport": {
+          "width": 390,
+          "height": 664
+        },
+        "columns": 1,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "paper",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "columns": 1,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "paper",
+        "viewport": {
+          "width": 667,
+          "height": 375
+        },
+        "columns": 2,
+        "passed": true
+      }
+    ],
+    "matrixCases": 12,
+    "completeDiscoveryJourneys": 2,
+    "journeyScope": "Each journey includes a failed short run, same-build one-point experiment, successful continuity, two late investigations, a world ending and trait inheritance.",
+    "coverage": [
+      "document and content overflow checks",
+      "all nine events and eight endings",
+      "all observation subjects and archived sample selectors",
+      "all 21 learned records and eight numeric exemplar dialogs",
+      "FIFO selection and effective values",
+      "keyboard trait selection",
+      "manual/random allocation and preparation recovery",
+      "history, status, inheritance and six-fact ending directory",
+      "theme persistence",
+      "storage denied",
+      "original-rule v2 continuation"
+    ],
+    "log": [
+      "1280x800: first failure → same-build experiment → continuity → late investigations passed",
+      "390x664: first failure → same-build experiment → continuity → late investigations passed",
+      "mist 320x568: complete event/ending/evidence/index/dialog coverage passed",
+      "mist 390x664: complete event/ending/evidence/index/dialog coverage passed",
+      "mist 1280x800: complete event/ending/evidence/index/dialog coverage passed",
+      "mist 667x375: complete event/ending/evidence/index/dialog coverage passed",
+      "ink 320x568: complete event/ending/evidence/index/dialog coverage passed",
+      "ink 390x664: complete event/ending/evidence/index/dialog coverage passed",
+      "ink 1280x800: complete event/ending/evidence/index/dialog coverage passed",
+      "ink 667x375: complete event/ending/evidence/index/dialog coverage passed",
+      "paper 320x568: complete event/ending/evidence/index/dialog coverage passed",
+      "paper 390x664: complete event/ending/evidence/index/dialog coverage passed",
+      "paper 1280x800: complete event/ending/evidence/index/dialog coverage passed",
+      "paper 667x375: complete event/ending/evidence/index/dialog coverage passed",
+      "Storage denial and original-rule v2 continuation passed"
+    ],
+    "passed": true
+  },
+  "sampledContrast": {
+    "scope": "Selected/unselected trait text, rarity badges and desktop flavor text at 1280x800; not a whole-site accessibility audit.",
+    "minimumTarget": 4.5,
+    "results": [
+      {
+        "skin": "mist",
+        "minContrast": 4.54,
+        "failures": []
+      },
+      {
+        "skin": "ink",
+        "minContrast": 5.52,
+        "failures": []
+      },
+      {
+        "skin": "paper",
+        "minContrast": 4.62,
+        "failures": []
+      }
+    ]
+  },
+  "scope": "Local automated rule and browser checks plus screenshot review. These establish implementation, causality and reachability at the listed CSS viewports, not real-player comprehension, preference or replay motivation. GitHub Pages was not independently rechecked, per user instruction."
+}

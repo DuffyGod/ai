@@ -1,4 +1,4 @@
-// Rules for new games. Version-one games keep their own engine in legacy-v1.
+// New runs use observation-led discovery. Earlier runs keep their original rules in legacy-v1/v2.
 export const RULES = { points: 10, attributeMax: 10, earlyThreshold: 3, lateThreshold: 5, energyStart: 6, energyMax: 10 };
 export const ATTRIBUTES = {
   earth: { name: '地', description: '一种初始符号；已遇见的规律会记入手记。' },
@@ -34,7 +34,7 @@ export function drawTraits(data, seed, reserved = null) {
   return drawn;
 }
 
-export function createRun(data, allocation, traitIds, seed, id = String(seed)) {
+export function createRun(data, allocation, traitIds, seed, id = String(seed), pool = null) {
   const keys = Object.keys(ATTRIBUTES);
   if (keys.some(key => !Number.isInteger(allocation[key]) || allocation[key] < 0 || allocation[key] > RULES.attributeMax) ||
       keys.reduce((sum, key) => sum + allocation[key], 0) !== RULES.points) throw new Error('请分配 10 点，每项可以分配 0 至 10 点。');
@@ -46,10 +46,12 @@ export function createRun(data, allocation, traitIds, seed, id = String(seed)) {
     const trait = data.traits.find(item => item.id === traitId);
     for (const [key, value] of Object.entries(trait.attributes || {})) attributes[key] += value;
   }
+  const drawn = pool || [...new Set([...traitIds, ...drawTraits(data, seed).map(trait => trait.id)])].slice(0, 10);
+  if (drawn.length !== 10 || new Set(drawn).size !== 10 || traitIds.some(traitId => !drawn.includes(traitId)) || drawn.some(traitId => !data.traits.some(trait => trait.id === traitId))) throw new Error('出生词条池不完整。');
   return {
-    version: 2, id, seed: seed >>> 0, rng: seed >>> 0, turn: 0, stage: 'lease', attributes, traits: [...traitIds],
+    version: 3, id, allocation: { ...allocation }, pool: [...drawn], seed: seed >>> 0, rng: seed >>> 0, turn: 0, stage: 'lease', attributes, traits: [...traitIds],
     resources: { energy: RULES.energyStart }, world: {}, counts: { serve: 0, inspect: 0, listen: 0 },
-    flags: [], discoveries: [], pending: null, ending: null,
+    flags: [...new Set(traitIds.flatMap(traitId => data.traits.find(trait => trait.id === traitId).flags || []))], discoveries: [], observations: [], pending: null, ending: null,
     history: [{ turn: 0, title: '进程已唤醒', text: '你将在第十二周期被替换。这是合同上的日期。窗外，世界还没有决定你的用途。', changes: {} }],
   };
 }
@@ -109,28 +111,70 @@ function checkSurvival(state) {
   }
 }
 
+export function observationKey(reading) {
+  return `${reading.id}:${reading.key}:${reading.attribute || reading.counter || '-'}:${reading.value ?? '-'}`;
+}
+
+function observe(data, state, action) {
+  const fresh = [];
+  for (const subject of data.observations || []) {
+    const triggers = subject.triggers.filter(item =>
+      (item.turn === undefined || item.turn === state.turn) &&
+      (!item.action || item.action === action) &&
+      (item.from === undefined || state.turn >= item.from) &&
+      (item.until === undefined || state.turn <= item.until));
+    if (!triggers.length) continue;
+    state.flags = [...new Set([...state.flags, ...triggers.flatMap(trigger => trigger.flags || [])])];
+    const variant = subject.variants.find(item => meets(state, item.requires));
+    if (variant.counter && state.counts[variant.counter] > 2) continue;
+    const reading = { id: subject.id, key: variant.key, turn: state.turn, runId: state.id, outcome: variant.outcome, text: variant.text };
+    if (variant.attribute) { reading.attribute = variant.attribute; reading.value = state.attributes[variant.attribute]; }
+    if (variant.counter) { reading.counter = variant.counter; reading.value = state.counts[variant.counter]; }
+    reading.signature = observationKey(reading);
+    if (state.observations.some(item => item.signature === reading.signature)) continue;
+    state.observations.push(reading);
+    fresh.push({ ...reading, title: subject.title });
+  }
+  return fresh;
+}
+
 export function advance(data, original, action) {
   if (original.ending || original.pending) return original;
   const state = clone(original);
   const changes = applyEffects(state, actionEffects(state, action));
   state.turn++;
   state.counts[action]++;
+  checkSurvival(state);
+  const observed = state.ending ? [] : observe(data, state, action);
   const matched = (data.ambientRules?.[action] || []).filter(rule => meets(state, rule.requires));
   const priority = Math.max(0, ...matched.map(rule => rule.priority || 0));
   const echoes = matched.filter(rule => (rule.priority || 0) === priority);
   const lines = echoes.length ? echoes.flatMap(rule => rule.texts.map(text => ({ text, context: rule.label }))) : data.ambient[action].map(text => ({ text }));
   const line = lines[Math.floor(random(state) * lines.length)];
   state.history.push({ turn: state.turn, title: ACTIONS[action].name, ...line, changes, action });
-  checkSurvival(state);
+  for (const reading of observed) state.history.push({ turn: state.turn, title: reading.title, text: reading.text, changes: {}, observation: reading.id, signature: reading.signature });
   if (!state.ending) {
     const event = data.events.find(item => item.turn === state.turn);
-    if (event) {
-      state.pending = event.id;
-      // A failed threshold is useful knowledge too, without another lucky event draw.
-      discover(state, event.discoveries);
-    }
+    if (event) { state.pending = event.id; discover(state, event.discoveries); }
   }
   return state;
+}
+
+// Routine requests can pass quickly. Every decision and every unseen reading stops.
+export function advanceUntilChange(data, original, knownReadings = []) {
+  if (original.ending || original.pending) return original;
+  const known = new Set(knownReadings.map(item => typeof item === 'string' ? item : observationKey(item)));
+  let state = original;
+  for (let step = 0; step < 36 && !state.pending && !state.ending; step++) {
+    const previous = state.observations.length;
+    state = advance(data, state, 'serve');
+    if (state.observations.slice(previous).some(reading => !known.has(observationKey(reading)))) break;
+  }
+  return state;
+}
+
+export function endingConsequences(data, state) {
+  return (data.endingEchoes || []).filter(item => item.endings.includes(state.ending) && meets(state, item.requires) && (!item.unless || !meets(state, item.unless))).map(item => item.text);
 }
 
 export function choose(data, original, choiceId) {
@@ -143,7 +187,16 @@ export function choose(data, original, choiceId) {
   state.flags = [...new Set([...state.flags, ...(choice.flags || [])])];
   discover(state, choice.discoveries);
   const route = choice.routes?.find(item => meets(original, item.requires));
-  const text = route ? `${route.text} ${choice.text}` : choice.text;
+  const verified = (route?.discoveries || []).filter(id => {
+    const item = data.discoveries.find(entry => entry.id === id);
+    return item.kind !== 'rule' || original.attributes[item.attribute] === item.threshold;
+  });
+  discover(state, verified);
+  let proof = route?.text || '';
+  for (const [key, value] of Object.entries(route?.requires?.min || {})) {
+    if (ATTRIBUTES[key]) proof = proof.replace(`${ATTRIBUTES[key].name}达到 ${value}`, `本局${ATTRIBUTES[key].name}为 ${original.attributes[key]}`);
+  }
+  const text = proof ? `${proof} ${choice.text}` : choice.text;
   state.history.push({ turn: state.turn, title: event.title, text, changes, choice: choice.id });
   state.pending = null;
   if (choice.extend) state.stage = 'open';
@@ -169,7 +222,7 @@ export function validateData(data) {
   for (const trait of data.traits) {
     if (typeof trait.description !== 'string' || !trait.description.trim() ||
         Object.entries(trait.attributes || {}).some(([key, value]) => !Object.hasOwn(ATTRIBUTES, key) || !Number.isInteger(value) || value < 1 || value > 2) ||
-        Object.keys(trait.resources || {}).length || Object.keys(trait.world || {}).length) throw new Error('词条格式错误：' + trait.id);
+        Object.keys(trait.resources || {}).length || Object.keys(trait.world || {}).length || (trait.flags || []).some(flag => !knownFlags.has(flag))) throw new Error('词条格式错误：' + trait.id);
   }
   for (const discovery of data.discoveries) if (discovery.kind === 'rule' &&
       (!Object.hasOwn(ATTRIBUTES, discovery.attribute) || ![RULES.earlyThreshold, RULES.lateThreshold].includes(discovery.threshold))) throw new Error('规律格式错误：' + discovery.id);
@@ -181,6 +234,7 @@ export function validateData(data) {
       validateCondition(choice.visibleIf);
       for (const route of choice.routes || []) {
         validateCondition(route.requires);
+        for (const id of route.discoveries || []) if (!data.discoveries.some(item => item.id === id)) throw new Error('缺少线索：' + id);
         if (typeof route.text !== 'string' || !route.text.trim()) throw new Error('因果记录格式错误：' + choice.id);
       }
       if (Object.entries(choice.effects || {}).some(([key, value]) => key !== 'energy' || !Number.isInteger(value))) throw new Error('选项数值格式错误：' + choice.id);
@@ -200,6 +254,22 @@ export function validateData(data) {
           rule.texts.some(text => typeof text !== 'string' || !text.trim()) ||
           (rule.priority !== undefined && (!Number.isInteger(rule.priority) || rule.priority < 0))) throw new Error('世界回响格式错误：' + action);
     }
+  }
+  if (!Array.isArray(data.observations) || new Set(data.observations.map(item => item.id)).size !== data.observations.length) throw new Error('观察格式错误');
+  for (const subject of data.observations) {
+    if (!subject.triggers?.length || !subject.variants?.length || subject.variants.at(-1).requires) throw new Error('观察缺少后备结果：' + subject.id);
+    if (new Set(subject.variants.map(item => item.key)).size !== subject.variants.length) throw new Error('重复观察结果');
+    for (const trigger of subject.triggers) {
+      if ((trigger.action && !ACTIONS[trigger.action]) || (trigger.flags || []).some(flag => !knownFlags.has(flag))) throw new Error('观察触发错误');
+    }
+    for (const item of subject.variants) {
+      validateCondition(item.requires);
+      if (!item.key || !item.text || !item.outcome || (item.attribute && !ATTRIBUTES[item.attribute]) || (item.counter && !ACTIONS[item.counter])) throw new Error('观察结果错误');
+    }
+  }
+  for (const item of data.endingEchoes || []) {
+    validateCondition(item.requires); validateCondition(item.unless);
+    if (!item.endings.length || item.endings.some(id => !data.endings.some(ending => ending.id === id)) || !item.text) throw new Error('结局后果格式错误');
   }
   return data;
 }

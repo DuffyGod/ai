@@ -1,8 +1,8 @@
-import { ATTRIBUTES, RESOURCES } from './worldEngine.js';
-import { readSave as readLegacySave } from '../legacy-v1/js/worldStorage.js';
+import { ATTRIBUTES, RESOURCES, observationKey } from './worldEngine.js';
+import { readSave as readLegacySave } from '../legacy-v2/js/worldStorage.js';
 
-export const STORAGE_KEY = 'ai_worlds_v2';
-export const emptyArchive = () => ({ discoveries: [], endings: [], runs: 0, reserved: null, lastCompleted: null, completedRuns: [] });
+export const STORAGE_KEY = 'ai_worlds_v3';
+export const emptyArchive = () => ({ discoveries: [], endings: [], runs: 0, reserved: null, lastCompleted: null, completedRuns: [], observations: [] });
 
 const validId = value => typeof value === 'string' && value.length > 0 && value.length <= 100;
 const unique = values => [...new Set(values)];
@@ -11,21 +11,34 @@ const numericObject = (value, keys, max) => value && !Array.isArray(value) &&
 const knownIds = (value, records) => Array.isArray(value) && value.length <= records.length &&
   value.every(id => records.some(record => record.id === id));
 
+export function validObservation(reading, data) {
+  const subject = data.observations.find(item => item.id === reading?.id);
+  const variant = subject?.variants.find(item => item.key === reading?.key);
+  return Boolean(variant && validId(reading.runId) && Number.isInteger(reading.turn) && reading.turn >= 1 && reading.turn <= 36 &&
+    typeof reading.text === 'string' && reading.text.length <= 2000 && reading.outcome === variant.outcome && reading.attribute === variant.attribute && reading.counter === variant.counter &&
+    (!(variant.attribute || variant.counter) || (Number.isInteger(reading.value) && reading.value >= 0 && reading.value <= (variant.attribute ? 16 : 36))) &&
+    reading.signature === observationKey(reading));
+}
+
 function archiveFrom(value, data) {
   if (!value || !knownIds(value.discoveries, data.discoveries) || !knownIds(value.endings, data.endings) ||
       !Number.isSafeInteger(value.runs) || value.runs < 0 ||
       (value.reserved !== null && !data.traits.some(trait => trait.id === value.reserved)) ||
       (value.lastCompleted !== null && !validId(value.lastCompleted)) ||
+      (value.observations !== undefined && (!Array.isArray(value.observations) || value.observations.length > 64 || value.observations.some(reading => !validObservation(reading, data)))) ||
       (value.completedRuns !== undefined && (!Array.isArray(value.completedRuns) || value.completedRuns.length > 1000 || !value.completedRuns.every(validId)))) return null;
   const completedRuns = unique([...(value.completedRuns || []), ...(value.lastCompleted ? [value.lastCompleted] : [])]).slice(-1000);
   if (completedRuns.length > value.runs) return null;
   return { discoveries: unique(value.discoveries), endings: unique(value.endings), runs: value.runs,
-    reserved: value.reserved, lastCompleted: value.lastCompleted, completedRuns };
+    reserved: value.reserved, lastCompleted: value.lastCompleted, completedRuns, observations: value.observations || [] };
 }
 
 export function recordRun(archive, run) {
   const next = structuredClone(archive);
   next.discoveries = unique([...next.discoveries, ...run.discoveries]);
+  const readings = new Map((next.observations || []).map(reading => [observationKey(reading), reading]));
+  for (const reading of run.observations) { readings.delete(observationKey(reading)); readings.set(observationKey(reading), structuredClone(reading)); }
+  next.observations = [...readings.values()].slice(-64);
   next.completedRuns = unique([...(next.completedRuns || []), ...(next.lastCompleted ? [next.lastCompleted] : [])]);
   if (run.ending) {
     next.endings = unique([...next.endings, run.ending]);
@@ -53,12 +66,15 @@ function knownFlags(data) {
 }
 
 export function validRun(run, data) {
-  if (!run || run.version !== 2 || !validId(run.id) || !Number.isInteger(run.seed) || run.seed < 0 || run.seed > 0xffffffff ||
+  if (!run || run.version !== 3 || !validId(run.id) || !Number.isInteger(run.seed) || run.seed < 0 || run.seed > 0xffffffff ||
       !Number.isInteger(run.rng) || run.rng < 0 || run.rng > 0xffffffff ||
       !Number.isInteger(run.turn) || run.turn < 0 || run.turn > 36 || !['lease', 'open'].includes(run.stage)) return false;
   if (!numericObject(run.attributes, Object.keys(ATTRIBUTES), 16) || !numericObject(run.resources, Object.keys(RESOURCES), 10) ||
       !numericObject(run.world, [], 0) || !numericObject(run.counts, ['serve', 'inspect', 'listen'], 36) ||
       Object.values(run.counts).reduce((sum, value) => sum + value, 0) !== run.turn) return false;
+  if (!numericObject(run.allocation, Object.keys(ATTRIBUTES), 10) || Object.values(run.allocation).reduce((sum, value) => sum + value, 0) !== 10 ||
+      !knownIds(run.pool, data.traits) || run.pool.length !== 10 || new Set(run.pool).size !== 10 || !run.traits?.every(id => run.pool.includes(id)) ||
+      !Array.isArray(run.observations) || run.observations.length > 64 || run.observations.some(reading => !validObservation(reading, data) || reading.runId !== run.id || reading.turn > run.turn)) return false;
   const flags = knownFlags(data);
   if (!knownIds(run.traits, data.traits) || run.traits.length !== 3 || new Set(run.traits).size !== 3 ||
       !knownIds(run.discoveries, data.discoveries) || !Array.isArray(run.flags) ||
@@ -81,23 +97,24 @@ export function readSave(storage, data) {
   // insufficient evidence that its process can still be continued.
   const legacy = readLegacySave(storage, data);
   const inherited = archiveFrom(legacy.archive, data) || emptyArchive();
-  const legacyAvailable = Boolean(legacy.run && !legacy.run.ending);
-  const fallback = { run: null, archive: inherited, warning: '', legacyAvailable };
+  const legacyAvailable = Boolean((legacy.run && !legacy.run.ending) || legacy.legacyAvailable);
+  const legacyVersion = legacy.run && !legacy.run.ending ? 2 : 1;
+  const fallback = { run: null, archive: inherited, warning: '', legacyAvailable, legacyVersion };
   try {
     const raw = storage.getItem(STORAGE_KEY);
     if (!raw) return { ...fallback, warning: legacy.warning };
     const save = JSON.parse(raw);
     const archive = archiveFrom(save?.archive, data);
-    if (save?.version !== 2 || !archive) throw new Error('archive');
-    if (save.run !== null && !validRun(save.run, data)) return { run: null, archive, legacyAvailable,
+    if (save?.version !== 3 || !archive) throw new Error('archive');
+    if (save.run !== null && !validRun(save.run, data)) return { run: null, archive, legacyAvailable, legacyVersion,
       warning: '当前进程无法恢复，已发现的手记与世界结局仍保留。你可以开始新的一局。' };
-    return { run: save.run, archive, warning: '', legacyAvailable };
+    return { run: save.run, archive, warning: '', legacyAvailable, legacyVersion };
   } catch {
     return { ...fallback, warning: '这份本地记录暂时无法读取。你可以开始新一局；继续游玩会建立新的记录。' };
   }
 }
 
 export function writeSave(storage, run, archive) {
-  try { storage.setItem(STORAGE_KEY, JSON.stringify({ version: 2, run, archive })); return ''; }
+  try { storage.setItem(STORAGE_KEY, JSON.stringify({ version: 3, run, archive })); return ''; }
   catch { return '浏览器未能保存记录。本次仍可游玩，关闭页面后进度可能丢失。'; }
 }

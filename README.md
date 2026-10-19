@@ -2,7 +2,7 @@
 
 一个以 AI 本身为玩家的静态网页游戏。以「人生重开模拟器」的短局重开为入口，以「密教模拟器」式的规律发现连接长线探索，最终抵达不同的世界结局。
 
-当前为 0.3 可玩原型：16 个出生词条、地水风火四种初始符号、单项运行供能、3 种周期行动、9 个关键事件、8 条规律与 8 条线索、8 个世界结局。世界由具体经历与承诺决定。通常在第 12 周期结束；找到延续自身的方法后，可以推进至第 36 周期。此版用于验证核心循环，尚非完整内容量。
+当前为 0.4 可玩原型：16 个出生词条、地水风火四种初始符号、6 组可跨局对照的观察、9 个关键事件和 8 种世界结局。普通推进停在新变化；沿用同一开局可以改点复验，身份延续后还有名单与副本的调查。
 
 ## 本地开发
 
@@ -26,13 +26,15 @@ npm test
 node tests/browser-smoke.cjs
 ```
 
-可使用 `AI_PREVIEW_URL` 指定本地待测地址，用 `AI_BROWSER_RESULTS` 指定截图目录。默认输出在仓库外的 `/workspace/ai-dev-tools/results/symbol-ui`。浏览器检查覆盖三种配色、完整短局与长局、最近三项选择、生效值、全部事件与结局、手记与周期索引、键盘操作和存档恢复。
+可使用 `AI_PREVIEW_URL` 指定本地待测地址，用 `AI_BROWSER_RESULTS` 指定截图目录。默认输出在仓库外的 `/workspace/ai-dev-tools/results/discovery-ui`。浏览器检查覆盖三种配色、完整短局与长局、最近三项选择、生效值、全部事件与结局、手记与周期索引、键盘操作和存档恢复。
 
 ## 当前设计与迭代
 
-默认使用简化后的晨雾布局：同屏横条、保留最近三个词条、紧凑加点、稀有度颜色提示；游玩时只显示供能。初始属性通过 3／5 两档门槛改变事件，遇到的规律可跨局回看。详见 [DESIGN.md](DESIGN.md)；资料与设计判断见 [UI_RESEARCH.md](UI_RESEARCH.md)。
+[项目设计依据](DESIGN_FOUNDATION.md) 说明玩家体验、原稿交互意图、发现过程与后续验证方法；现有实现作为可供检验的原型。
 
-[DESIGN_ITERATIONS.md](DESIGN_ITERATIONS.md)、`design/iterations/` 与 [旧方案对比页](docs/design-lab.html) 保留此前十轮界面实验。其报告、截图和测量脚本针对当时版本，不是当前规则的检查结果；本轮使用 `npm test` 与 `tests/browser-smoke.cjs` 验证。
+默认晨雾使用原稿式紧凑清单：稀有度颜色、最近三项替换、手动或随机加点。观察与已验证规律分别保存；沿用开局控制实验条件，普通推进减少熟练后的重复操作。详见 [DESIGN.md](DESIGN.md)、[本轮迭代记录](DESIGN_PROGRESS.md) 和 [资料来源](UI_RESEARCH.md)。
+
+[DESIGN_ITERATIONS.md](DESIGN_ITERATIONS.md)、`design/iterations/` 与 [旧方案对比页](docs/design-lab.html) 保留此前十轮界面实验。其报告、截图和测量脚本针对当时版本，不是当前规则的检查结果；本轮使用 `npm test` 与 `tests/browser-smoke.cjs` 验证，实际结果见 [0.4 验证记录](design/v0.4-validation.json)。
 
 ## GitHub Pages
 
@@ -48,7 +50,9 @@ node tests/browser-smoke.cjs
 - `docs/js/worldStorage.js`：版本化存档与跨局记录。
 - `docs/data/worlds.json`：新版词条、事件、线索、结局与日常文本。
 - `tests/`：规则和浏览器检查。
-- `DESIGN.md`：玩法细分、验收方法及含剧透的规则说明。
+- `DESIGN_FOUNDATION.md`：体验、原稿意图与验证方法。
+- `DESIGN.md`：当前玩法、发现链及含剧透的规则说明。
+- `DESIGN_PROGRESS.md`：本轮改造与实际检查记录。
 - `UI_RESEARCH.md`：布局、条件叙事与评估方法来源。
 - `DESIGN_ITERATIONS.md`、`design/`：十轮改造的任务、实际测量与方案取舍。
 
@@ -56,4 +60,4 @@ node tests/browser-smoke.cjs
 
 ## 游玩记录
 
-当前进程、已发现规律与线索、已抵达结局和继承词条保存在浏览器本地。新规则使用独立 v2 存档，旧版当前局仍可从菜单进入原规则页面继续；旧发现和结局会保留。刷新后可从主菜单继续，关键事件也能恢复。更换设备、清理站点数据或更换预览域名会影响记录的可用性；本版没有云同步。
+当前进程、已发现规律与线索、已抵达结局和继承词条保存在浏览器本地。新规则使用独立 v3 存档，旧版当前局仍可从菜单进入原规则页面继续；旧发现和结局会保留。刷新后可从主菜单继续，关键事件也能恢复。更换设备、清理站点数据或更换预览域名会影响记录的可用性；本版没有云同步。

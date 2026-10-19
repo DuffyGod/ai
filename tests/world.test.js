@@ -36,7 +36,7 @@ test('new games expose four neutral symbols and one bounded supply resource', ()
   assert.deepEqual(Object.keys(RESOURCES), ['energy']);
   assert.deepEqual(WORLD, {});
   const state = fresh();
-  assert.equal(state.version, 2);
+  assert.equal(state.version, 3);
   assert.deepEqual(state.resources, { energy: 6 });
   assert.deepEqual(state.world, {});
   assert.equal(validateData(data), data);
@@ -101,9 +101,9 @@ for (const scenario of earlyCases) {
     assert.notEqual(result, high);
     if (scenario.flag) assert.ok(result.flags.includes(scenario.flag));
     if (scenario.ending) assert.equal(result.ending, scenario.ending);
-    assert.ok(result.history.at(-1).text.includes(`${scenario.name}达到 3`), 'The result explains which remembered threshold caused it');
-    assert.ok(low.discoveries.includes(`rule-${scenario.attribute}-3`), 'A failed threshold also leaves a discoverable rule');
-    assert.ok(high.discoveries.includes(`rule-${scenario.attribute}-3`));
+    assert.ok(result.history.at(-1).text.includes(`本局${scenario.name}为 3`), 'The result explains which remembered threshold caused it');
+    assert.equal(low.discoveries.includes(`rule-${scenario.attribute}-3`), false, 'Seeing a locked route must not reveal a full solution');
+    assert.ok(result.discoveries.includes(`rule-${scenario.attribute}-3`), 'A successful test records its actual rule');
   });
 }
 
@@ -163,7 +163,7 @@ for (const scenario of lateCases) {
     const result = choose(data, high, scenario.choice);
     assert.notEqual(result, high);
     assert.ok(result.flags.includes(scenario.flag));
-    assert.ok(result.history.at(-1).text.includes(`${scenario.name}达到 5`));
+    assert.ok(result.history.at(-1).text.includes(`本局${scenario.name}为 5`));
     assert.ok(result.discoveries.includes(`rule-${scenario.attribute}-5`));
     assert.equal(validRun(result, data), true);
   });
@@ -224,7 +224,7 @@ test('the supply preview shows actual bounded settlement and zero supply ends im
     const before = structuredClone(state);
     const preview = previewAction(state, action);
     const next = advance(data, state, action);
-    assert.deepEqual(next.history.at(-1).changes, preview);
+    assert.deepEqual(next.history.find(entry => entry.action === action).changes, preview);
     assert.deepEqual(state, before, 'Action settlement must not mutate the prior state');
     assert.equal(next.resources.energy - energy, preview.energy || 0);
   }
@@ -246,7 +246,8 @@ test('reloading a pending event preserves its build, numerical discoveries and l
   const restored = readSave(storage, data);
   assert.equal(restored.warning, '');
   assert.deepEqual(restored.run, state);
-  assert.ok(restored.archive.discoveries.includes('rule-wind-3'));
+  assert.equal(restored.archive.discoveries.includes('rule-wind-3'), false);
+  assert.ok(restored.archive.observations.some(item=>item.id==='checksum-pages'&&item.value===3));
   const before = structuredClone(state);
   const resumed = advance(data, choose(data, restored.run, 'decode'), 'listen');
   const uninterrupted = advance(data, choose(data, state, 'decode'), 'listen');

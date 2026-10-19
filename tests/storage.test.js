@@ -53,20 +53,20 @@ test('a truthy or corrupt old process does not produce a continue-old-game link'
   assert.equal(readSave(store([[legacyKey, legacySave(complete)]]), data).legacyAvailable, false);
 });
 
-test('v2 saves take precedence and never overwrite the bytes of a legacy save', () => {
+test('v3 saves take precedence and never overwrite the bytes of a legacy save', () => {
   const raw = legacySave(legacyRun());
   const storage = store([[legacyKey, raw]]);
   const state = newRun();
   const archive = { ...emptyArchive(), discoveries: ['name'] };
   assert.equal(writeSave(storage, state, archive), '');
-  assert.equal(STORAGE_KEY, 'ai_worlds_v2');
+  assert.equal(STORAGE_KEY, 'ai_worlds_v3');
   assert.deepEqual(storage.writes, [STORAGE_KEY]);
   assert.equal(storage.records.get(legacyKey), raw);
   const restored = readSave(storage, data);
   assert.deepEqual(restored.run, state);
   assert.deepEqual(restored.archive, archive);
   assert.equal(restored.legacyAvailable, true);
-  assert.equal(JSON.parse(storage.records.get(STORAGE_KEY)).version, 2);
+  assert.equal(JSON.parse(storage.records.get(STORAGE_KEY)).version, 3);
 });
 
 test('completed process identities are counted once even when revisited after another ending', () => {
@@ -87,11 +87,11 @@ test('completed process identities are counted once even when revisited after an
   assert.equal(recordRun(readSave(storage, data).archive, a).runs, 2);
 });
 
-test('damaged v2 progress preserves its independently valid discoveries and inherited selection', () => {
+test('damaged v3 progress preserves its independently valid discoveries and inherited selection', () => {
   const archive = { ...emptyArchive(), discoveries: ['name'], endings: ['replacement'], runs: 1, reserved: 'echo', lastCompleted: 'finished', completedRuns: ['finished'] };
   const run = newRun();
   run.pending = 'world';
-  const storage = store([[STORAGE_KEY, JSON.stringify({ version: 2, run, archive })]]);
+  const storage = store([[STORAGE_KEY, JSON.stringify({ version: 3, run, archive })]]);
   const restored = readSave(storage, data);
   assert.equal(restored.run, null);
   assert.ok(restored.warning);
@@ -99,8 +99,8 @@ test('damaged v2 progress preserves its independently valid discoveries and inhe
   assert.deepEqual(storage.writes, []);
 });
 
-test('corrupt v2 files recover an existing valid legacy archive without writing', () => {
-  for (const raw of ['{', 'null', JSON.stringify({ version: 2, run: null, archive: { ...emptyArchive(), runs: -1 } })]) {
+test('corrupt v3 files recover an existing valid legacy archive without writing', () => {
+  for (const raw of ['{', 'null', JSON.stringify({ version: 3, run: null, archive: { ...emptyArchive(), runs: -1 } })]) {
     const storage = store([[legacyKey, legacySave(legacyRun())], [STORAGE_KEY, raw]]);
     const restored = readSave(storage, data);
     assert.equal(restored.run, null);
