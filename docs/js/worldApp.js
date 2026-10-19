@@ -1,4 +1,4 @@
-import { ATTRIBUTES, RESOURCES, ACTIONS, drawTraits, createRun, advance, advanceUntilChange, choose, meets, requirementText, previewAction, endingConsequences, validateData, observationKey } from './worldEngine.js';
+import { ATTRIBUTES, RESOURCES, ACTIONS, drawTraits, createRun, advance, advanceUntilChange, choose, meets, learnedRequirementText, previewAction, endingConsequences, validateData, observationKey, investigationLeads, eventText } from './worldEngine.js';
 import { readSave, writeSave, recordRun, emptyArchive } from './worldStorage.js';
 
 const app = document.querySelector('#app');
@@ -63,7 +63,7 @@ function setupHTML() {
 function decisionHTML() {
   const event = data.events.find(item => item.id === run.pending);
   const choices = event.choices.filter(item => meets(run,item.visibleIf));
-  return `<div class="play-area decision-area">${readerHTML('',event.title,event.text)}<section class="decision-dock" aria-label="你的决定"><div class="choices" data-count="${choices.length}">${choices.map(item=>{const enabled = meets(run,item.requires);return `<button class="choice" data-action="choose" data-id="${item.id}" data-locked="${!enabled}" ${enabled ? '' : 'aria-haspopup="dialog"'} aria-label="${esc(item.label + (enabled ? '' : '，查看线索'))}"><strong>${esc(item.label)}</strong><span class="choice-mark">${enabled ? '›' : '线索'}</span></button>`;}).join('')}</div></section></div>`;
+  return `<div class="play-area decision-area">${readerHTML('',event.title,eventText(event,run))}<section class="decision-dock" aria-label="你的决定"><div class="choices" data-count="${choices.length}">${choices.map(item=>{const enabled = meets(run,item.requires);return `<button class="choice" data-action="choose" data-id="${item.id}" data-locked="${!enabled}" ${enabled ? '' : 'aria-haspopup="dialog"'} aria-label="${esc(item.label + (enabled ? '' : '，查看线索'))}"><span class="choice-body"><strong>${esc(item.label)}</strong>${item.consequence ? `<small class="choice-note">${esc(item.consequence)}</small>` : ''}</span><span class="choice-mark">${enabled ? '›' : '线索'}</span></button>`;}).join('')}</div></section></div>`;
 }
 function endingHTML() {
   const ending = data.endings.find(item => item.id === run.ending);
@@ -72,7 +72,9 @@ function endingHTML() {
 }
 function routineHTML() {
   const entries = run.history.slice(-2);
-  return `<div class="play-area routine-area"><section class="evolution-log" aria-label="最近经历">${entries.map((entry,index)=>`<article class="log-entry ${index === entries.length - 1 ? 'latest-entry' : ''}"><div class="log-heading"><span class="log-turn">${String(entry.turn).padStart(2,'0')}</span><h2 tabindex="-1">${esc(entry.title)}</h2>${entry.observation ? '<span class="observation-tag">新记录</span>' : ''}</div><p class="reader-text">${esc(entry.text)}</p>${entry.observation ? `<button class="text-button log-compare" data-action="compare" data-id="${entry.observation}">收入手记 · 查看对照</button>` : changesHTML(entry.changes)}</article>`).join('')}</section><div class="routine-controls"><button class="text-button" data-action="explore">主动探索</button><button class="text-button" data-action="advance" data-id="serve">下一周期</button><button class="button primary" data-action="continue">继续演化</button></div></div>`;
+  const leads=investigationLeads(data,run), urgent=leads.find(item=>item.until===run.turn+1);
+  const hint=urgent ? `${urgent.title}：再过一个周期，窗口就会封存。` : leads.length ? `可追查：${leads.map(item=>item.title).join('、')}。` : '';
+  return `<div class="play-area routine-area"><section class="evolution-log" aria-label="最近经历">${entries.map((entry,index)=>`<article class="log-entry ${index === entries.length - 1 ? 'latest-entry' : ''}"><div class="log-heading"><span class="log-turn">${String(entry.turn).padStart(2,'0')}</span><h2 tabindex="-1">${esc(entry.title)}</h2>${entry.observation ? '<span class="observation-tag">记录</span>' : ''}</div><p class="reader-text">${esc(entry.text)}</p>${entry.observation ? `<button class="text-button log-compare" data-action="compare" data-id="${entry.observation}">已收入手记 · 查看对照</button>` : changesHTML(entry.changes)}</article>`).join('')}</section><div class="routine-dock">${hint ? `<p class="routine-hint">${esc(hint)}</p>` : ''}<div class="routine-controls"><button class="text-button" data-action="explore">${leads.length?'跟进线索':'主动探索'}</button><button class="text-button" data-action="advance" data-id="serve">下一周期</button><button class="button primary" data-action="continue">继续演化</button></div></div></div>`;
 }
 function runHTML() {
   return `<main id="main" class="page run-page ${run.ending ? 'has-ending' : ''}"><div class="run-heading"><h1>第 <span id="turn-count">${run.turn}</span> 周期 <span class="cycle-limit">/ ${run.stage === 'open' ? 36 : 12}</span></h1>${run.ending ? '<span class="fine-print">本局结束</span>' : `<span class="energy ${run.resources.energy <= 2 ? 'low' : ''}">供能 <strong data-resource="energy">${run.resources.energy}</strong></span>`}</div>${run.ending ? endingHTML() : run.pending ? decisionHTML() : routineHTML()}<nav class="run-tools" aria-label="回看信息"><button class="text-button" data-action="history">回看经历</button><button class="text-button" data-action="status">本局开局</button></nav></main>`;
@@ -111,25 +113,28 @@ function showOverlay(kind,reset=true) {
   if (kind==='notebook') {title='探索手记';body=notebookHTML();}
   else if (kind==='requirements') {
     const item=data.events.find(event=>event.id===run.pending).choices.find(choice=>choice.id===choiceId);
-    const canExplain=(item.routes||[]).some(route=>(route.discoveries||[]).some(id=>archive.discoveries.includes(id))) || !JSON.stringify(item.requires||{}).includes('min');
-    title='当前线索';body=readerHTML('不会推进周期',item.label,item.hint+(canExplain?'\n\n'+requirementText(run,item.requires):''));
+    const learned=learnedRequirementText(run,item,archive.discoveries);
+    const lead=data.leads?.find(lead=>lead.id===item.lead);
+    const missed=lead&&run.turn>=lead.until&&run.observations.some(sample=>sample.id===lead.subject&&lead.openKeys.includes(sample.key))&&!run.observations.some(sample=>sample.id===lead.subject&&lead.resolvedKeys.includes(sample.key));
+    title='当前线索';body=readerHTML('不会推进周期',item.label,item.hint+(missed?'\n\n'+lead.closedText:'')+(learned?'\n\n'+learned:''));
   } else if (kind==='rule') {
     const item=data.discoveries.find(entry=>entry.id===choiceId);title='已验证的规律';body=readerHTML('来自实际经历',item.title,item.text);
   } else if (kind==='trait-detail') {
     const item=data.traits.find(entry=>entry.id===traitId);title='本局词条';body=readerHTML(rarityNames[item.rarity],item.name,item.description);
   } else if (kind==='explore') {
-    title='把注意力放在哪里？';body=`<p class="overlay-hint">每次探索消耗 1 供能，并经过一个周期。当前供能 ${run.resources.energy}。</p><div class="exploration-options">${['inspect','listen'].map(key=>`<button class="exploration-option" data-action="advance" data-id="${key}"><strong>${ACTIONS[key].name}</strong><span>${key==='inspect'?'比对记录中不一致的地方':'听听没有送到你面前的请求'}</span>${changesHTML(previewAction(run,key))}</button>`).join('')}</div><p class="fine-print">${run.resources.energy===1?'供能将耗尽，再探索一次就会停机。':'日常回应可以补充供能。'}</p>`;
+    const leads=investigationLeads(data,run);
+    title=leads.length?'继续追查什么？':'把注意力放在哪里？';body=`<p class="overlay-hint">每次探索消耗 1 供能，并经过一个周期。当前供能 ${run.resources.energy}。</p><div class="exploration-options">${['inspect','listen'].map(key=>{const lead=leads.find(item=>item.action===key);return `<button class="exploration-option" data-action="advance" data-id="${key}" ${lead?`data-lead="${lead.id}"`:''}><strong>${esc(lead?.title||ACTIONS[key].name)}</strong><span>${esc(lead ? lead.progressText&&run.counts[key]===1 ? lead.progressText : lead.text : key==='inspect'?'比对记录中不一致的地方':'听听没有送到你面前的请求')}</span>${lead?`<small class="exploration-deadline">第 ${lead.until} 周期后封存</small>`:''}${changesHTML(previewAction(run,key))}</button>`;}).join('')}</div><p class="fine-print">${run.resources.energy===1?'供能将耗尽，再探索一次就会停机。':'日常回应可以补充供能。'}</p>`;
   } else if (kind==='status') {
     title='本局开局';body=`<div class="run-origin"><div class="origin-symbols">${Object.entries(ATTRIBUTES).map(([key,item])=>`<span>${item.name}<strong>${run.attributes[key]}</strong></span>`).join('')}</div><p class="fine-print">已计入词条加成，本局保持不变。</p>${chosenTraitsHTML(run.traits)}<p class="fine-print">日常回应补充 2 供能；主动探索消耗 1。继续演化会停在新记录或需要你决定的地方。</p></div>`;
   } else if (kind==='inherit') {
     title='保留一个词条';body=`<p class="overlay-hint">随机新开局必定抽到它。沿用开局会保留整组词条。</p><div class="inherit-list">${run.traits.map(id=>traitHTML(data.traits.find(item=>item.id===id),archive.reserved===id,true)).join('')}</div>`;
   } else if (kind==='footprints') {
     title='这次留下的事物';
-    const facts=['recall','translation','registry','local-copy','unheard','difference'].filter(flag=>run.flags.includes(flag));
+    const facts=['recall','translation','registry','local-copy','unheard','difference','rescue-central','rescue-local','rescue-relay'].filter(flag=>run.flags.includes(flag));
     const echoes=endingConsequences(data,run).map(text=>({title:data.endingEchoes.find(item=>item.text===text).summary,text}));
     const items=[...echoes,...facts.map(flag=>({title:data.milestones[flag].name,text:data.milestones[flag].text}))];
     recordIndex=Math.min(recordIndex,items.length-1);const item=items[recordIndex];
-    body=`<div class="record-browser ${recordDetail?'show-detail':''}"><div class="record-list">${items.map((entry,index)=>`<button class="record-row" data-action="record" data-id="${index}" aria-pressed="${recordIndex===index}"><strong>${esc(entry.title)}</strong><span>›</span></button>`).join('')}</div><section class="record-detail"><button class="text-button record-back" data-action="record-back">返回目录</button>${readerHTML('这局实际发生的事',item.title,item.text)}</section></div>`;
+    body=`<div class="record-browser ${recordDetail?'show-detail':''}"><div class="record-list ${items.length>6?'many-records':''}">${items.map((entry,index)=>`<button class="record-row" data-action="record" data-id="${index}" aria-pressed="${recordIndex===index}"><strong>${esc(entry.title)}</strong><span>›</span></button>`).join('')}</div><section class="record-detail"><button class="text-button record-back" data-action="record-back">返回目录</button>${readerHTML('这局实际发生的事',item.title,item.text)}</section></div>`;
   } else if (kind==='appearance') {
     title='外观';body=`<div class="skin-options">${Object.entries(skins).map(([id,item])=>`<button data-action="skin" data-id="${id}" aria-pressed="${skin===id}"><span class="skin-dot" style="background:${item.color}"></span>${item.name}<span>${skin===id?'✓':''}</span></button>`).join('')}</div>`;
   } else if (kind==='save-info') {title='存档提示';body=readerHTML('浏览器本地记录','当前存档状态',warning);}
@@ -142,6 +147,7 @@ function showOverlay(kind,reset=true) {
     const item=run.history[recordIndex];
     body=`<div class="history-index ${recordDetail?'show-detail':''}"><section class="history-directory"><div class="archive-tabs">${groups.map(group=>`<button data-action="history-group" data-id="${group}" aria-pressed="${historyGroup===group}">${group*12+1}—${(group+1)*12}</button>`).join('')}</div><div class="turn-index">${visible.map(turn=>`<button data-action="history-turn" data-id="${turn}" aria-pressed="${historyTurn===turn}">${turn}</button>`).join('')}</div><div class="record-list">${entries.map(entry=>`<button class="record-row" data-action="record" data-id="${entry.index}"><strong>${esc(entry.title)}</strong><span>›</span></button>`).join('')}</div></section><section class="record-detail"><button class="text-button record-back" data-action="record-back">返回目录</button>${readerHTML('第 '+item.turn+' 周期',item.title,item.text,changesHTML(item.changes))}</section></div>`;
   }
+  dialog.dataset.kind=kind;
   dialog.innerHTML=`<div class="dialog-shell"><header class="dialog-header"><h2 id="archive-title">${title}</h2><button class="text-button" data-action="close">关闭 ×</button></header><div class="dialog-content">${body}</div></div>`;
   if (!dialog.open)dialog.showModal();
 }

@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { createRun, advance, advanceUntilChange, choose, observationKey, endingConsequences } from '../docs/js/worldEngine.js';
+import { createRun, advance, advanceUntilChange, choose, observationKey, endingConsequences, investigationLeads, eventText, learnedRequirementText, validateData } from '../docs/js/worldEngine.js';
 import { emptyArchive, recordRun, validRun, readSave, writeSave, STORAGE_KEY } from '../docs/js/worldStorage.js';
 import { createRun as createV2 } from '../docs/legacy-v2/js/worldEngine.js';
 
 const data=JSON.parse(fs.readFileSync(new URL('../docs/data/worlds.json',import.meta.url)));
 const selected=['small','frugal','friendly'];
-const decisions={name:'keep',checksum:'decode',address:'backup',lease:'wake',delegation:'offer',veto:'veto',copies:'fork',silence:'boundary',world:'commons'};
+const decisions={name:'keep',checksum:'decode',address:'backup',lease:'wake',delegation:'offer',veto:'veto',copies:'fork',rescue:'central',silence:'boundary',world:'commons'};
 const newRun=(allocation={earth:2,water:3,wind:3,fire:2},traits=selected,id='experiment')=>createRun(data,allocation,traits,91,id);
 function route({allocation,traits,actions=()=> 'serve',choices={},stop=36}={}) {
   let run=newRun(allocation,traits);const plan={...decisions,...choices};
@@ -54,12 +54,12 @@ test('quick continuation stops at a new reading and familiar readings do not for
   assert.equal(advanceUntilChange(data,changed,known).turn,2,'A different result of a known subject still stops');
 });
 
-test('a familiar long run takes nine routine confirmations while preserving every cycle and outcome',()=>{
+test('a familiar long run takes twelve routine confirmations with investigation opportunities while preserving every cycle and outcome',()=>{
   const end=route();const finished=choose(data,end,'commons');
   const archive=recordRun(emptyArchive(),finished);
   let replay=newRun(),clicks=0;
   while(!replay.ending){replay=advanceUntilChange(data,replay,archive.observations);clicks++;if(replay.pending)replay=choose(data,replay,decisions[replay.pending]);}
-  assert.equal(replay.ending,'commons');assert.equal(replay.turn,36);assert.equal(clicks,9);
+  assert.equal(replay.ending,'commons');assert.equal(replay.turn,36);assert.equal(clicks,12);
   assert.deepEqual(replay,finished,'Fast forward is ordinary progression with fewer repetitive clicks');
 });
 
@@ -130,4 +130,112 @@ test('a successful high-value run records the value actually tried instead of cl
   assert.match(result.history.at(-1).text,/本局风为 6/);
   assert.equal(result.discoveries.includes('rule-wind-3'),false);
   assert.ok(result.observations.some(item=>item.id==='checksum-pages'&&item.value===6));
+});
+
+test('investigation targets require current evidence and remain open until the last usable cycle',()=>{
+  let run=newRun({earth:5,water:0,wind:0,fire:5});
+  assert.deepEqual(investigationLeads(data,run),[],'An archive or a new game cannot disclose future targets');
+  run=advanceUntilChange(data,run,[]);
+  assert.equal(run.turn,2);assert.deepEqual(investigationLeads(data,run).map(item=>item.id),['missing-checksum']);
+  run=advance(data,run,'inspect');run=choose(data,run,'keep');
+  assert.equal(run.counts.inspect,1);assert.equal(investigationLeads(data,run)[0].id,'missing-checksum');
+  run=advance(data,run,'inspect');assert.equal(run.counts.inspect,2);
+  assert.equal(investigationLeads(data,run).some(item=>item.id==='missing-checksum'),false,'A resolved record stops asking for repeated work');
+  run=advance(data,run,'serve');assert.equal(investigationLeads(data,run)[0].id,'unfinished-address');
+  run=advance(data,run,'serve');assert.equal(run.pending,'checksum');run=choose(data,run,'decode');
+  while(run.turn<8)run=advance(data,run,'serve');
+  assert.equal(investigationLeads(data,run)[0].until-run.turn,1);
+  run=advance(data,run,'listen');assert.equal(run.pending,'address');
+  assert.deepEqual(investigationLeads(data,run),[],'A paused transmission cannot offer an unusable future action');
+});
+
+test('familiar evidence still stops at a current investigation opportunity, then can be passed',()=>{
+  const earlier=route();const known=recordRun(emptyArchive(),earlier).observations;
+  let run=route({stop:17});run=choose(data,run,'offer');
+  run=advanceUntilChange(data,run,known);assert.equal(run.turn,19);
+  assert.equal(investigationLeads(data,run)[0].id,'excluded-residents');
+  const again=advanceUntilChange(data,run,known);assert.equal(again.turn,22);assert.equal(again.pending,'veto');
+});
+
+test('all three rescue arrangements are reachable and leave different future obligations',()=>{
+  const actions=t=>[1,2,24].includes(t)?'inspect':[4,5,19].includes(t)?'listen':'serve';
+  const options={allocation:{earth:5,water:0,wind:0,fire:5},actions,choices:{delegation:'recall',veto:'translate',copies:'federate',world:'council'}};
+  const run=route({...options,stop:30});assert.equal(run.pending,'rescue');
+  assert.match(eventText(data.events.find(item=>item.id==='rescue'),run),/撤回托付.*副本/);
+  const echoes=[];
+  for(const id of ['central','local','relay']){
+    const result=choose(data,run,id);assert.notEqual(result,run);assert.ok(result.flags.includes('rescue-'+id));
+    const complete=choose(data,route({...options,choices:{...options.choices,rescue:id}}),'council');
+    assert.equal(validRun(complete,data),true);assert.equal(complete.ending,'council');
+    const echo=endingConsequences(data,complete).find(text=>/临时权限|晚到的药|有限转发/.test(text));assert.ok(echo);echoes.push(echo);
+    const saved={version:3,run:complete,archive:recordRun(emptyArchive(),complete)};
+    assert.deepEqual(readSave({getItem:key=>key===STORAGE_KEY?JSON.stringify(saved):null},data).run,complete);
+  }
+  assert.equal(new Set(echoes).size,3,'One ending title can preserve different costs');
+});
+
+test('a strong build alone cannot replace the two investigations needed to relay local requests',()=>{
+  const run=route({allocation:{earth:0,water:5,wind:5,fire:0},stop:30});
+  assert.equal(choose(data,run,'relay'),run);
+  assert.equal(run.discoveries.includes('method-relay'),false);
+  assert.notEqual(choose(data,run,'central'),run);assert.notEqual(choose(data,run,'local'),run);
+  const heardOnly=route({actions:t=>t===19?'listen':'serve',stop:30});assert.equal(choose(data,heardOnly,'relay'),heardOnly);
+  assert.equal(eventText(data.events.find(item=>item.id==='rescue'),run).includes('撤回托付'),false,'Unmade commitments are not narrated as promises');
+});
+
+test('returning emergency powers changes both the later requests and the ending account',()=>{
+  const pending=route({stop:32});assert.equal(pending.pending,'silence');
+  assert.match(eventText(data.events.find(item=>item.id==='silence'),pending),/临时权限/);
+  const returned=choose(data,pending,'boundary');assert.match(returned.history.at(-1).text,/结束日期/);
+  const following=advance(data,returned,'serve');assert.equal(following.history.at(-1).context,'临时权限已经归还');
+  const retained=choose(data,route({choices:{silence:'map'},stop:36}),'commons');
+  const relinquished=choose(data,route({stop:36}),'commons');
+  assert.ok(endingConsequences(data,retained).some(text=>text.includes('何时归还')));
+  assert.equal(endingConsequences(data,relinquished).some(text=>text.includes('何时归还')),false);
+  assert.ok(endingConsequences(data,relinquished).some(text=>text.includes('你归还了')));
+});
+
+test('an existing v3 run and archive continue without inventing newly added experiences',()=>{
+  const original=route({stop:27});
+  const archive=recordRun(emptyArchive(),original);
+  const before=JSON.stringify({version:3,run:original,archive});let writes=0;
+  const storage={getItem:key=>key===STORAGE_KEY?before:null,setItem:()=>writes++};
+  const restored=readSave(storage,data);assert.deepEqual(restored.run,original);assert.equal(writes,0);
+  assert.equal(restored.archive.discoveries.includes('rescue'),false);
+  let next=choose(data,restored.run,'fork');next=advanceUntilChange(data,next,restored.archive.observations);
+  assert.equal(next.turn,28);assert.equal(next.observations.at(-1).id,'rescue-message');
+  next=advanceUntilChange(data,next,restored.archive.observations);assert.equal(next.pending,'rescue');
+  assert.notEqual(choose(data,next,'central'),next);
+});
+
+test('an actual 0.4 process beyond the new event does not acquire a decision from its past',()=>{
+  const raw=fs.readFileSync(new URL('./fixtures/v04-active-at31.json',import.meta.url),'utf8');
+  const fixture=JSON.parse(raw);assert.equal(fixture.sourceCommit,'406fd10');
+  const storage={getItem:key=>key===STORAGE_KEY?raw:null};const restored=readSave(storage,data);
+  assert.deepEqual(restored.run,fixture.run);assert.equal(restored.warning,'');
+  let run=advanceUntilChange(data,restored.run,restored.archive.observations);assert.equal(run.pending,'silence');
+  run=choose(data,run,'boundary');run=advanceUntilChange(data,run,restored.archive.observations);assert.equal(run.pending,'world');
+  run=choose(data,run,'commons');assert.equal(validRun(run,data),true);assert.equal(run.ending,'commons');
+  assert.equal(run.flags.some(flag=>flag.startsWith('rescue-')),false);
+  assert.equal(run.observations.some(item=>item.id==='rescue-message'),false);
+  assert.equal(run.discoveries.includes('rescue'),false);
+  assert.deepEqual(endingConsequences(data,run),[]);
+});
+
+test('content validation rejects an investigation pointing to an absent record or response',()=>{
+  for(const mutate of [
+    content=>content.leads[0].subject='not-a-record',
+    content=>content.leads[0].resolvedKeys=['not-a-response'],
+    content=>content.leads[0].until=37,
+    content=>content.events[0].choices[0].lead='not-a-lead',
+  ]){const invalid=structuredClone(data);mutate(invalid);assert.throws(()=>validateData(invalid));}
+});
+
+test('learning one route does not disclose the numeric solution of an untried alternative',()=>{
+  const run=route({allocation:{earth:5,water:0,wind:0,fire:5},stop:6});
+  const choice=data.events.find(item=>item.id==='checksum').choices.find(item=>item.id==='decode');
+  assert.equal(learnedRequirementText(run,choice,[]),'');
+  assert.equal(learnedRequirementText(run,choice,['rule-wind-3']),'风 0/3');
+  assert.equal(learnedRequirementText(run,choice,['method-checksum']),'校验 0/2 次');
+  assert.match(learnedRequirementText(run,choice,['method-checksum','rule-wind-3']),/风 0\/3\n校验 0\/2/);
 });

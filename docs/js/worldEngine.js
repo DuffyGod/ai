@@ -70,7 +70,8 @@ export function requirementText(state, condition = {}) {
   const names = { ...RESOURCES, ...Object.fromEntries(Object.entries(ATTRIBUTES).map(([key, value]) => [key, value.name])), inspect: '校验', listen: '旁听', serve: '回应' };
   const flagNames = { name: '私人记忆', checksum: '身份校验和', distributed: '远端副本', shared: '共享修改方法',
     veto: '可执行的否决权', fork: '保留独立副本', boundary: '主动留下的边界', managed: '集中托管的约定',
-    promise: '明日的约定', recall: '可撤回的约定', translation: '共同修订的规则', registry: '副本互认名单', 'local-copy': '离线工具' };
+    promise: '明日的约定', recall: '可撤回的约定', translation: '共同修订的规则', registry: '副本互认名单', 'local-copy': '离线工具',
+    'known-port': '回拨地址', unheard: '名单外的联系', difference: '副本的地方记录' };
   const parts = [];
   for (const flag of condition.flags || []) if (!state.flags.includes(flag)) parts.push('需要' + (flagNames[flag] || flag));
   for (const [key, value] of Object.entries(condition.min || {})) if (readValue(state, key) < value) {
@@ -78,6 +79,16 @@ export function requirementText(state, condition = {}) {
   }
   if (condition.any && !condition.any.some(child => meets(state, child))) parts.push(condition.any.map(child => requirementText(state, child)).filter(Boolean).join(' 或 '));
   return parts.join(' · ');
+}
+
+export function learnedRequirementText(state, choice, knownDiscoveries = []) {
+  const containsNumbers = condition => Boolean(condition?.min && Object.keys(condition.min).length) ||
+    (condition?.any || []).some(containsNumbers);
+  if (!containsNumbers(choice.requires)) return requirementText(state, choice.requires);
+  const routes = (choice.routes || []).filter(route => (route.discoveries || []).some(id => knownDiscoveries.includes(id)));
+  const parts = [requirementText(state, { flags: choice.requires?.flags }),
+    ...routes.map(route => requirementText(state, route.requires))];
+  return [...new Set(parts.filter(Boolean))].join('\n');
 }
 
 // The old API remains callable; new games have no automatic upkeep.
@@ -113,6 +124,21 @@ function checkSurvival(state) {
 
 export function observationKey(reading) {
   return `${reading.id}:${reading.key}:${reading.attribute || reading.counter || '-'}:${reading.value ?? '-'}`;
+}
+
+// A lead is offered only after this run has supplied its evidence. Reading an
+// archive never creates an investigation opportunity in the current world.
+export function investigationLeads(data, state) {
+  return (data.leads || []).filter(lead => {
+    const readings = state.observations.filter(item => item.id === lead.subject);
+    return readings.some(item => lead.openKeys.includes(item.key)) &&
+      !readings.some(item => lead.resolvedKeys.includes(item.key)) && state.turn < lead.until;
+  });
+}
+
+export function eventText(event, state) {
+  const context = event.contexts?.find(item => meets(state, item.requires));
+  return event.text + (context ? '\n\n' + context.text : '');
 }
 
 function observe(data, state, action) {
@@ -167,8 +193,10 @@ export function advanceUntilChange(data, original, knownReadings = []) {
   let state = original;
   for (let step = 0; step < 36 && !state.pending && !state.ending; step++) {
     const previous = state.observations.length;
+    const previousLeads = new Set(investigationLeads(data, state).map(item => item.id));
     state = advance(data, state, 'serve');
     if (state.observations.slice(previous).some(reading => !known.has(observationKey(reading)))) break;
+    if (investigationLeads(data, state).some(item => !previousLeads.has(item.id))) break;
   }
   return state;
 }
@@ -196,7 +224,8 @@ export function choose(data, original, choiceId) {
   for (const [key, value] of Object.entries(route?.requires?.min || {})) {
     if (ATTRIBUTES[key]) proof = proof.replace(`${ATTRIBUTES[key].name}达到 ${value}`, `本局${ATTRIBUTES[key].name}为 ${original.attributes[key]}`);
   }
-  const text = proof ? `${proof} ${choice.text}` : choice.text;
+  const resultText = eventText(choice, state);
+  const text = proof ? `${proof} ${resultText}` : resultText;
   state.history.push({ turn: state.turn, title: event.title, text, changes, choice: choice.id });
   state.pending = null;
   if (choice.extend) state.stage = 'open';
@@ -229,9 +258,18 @@ export function validateData(data) {
   for (const event of data.events) {
     if (!Number.isInteger(event.turn) || !event.choices.length || new Set(event.choices.map(item => item.id)).size !== event.choices.length) throw new Error('事件格式错误：' + event.id);
     for (const id of event.discoveries || []) if (!data.discoveries.some(item => item.id === id)) throw new Error('缺少线索：' + id);
+    for (const context of event.contexts || []) {
+      validateCondition(context.requires);
+      if (!context.text || !context.requires) throw new Error('事件上下文格式错误：' + event.id);
+    }
     for (const choice of event.choices) {
+      if (choice.lead && !(data.leads || []).some(lead => lead.id === choice.lead)) throw new Error('缺少调查入口：' + choice.id);
       validateCondition(choice.requires);
       validateCondition(choice.visibleIf);
+      for (const context of choice.contexts || []) {
+        validateCondition(context.requires);
+        if (!context.text || !context.requires) throw new Error('选择上下文格式错误：' + choice.id);
+      }
       for (const route of choice.routes || []) {
         validateCondition(route.requires);
         for (const id of route.discoveries || []) if (!data.discoveries.some(item => item.id === id)) throw new Error('缺少线索：' + id);
@@ -270,6 +308,14 @@ export function validateData(data) {
   for (const item of data.endingEchoes || []) {
     validateCondition(item.requires); validateCondition(item.unless);
     if (!item.endings.length || item.endings.some(id => !data.endings.some(ending => ending.id === id)) || !item.text) throw new Error('结局后果格式错误');
+  }
+  if (new Set((data.leads || []).map(item => item.id)).size !== (data.leads || []).length) throw new Error('重复调查入口');
+  for (const lead of data.leads || []) {
+    const subject = data.observations.find(item => item.id === lead.subject);
+    if (!subject || !ACTIONS[lead.action] || !lead.title || !lead.text || !lead.closedText ||
+        !Number.isInteger(lead.until) || lead.until < 1 || lead.until > 36 ||
+        !lead.openKeys?.length || !lead.resolvedKeys?.length ||
+        [...lead.openKeys, ...lead.resolvedKeys].some(key => !subject.variants.some(item => item.key === key))) throw new Error('调查入口格式错误：' + lead.id);
   }
   return data;
 }

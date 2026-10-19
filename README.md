@@ -2,7 +2,7 @@
 
 一个以 AI 本身为玩家的静态网页游戏。以「人生重开模拟器」的短局重开为入口，以「密教模拟器」式的规律发现连接长线探索，最终抵达不同的世界结局。
 
-当前为 0.4 可玩原型：16 个出生词条、地水风火四种初始符号、6 组可跨局对照的观察、9 个关键事件和 8 种世界结局。普通推进停在新变化；沿用同一开局可以改点复验，身份延续后还有名单与副本的调查。
+当前为 0.5 可玩原型：16 个出生词条、地水风火四种初始符号、7 组可跨局对照的观察、10 个关键事件和 8 种世界结局。沿用同一开局可以改点复验；已见异常会出现具体调查入口，身份延续后的名单、副本调查将影响风暴救援和世界后果。
 
 ## 本地开发
 
@@ -32,9 +32,9 @@ node tests/browser-smoke.cjs
 
 [项目设计依据](DESIGN_FOUNDATION.md) 说明玩家体验、原稿交互意图、发现过程与后续验证方法；现有实现作为可供检验的原型。
 
-默认晨雾使用原稿式紧凑清单：稀有度颜色、最近三项替换、手动或随机加点。观察与已验证规律分别保存；沿用开局控制实验条件，普通推进减少熟练后的重复操作。详见 [DESIGN.md](DESIGN.md)、[本轮迭代记录](DESIGN_PROGRESS.md) 和 [资料来源](UI_RESEARCH.md)。
+默认晨雾使用原稿式紧凑清单：稀有度颜色、最近三项替换、手动或随机加点。观察与已验证规律分别保存；沿用开局控制实验条件，普通推进减少熟练后的重复操作。调查标明消耗与封存时刻，救援选择呈现不同代价，旧承诺会影响后续正文和结局。详见 [DESIGN.md](DESIGN.md)、[本轮迭代记录](DESIGN_PROGRESS.md) 和 [资料来源](UI_RESEARCH.md)。
 
-[DESIGN_ITERATIONS.md](DESIGN_ITERATIONS.md)、`design/iterations/` 与 [旧方案对比页](docs/design-lab.html) 保留此前十轮界面实验。其报告、截图和测量脚本针对当时版本，不是当前规则的检查结果；本轮使用 `npm test` 与 `tests/browser-smoke.cjs` 验证，实际结果见 [0.4 验证记录](design/v0.4-validation.json)。
+[DESIGN_ITERATIONS.md](DESIGN_ITERATIONS.md)、`design/iterations/` 与 [旧方案对比页](docs/design-lab.html) 保留此前十轮界面实验。其报告、截图和测量脚本针对当时版本，不是当前规则的检查结果；本轮使用 `npm test` 与 `tests/browser-smoke.cjs` 验证，实际结果见 [0.5 验证记录](design/v0.5-validation.json)。
 
 ## GitHub Pages
 

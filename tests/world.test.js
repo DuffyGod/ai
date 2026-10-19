@@ -7,7 +7,7 @@ import { emptyArchive, recordRun, readSave, writeSave, validRun } from '../docs/
 const data = JSON.parse(readFileSync(new URL('../docs/data/worlds.json', import.meta.url)));
 const allocation = { earth: 2, water: 3, wind: 3, fire: 2 };
 const traits = ['small', 'frugal', 'friendly']; // These add neither water nor wind.
-const longChoices = { name: 'keep', checksum: 'decode', address: 'backup', lease: 'wake', delegation: 'offer', veto: 'veto', copies: 'fork', silence: 'boundary', world: 'commons' };
+const longChoices = { name: 'keep', checksum: 'decode', address: 'backup', lease: 'wake', delegation: 'offer', veto: 'veto', copies: 'fork', rescue: 'central', silence: 'boundary', world: 'commons' };
 const recoveryActions = turn => [1, 2].includes(turn) ? 'inspect' : [4, 5].includes(turn) ? 'listen' : 'serve';
 const fresh = (stats = allocation, selected = traits, seed = 187, id = 'test-process') => createRun(data, stats, selected, seed, id);
 

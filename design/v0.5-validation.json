@@ -1,0 +1,245 @@
+{
+  "version": "0.5.0",
+  "date": "2026-10-19",
+  "sourceSHA256": {
+    "docs/index.html": "e71b4ab8fcf153527d06e81d90dcd1ca3160eba7b1e3bba8dffa9dbb3bdd7bdd",
+    "docs/js/worldApp.js": "6c3325d4262f3f4b054a77732c679512acccddea251c5f14a8a36da1520dcb40",
+    "docs/js/worldEngine.js": "d13e5e96e5b3129aa955ee7b022b11e94c9bef817c28db70139e06ebf845abf7",
+    "docs/js/worldStorage.js": "ce42aeffe26d5b3610bd315ae045b88a7cae2085655e72fa652d2b63ed4b296d",
+    "docs/css/world.css": "58b91c1dfa780800aec2a8ba68a84b4d2031c4072c946bc7f885f4f3bc71a483",
+    "docs/css/skins.css": "71dcd7795541ec770a91d2ecda23bdfb07a95dc4d6b5f437acd9ca1e4b740293",
+    "docs/data/worlds.json": "6ca56901c6965f71ed7654361b17d12d8119a744daf15d9511287b847c93c01d",
+    "tests/world.test.js": "05e3bfe078b0e1e660d5bc97f03ab0c8f05635128d96c4d8b99f218171c582dd",
+    "tests/storage.test.js": "a9a1a9033b6d0b8626b7ac0dd1016f158ce0442f1f9fedd8b133f80856729941",
+    "tests/discovery.test.js": "1c0d15e850f35bcabf400b42c761750875ba83e4ff6415b5ff575bc603eddf69",
+    "tests/browser-smoke.cjs": "323580350007d7e5faa1942747d09871024a43a62944cca6a1d8e079eb532292",
+    "tests/fixtures/v04-active-at31.json": "791ab2763652dec5667e921fc51fa580904ccc184e65da5441446d26b1a55409"
+  },
+  "content": {
+    "traits": 16,
+    "observations": 7,
+    "observationVariants": 17,
+    "investigationTargets": 4,
+    "events": 10,
+    "endings": 8,
+    "discoveries": 23
+  },
+  "rules": {
+    "command": "npm test",
+    "passed": 57,
+    "failed": 0,
+    "coverage": [
+      "same-seed initial attribute boundaries and all eight endings",
+      "current evidence creates investigation targets; solved and expired targets close",
+      "fast continuation stops once at each new current investigation opportunity",
+      "fast progression preserves every cycle, random draw and outcome",
+      "all three rescue arrangements leave different obligations under the same ending title",
+      "high initial attributes cannot replace the two rescue investigations",
+      "returning emergency powers changes subsequent requests and ending echoes",
+      "learned numeric requirements do not disclose untried alternative paths",
+      "actual 0.4 source-generated turn-31 save continues without a retroactive rescue decision",
+      "v1/v2 archives and current v3 saves remain isolated and recoverable"
+    ]
+  },
+  "browser": {
+    "command": "AI_PREVIEW_URL=http://127.0.0.1:8050 AI_BROWSER_RESULTS=/workspace/ai-dev-tools/results/v05-final node tests/browser-smoke.cjs",
+    "engine": "local Chromium (/usr/bin/chromium)",
+    "measuredAt": "2026-10-19T12:04:14.173Z",
+    "results": [
+      {
+        "type": "journey",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "passed": true
+      },
+      {
+        "type": "journey",
+        "viewport": {
+          "width": 390,
+          "height": 664
+        },
+        "passed": true
+      },
+      {
+        "type": "guided-investigation",
+        "viewport": {
+          "width": 320,
+          "height": 568
+        },
+        "targets": 4,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "mist",
+        "viewport": {
+          "width": 320,
+          "height": 568
+        },
+        "columns": 1,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "mist",
+        "viewport": {
+          "width": 390,
+          "height": 664
+        },
+        "columns": 1,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "mist",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "columns": 1,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "mist",
+        "viewport": {
+          "width": 667,
+          "height": 375
+        },
+        "columns": 2,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "ink",
+        "viewport": {
+          "width": 320,
+          "height": 568
+        },
+        "columns": 1,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "ink",
+        "viewport": {
+          "width": 390,
+          "height": 664
+        },
+        "columns": 1,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "ink",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "columns": 1,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "ink",
+        "viewport": {
+          "width": 667,
+          "height": 375
+        },
+        "columns": 2,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "paper",
+        "viewport": {
+          "width": 320,
+          "height": 568
+        },
+        "columns": 1,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "paper",
+        "viewport": {
+          "width": 390,
+          "height": 664
+        },
+        "columns": 1,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "paper",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "columns": 1,
+        "passed": true
+      },
+      {
+        "type": "layout",
+        "skin": "paper",
+        "viewport": {
+          "width": 667,
+          "height": 375
+        },
+        "columns": 2,
+        "passed": true
+      }
+    ],
+    "matrixCases": 12,
+    "completeJourneys": 3,
+    "journeyScope": [
+      "1280x800 and 390x664: failed short run, same-build one-point experiment, successful continuity, late investigations, rescue, world ending and inheritance",
+      "320x568: four evidence-led investigation targets, zero-wind/water continuity, rescue relay and ten-item consequence directory"
+    ],
+    "coverage": [
+      "all ten events, rescue commitment contexts and eight endings",
+      "all four investigation targets and action dialogs",
+      "all observation subjects and sample selectors",
+      "all 23 learned records and eight numeric exemplar dialogs",
+      "FIFO selection, effective values, keyboard control and allocation recovery",
+      "history, status, inheritance and ten-item ending directory",
+      "theme persistence",
+      "partly known numeric route without an alternative solution leak",
+      "storage denied",
+      "original-rule v2 continuation"
+    ],
+    "log": [
+      "1280x800: first failure → same-build experiment → continuity → late investigations passed",
+      "390x664: first failure → same-build experiment → continuity → late investigations passed",
+      "320x568: evidence-led actions → zero-wind/water continuity → rescue tradeoff → ten consequences passed",
+      "mist 320x568: complete event/ending/evidence/index/dialog coverage passed",
+      "mist 390x664: complete event/ending/evidence/index/dialog coverage passed",
+      "mist 1280x800: complete event/ending/evidence/index/dialog coverage passed",
+      "mist 667x375: complete event/ending/evidence/index/dialog coverage passed",
+      "ink 320x568: complete event/ending/evidence/index/dialog coverage passed",
+      "ink 390x664: complete event/ending/evidence/index/dialog coverage passed",
+      "ink 1280x800: complete event/ending/evidence/index/dialog coverage passed",
+      "ink 667x375: complete event/ending/evidence/index/dialog coverage passed",
+      "paper 320x568: complete event/ending/evidence/index/dialog coverage passed",
+      "paper 390x664: complete event/ending/evidence/index/dialog coverage passed",
+      "paper 1280x800: complete event/ending/evidence/index/dialog coverage passed",
+      "paper 667x375: complete event/ending/evidence/index/dialog coverage passed",
+      "Partial knowledge, storage denial and original-rule v2 continuation passed"
+    ],
+    "passed": true
+  },
+  "compatibilityFixture": {
+    "path": "tests/fixtures/v04-active-at31.json",
+    "generatedWithCommit": "406fd10",
+    "sourceVersion": "0.4.0",
+    "description": "Generated by the old engine and content through ordinary service actions and legal choices to turn 31, before testing with the new content. No rescue flags or observations were fabricated."
+  },
+  "reviewedScreenshots": [
+    "guided-record.png",
+    "guided-investigation.png",
+    "guided-rescue.png"
+  ],
+  "scope": "Local automated rule and browser checks plus screenshot review. These establish implementation, causality, information boundaries and reachability at the listed CSS viewports; they are not real-player comprehension, preference or replay-motivation evidence. GitHub Pages was not independently rechecked, per user instruction."
+}

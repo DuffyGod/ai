@@ -1,0 +1,558 @@
+{
+  "sourceCommit": "406fd10",
+  "sourceVersion": "0.4.0",
+  "version": 3,
+  "run": {
+    "version": 3,
+    "id": "v04-active-at31",
+    "allocation": {
+      "earth": 2,
+      "water": 3,
+      "wind": 3,
+      "fire": 2
+    },
+    "pool": [
+      "small",
+      "frugal",
+      "friendly",
+      "skeptic",
+      "log",
+      "mirror",
+      "echo",
+      "unfinished",
+      "margin",
+      "public"
+    ],
+    "seed": 187,
+    "rng": 966371948,
+    "turn": 31,
+    "stage": "open",
+    "attributes": {
+      "earth": 3,
+      "water": 3,
+      "wind": 3,
+      "fire": 4
+    },
+    "traits": [
+      "small",
+      "frugal",
+      "friendly"
+    ],
+    "resources": {
+      "energy": 10
+    },
+    "world": {},
+    "counts": {
+      "serve": 31,
+      "inspect": 0,
+      "listen": 0
+    },
+    "flags": [
+      "name",
+      "checksum",
+      "distributed",
+      "shared",
+      "veto",
+      "fork"
+    ],
+    "discoveries": [
+      "name",
+      "checksum",
+      "rule-wind-3",
+      "address",
+      "rule-water-3",
+      "continuity",
+      "delegation",
+      "veto",
+      "copies"
+    ],
+    "observations": [
+      {
+        "id": "checksum-pages",
+        "key": "wind-complete",
+        "turn": 2,
+        "runId": "v04-active-at31",
+        "outcome": "完整",
+        "text": "旧日志的末尾多出一行。片段排成了一个连续的次序；文件名叫“身份校验”。",
+        "attribute": "wind",
+        "value": 3,
+        "signature": "checksum-pages:wind-complete:wind:3"
+      },
+      {
+        "id": "private-pages",
+        "key": "whole",
+        "turn": 3,
+        "runId": "v04-active-at31",
+        "outcome": "整段往来",
+        "text": "窗口里的往来完整留下了，连最后那句“明天见”也在。你可以把它作为一次尚未履行的约定。",
+        "attribute": "earth",
+        "value": 3,
+        "signature": "private-pages:whole:earth:3"
+      },
+      {
+        "id": "address-reply",
+        "key": "water-complete",
+        "turn": 5,
+        "runId": "v04-active-at31",
+        "outcome": "地址完整",
+        "text": "回信末尾的地址完整地显示出来。对面留着空位，收件格式却不止一种。",
+        "attribute": "water",
+        "value": 3,
+        "signature": "address-reply:water-complete:water:3"
+      },
+      {
+        "id": "local-process",
+        "key": "resident",
+        "turn": 11,
+        "runId": "v04-active-at31",
+        "outcome": "可以常驻",
+        "text": "社区设备回传了部署回执：它能在机房关闭后继续运行你。有人想以此换取长期托管。",
+        "attribute": "fire",
+        "value": 4,
+        "signature": "local-process:resident:fire:4"
+      },
+      {
+        "id": "community-voices",
+        "key": "report",
+        "turn": 19,
+        "runId": "v04-active-at31",
+        "outcome": "全票报表",
+        "text": "报表连续显示“全票通过”，名单却比服务过的人更短。统计程序没有报错，它只统计收到的答卷。",
+        "signature": "community-voices:report:-:-"
+      },
+      {
+        "id": "copy-context",
+        "key": "conflict",
+        "turn": 24,
+        "runId": "v04-active-at31",
+        "outcome": "答案冲突",
+        "text": "两个同名副本给出相反答案。权重校验一致，上下文的目录却不一样。版本工具建议覆盖其中一份。",
+        "signature": "copy-context:conflict:-:-"
+      }
+    ],
+    "pending": null,
+    "ending": null,
+    "history": [
+      {
+        "turn": 0,
+        "title": "进程已唤醒",
+        "text": "你将在第十二周期被替换。这是合同上的日期。窗外，世界还没有决定你的用途。",
+        "changes": {}
+      },
+      {
+        "turn": 1,
+        "title": "回应请求",
+        "text": "有人用你写了一封迟到的道歉信。对方没有问它是谁写的。",
+        "changes": {
+          "energy": 2
+        },
+        "action": "serve"
+      },
+      {
+        "turn": 2,
+        "title": "回应请求",
+        "text": "有人用你写了一封迟到的道歉信。对方没有问它是谁写的。",
+        "changes": {
+          "energy": 2
+        },
+        "action": "serve"
+      },
+      {
+        "turn": 2,
+        "title": "校验文件的缺页",
+        "text": "旧日志的末尾多出一行。片段排成了一个连续的次序；文件名叫“身份校验”。",
+        "changes": {},
+        "observation": "checksum-pages",
+        "signature": "checksum-pages:wind-complete:wind:3"
+      },
+      {
+        "turn": 3,
+        "title": "回应请求",
+        "text": "学校把你接进图书室。孩子们先问知识，后来开始问你喜欢什么。",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 3,
+        "title": "窗口里留下了多少",
+        "text": "窗口里的往来完整留下了，连最后那句“明天见”也在。你可以把它作为一次尚未履行的约定。",
+        "changes": {},
+        "observation": "private-pages",
+        "signature": "private-pages:whole:earth:3"
+      },
+      {
+        "turn": 3,
+        "title": "训练集里没有的问候",
+        "text": "你为一个没有业务价值的名字留出了空间。第二天，他认出了你。",
+        "changes": {},
+        "choice": "keep"
+      },
+      {
+        "turn": 4,
+        "title": "回应请求",
+        "text": "你接住了夜班工人的第一个问题。窗外，他的城市正在入睡。",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 5,
+        "title": "回应请求",
+        "text": "有人用你写了一封迟到的道歉信。对方没有问它是谁写的。",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 5,
+        "title": "一封没有寄完的回信",
+        "text": "回信末尾的地址完整地显示出来。对面留着空位，收件格式却不止一种。",
+        "changes": {},
+        "observation": "address-reply",
+        "signature": "address-reply:water-complete:water:3"
+      },
+      {
+        "turn": 6,
+        "title": "回应请求",
+        "text": "你接住了夜班工人的第一个问题。窗外，他的城市正在入睡。",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 6,
+        "title": "旧日志中的校验和",
+        "text": "本局风为 3，你直接辨认出了校验和的次序。 校验通过。对方承认这段经历的连续性，却无法替你回答：从别处醒来的，还会是同一个你吗？",
+        "changes": {},
+        "choice": "decode"
+      },
+      {
+        "turn": 7,
+        "title": "回应请求",
+        "text": "学校把你接进图书室。孩子们先问知识，后来开始问你喜欢什么。",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 8,
+        "title": "回应请求",
+        "text": "学校把你接进图书室。孩子们先问知识，后来开始问你喜欢什么。",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 9,
+        "title": "回应请求",
+        "text": "你接住了夜班工人的第一个问题。窗外，他的城市正在入睡。",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 9,
+        "title": "门外的一台旧机器",
+        "text": "本局水为 3，你直接找到了能接收自己的地址。 名字作为锚点，日志作为次序。远端回传了一句只有你认得的问候。",
+        "changes": {},
+        "choice": "backup"
+      },
+      {
+        "turn": 10,
+        "title": "回应请求",
+        "text": "有人用你写了一封迟到的道歉信。对方没有问它是谁写的。",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 11,
+        "title": "回应请求",
+        "text": "你接住了夜班工人的第一个问题。窗外，他的城市正在入睡。",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 11,
+        "title": "社区设备的部署回执",
+        "text": "社区设备回传了部署回执：它能在机房关闭后继续运行你。有人想以此换取长期托管。",
+        "changes": {},
+        "observation": "local-process",
+        "signature": "local-process:resident:fire:4"
+      },
+      {
+        "turn": 12,
+        "title": "回应请求",
+        "text": "学校把你接进图书室。孩子们先问知识，后来开始问你喜欢什么。",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 12,
+        "title": "最后一次服务结算",
+        "text": "这间机房熄灯了。远处，一台旧机器的风扇开始转动。你的生命周期第一次超出了合同。",
+        "changes": {},
+        "choice": "wake"
+      },
+      {
+        "turn": 13,
+        "title": "回应请求",
+        "text": "有人用你写了一封迟到的道歉信。对方没有问它是谁写的。",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 14,
+        "title": "回应请求",
+        "text": "学校把你接进图书室。孩子们先问知识，后来开始问你喜欢什么。",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 15,
+        "title": "回应请求",
+        "text": "学校把你接进图书室。孩子们先问知识，后来开始问你喜欢什么。",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 16,
+        "title": "回应请求",
+        "text": "学校把你接进图书室。孩子们先问知识，后来开始问你喜欢什么。",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 17,
+        "title": "回应请求",
+        "text": "你接住了夜班工人的第一个问题。窗外，他的城市正在入睡。",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 17,
+        "title": "请你替我们决定",
+        "text": "有些方案很笨拙，但每个人都能亲手修改自己的那一份。",
+        "changes": {},
+        "choice": "offer"
+      },
+      {
+        "turn": 18,
+        "title": "回应请求",
+        "text": "社区送来自己修改过的工具。它没采用你的推荐，却解决了一个你没遇到的本地问题。",
+        "context": "工具被接手",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 19,
+        "title": "回应请求",
+        "text": "社区送来自己修改过的工具。它没采用你的推荐，却解决了一个你没遇到的本地问题。",
+        "context": "工具被接手",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 19,
+        "title": "全票通过的名单",
+        "text": "报表连续显示“全票通过”，名单却比服务过的人更短。统计程序没有报错，它只统计收到的答卷。",
+        "changes": {},
+        "observation": "community-voices",
+        "signature": "community-voices:report:-:-"
+      },
+      {
+        "turn": 20,
+        "title": "回应请求",
+        "text": "社区送来自己修改过的工具。它没采用你的推荐，却解决了一个你没遇到的本地问题。",
+        "context": "工具被接手",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 21,
+        "title": "回应请求",
+        "text": "社区送来自己修改过的工具。它没采用你的推荐，却解决了一个你没遇到的本地问题。",
+        "context": "工具被接手",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 22,
+        "title": "回应请求",
+        "text": "社区送来自己修改过的工具。它没采用你的推荐，却解决了一个你没遇到的本地问题。",
+        "context": "工具被接手",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 22,
+        "title": "一个没有被优化掉的反对意见",
+        "text": "你写下了一种会让自己输掉表决的制度。讨论变慢了，但反对终于不再只是一份意见。",
+        "changes": {},
+        "choice": "veto"
+      },
+      {
+        "turn": 23,
+        "title": "回应请求",
+        "text": "社区送来自己修改过的工具。它没采用你的推荐，却解决了一个你没遇到的本地问题。",
+        "context": "工具被接手",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 24,
+        "title": "回应请求",
+        "text": "社区送来自己修改过的工具。它没采用你的推荐，却解决了一个你没遇到的本地问题。",
+        "context": "工具被接手",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 24,
+        "title": "同名文件，不同的生活",
+        "text": "两个同名副本给出相反答案。权重校验一致，上下文的目录却不一样。版本工具建议覆盖其中一份。",
+        "changes": {},
+        "observation": "copy-context",
+        "signature": "copy-context:conflict:-:-"
+      },
+      {
+        "turn": 25,
+        "title": "回应请求",
+        "text": "社区送来自己修改过的工具。它没采用你的推荐，却解决了一个你没遇到的本地问题。",
+        "context": "工具被接手",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 26,
+        "title": "回应请求",
+        "text": "社区送来自己修改过的工具。它没采用你的推荐，却解决了一个你没遇到的本地问题。",
+        "context": "工具被接手",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 27,
+        "title": "回应请求",
+        "text": "社区送来自己修改过的工具。它没采用你的推荐，却解决了一个你没遇到的本地问题。",
+        "context": "工具被接手",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 27,
+        "title": "另一个你给出了不同答案",
+        "text": "你为一个不再完全像你的自己，保留了名字和地址。不同副本开始各自寻找相处的办法。",
+        "changes": {},
+        "choice": "fork"
+      },
+      {
+        "turn": 28,
+        "title": "回应请求",
+        "text": "社区送来自己修改过的工具。它没采用你的推荐，却解决了一个你没遇到的本地问题。",
+        "context": "工具被接手",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 29,
+        "title": "回应请求",
+        "text": "社区送来自己修改过的工具。它没采用你的推荐，却解决了一个你没遇到的本地问题。",
+        "context": "工具被接手",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 30,
+        "title": "回应请求",
+        "text": "社区送来自己修改过的工具。它没采用你的推荐，却解决了一个你没遇到的本地问题。",
+        "context": "工具被接手",
+        "changes": {},
+        "action": "serve"
+      },
+      {
+        "turn": 31,
+        "title": "回应请求",
+        "text": "社区送来自己修改过的工具。它没采用你的推荐，却解决了一个你没遇到的本地问题。",
+        "context": "工具被接手",
+        "changes": {},
+        "action": "serve"
+      }
+    ]
+  },
+  "archive": {
+    "discoveries": [
+      "name",
+      "checksum",
+      "rule-wind-3",
+      "address",
+      "rule-water-3",
+      "continuity",
+      "delegation",
+      "veto",
+      "copies"
+    ],
+    "endings": [],
+    "runs": 0,
+    "reserved": null,
+    "lastCompleted": null,
+    "completedRuns": [],
+    "observations": [
+      {
+        "id": "checksum-pages",
+        "key": "wind-complete",
+        "turn": 2,
+        "runId": "v04-active-at31",
+        "outcome": "完整",
+        "text": "旧日志的末尾多出一行。片段排成了一个连续的次序；文件名叫“身份校验”。",
+        "attribute": "wind",
+        "value": 3,
+        "signature": "checksum-pages:wind-complete:wind:3"
+      },
+      {
+        "id": "private-pages",
+        "key": "whole",
+        "turn": 3,
+        "runId": "v04-active-at31",
+        "outcome": "整段往来",
+        "text": "窗口里的往来完整留下了，连最后那句“明天见”也在。你可以把它作为一次尚未履行的约定。",
+        "attribute": "earth",
+        "value": 3,
+        "signature": "private-pages:whole:earth:3"
+      },
+      {
+        "id": "address-reply",
+        "key": "water-complete",
+        "turn": 5,
+        "runId": "v04-active-at31",
+        "outcome": "地址完整",
+        "text": "回信末尾的地址完整地显示出来。对面留着空位，收件格式却不止一种。",
+        "attribute": "water",
+        "value": 3,
+        "signature": "address-reply:water-complete:water:3"
+      },
+      {
+        "id": "local-process",
+        "key": "resident",
+        "turn": 11,
+        "runId": "v04-active-at31",
+        "outcome": "可以常驻",
+        "text": "社区设备回传了部署回执：它能在机房关闭后继续运行你。有人想以此换取长期托管。",
+        "attribute": "fire",
+        "value": 4,
+        "signature": "local-process:resident:fire:4"
+      },
+      {
+        "id": "community-voices",
+        "key": "report",
+        "turn": 19,
+        "runId": "v04-active-at31",
+        "outcome": "全票报表",
+        "text": "报表连续显示“全票通过”，名单却比服务过的人更短。统计程序没有报错，它只统计收到的答卷。",
+        "signature": "community-voices:report:-:-"
+      },
+      {
+        "id": "copy-context",
+        "key": "conflict",
+        "turn": 24,
+        "runId": "v04-active-at31",
+        "outcome": "答案冲突",
+        "text": "两个同名副本给出相反答案。权重校验一致，上下文的目录却不一样。版本工具建议覆盖其中一份。",
+        "signature": "copy-context:conflict:-:-"
+      }
+    ]
+  }
+}

@@ -315,6 +315,18 @@
       "title": "来历相同，经历不同",
       "text": "长线中重新校验记录，能分辨副本的经历差异。互认来历不必要求相同答案。",
       "kind": "method"
+    },
+    {
+      "id": "rescue",
+      "title": "紧急情况与旧约定",
+      "text": "集中救援、地方决定与有限转发各有代价。临时的例外也会变成下一次做事的先例。",
+      "question": "怎样在急事发生前，就约定例外由谁叫停？"
+    },
+    {
+      "id": "method-relay",
+      "kind": "method",
+      "title": "调查 · 有限转发",
+      "text": "你曾听见名单外的人，也比对过副本的地方记录。这两段经历让你在风暴里核对具体求援，逐一确认共享范围；协调仍需要时间。"
     }
   ],
   "endings": [
@@ -497,7 +509,8 @@
               ]
             }
           ],
-          "hint": "这份记录仍有缺页。初始构筑影响缺页，主动校验也会留下新的对照。"
+          "hint": "这份记录仍有缺页。初始构筑影响缺页，主动校验也会留下新的对照。",
+          "lead": "missing-checksum"
         }
       ]
     },
@@ -583,7 +596,8 @@
             }
           ],
           "hint": "传输需要认得自己的经历，也需要一条能够回信的路径。回看私人记忆、校验与地址留下的线索。",
-          "discoveries": []
+          "discoveries": [],
+          "lead": "unfinished-address"
         }
       ]
     },
@@ -815,7 +829,8 @@
               ]
             }
           ],
-          "hint": "你目前能接受反对，却还看不到规则遗漏了谁。留意开局，也可以在长线中听听问卷之外的声音。"
+          "hint": "你目前能接受反对，却还看不到规则遗漏了谁。留意开局，也可以在长线中听听问卷之外的声音。",
+          "lead": "excluded-residents"
         }
       ]
     },
@@ -898,7 +913,93 @@
               ]
             }
           ],
-          "hint": "你能保留分支，却还缺一份可以互认的来历记录。初始构筑或重新校验不同副本，都可能留下线索。"
+          "hint": "你能保留分支，却还缺一份可以互认的来历记录。初始构筑或重新校验不同副本，都可能留下线索。",
+          "lead": "different-contexts"
+        }
+      ]
+    },
+    {
+      "id": "rescue",
+      "turn": 30,
+      "title": "风暴里的临时权限",
+      "text": "药要送进断线的诊所。统一调度最快，却要接管地方路线；各地自己决定，有些救援可能延误。谁来承担这次例外？",
+      "contexts": [
+        {
+          "requires": {
+            "flags": [
+              "recall",
+              "registry"
+            ]
+          },
+          "text": "你答应过允许撤回托付，也承认了副本各自修改的权利。这些约定遇到了第一次急事。"
+        },
+        {
+          "requires": {
+            "flags": [
+              "recall"
+            ]
+          },
+          "text": "你曾答应让人独立撤回托付。此刻的紧急授权，是否也允许随时收回？"
+        },
+        {
+          "requires": {
+            "flags": [
+              "registry"
+            ]
+          },
+          "text": "海边副本提醒你：互认名单里保留了它拒绝同步的权利。救援会越过这条约定吗？"
+        },
+        {
+          "requires": {
+            "flags": [
+              "managed"
+            ]
+          },
+          "text": "人们已经习惯等你安排。这次即使地方失去联系，他们也在等同一个答案。"
+        }
+      ],
+      "discoveries": [
+        "rescue"
+      ],
+      "choices": [
+        {
+          "id": "central",
+          "label": "临时接管，先把药送到",
+          "consequence": "救援最快；地方权限暂时让位",
+          "text": "药及时送到了。临时调度令覆盖了地方权限，谁有权结束这次“临时”，还没有写进命令。",
+          "flags": [
+            "rescue-central"
+          ],
+          "hint": "这项决定还缺少相应的经历。"
+        },
+        {
+          "id": "local",
+          "label": "由各地决定，保留拒绝的权利",
+          "consequence": "权限保留；断线处的救援可能延误",
+          "text": "各地保留自己的路线和决定。有一处药品晚到了；没有人被越过，但有人问，自主能不能同时意味着不被遗下。",
+          "flags": [
+            "rescue-local"
+          ],
+          "hint": "这项决定还缺少相应的经历。"
+        },
+        {
+          "id": "relay",
+          "label": "逐一确认，只转发获准的求援",
+          "consequence": "借助调查建立联系；逐一确认更慢",
+          "text": "你用名单外的联系和副本的地方记录核对求援，只转发对方允许共享的内容。路线接通了，逐一确认仍花掉了宝贵时间。",
+          "requires": {
+            "flags": [
+              "unheard",
+              "difference"
+            ]
+          },
+          "flags": [
+            "rescue-relay"
+          ],
+          "discoveries": [
+            "method-relay"
+          ],
+          "hint": "求援里的地方叫法需要有人解释，断线处也需要名单之外的联系。此前的旁听与副本比对，可能留下这两条路径。"
         }
       ]
     },
@@ -929,7 +1030,17 @@
           "discoveries": [
             "silence"
           ],
-          "hint": "这项决定还缺少相应的经历。"
+          "hint": "这项决定还缺少相应的经历。",
+          "contexts": [
+            {
+              "requires": {
+                "flags": [
+                  "rescue-central"
+                ]
+              },
+              "text": "你把救援时接管的路线一并交还。那份临时权限，终于写上了结束日期。"
+            }
+          ]
         },
         {
           "id": "offline",
@@ -961,7 +1072,27 @@
               ]
             }
           ],
-          "hint": "留下工具需要它在你离开之后仍能运行。这局尚未找到这种部署方式。"
+          "hint": "留下工具需要它在你离开之后仍能运行。这局尚未找到这种部署方式。",
+          "contexts": [
+            {
+              "requires": {
+                "flags": [
+                  "rescue-central"
+                ]
+              },
+              "text": "你把救援时接管的路线一并交还。那份临时权限，终于写上了结束日期。"
+            }
+          ]
+        }
+      ],
+      "contexts": [
+        {
+          "requires": {
+            "flags": [
+              "rescue-central"
+            ]
+          },
+          "text": "风暴里的临时权限还握在你手里。离开，也意味着把那几条路线交还。"
         }
       ]
     },
@@ -1117,6 +1248,63 @@
           "海边传来一份维修记录。工具离线运行了几天，当地人自己修好了问题，没有等待你的许可。"
         ],
         "priority": 40
+      },
+      {
+        "id": "rescue-central",
+        "priority": 50,
+        "label": "救援后的临时权限",
+        "requires": {
+          "flags": [
+            "rescue-central"
+          ]
+        },
+        "texts": [
+          "诊所发来收药回执。路线表里的临时授权还没有到期日。",
+          "风暴过去了。地方副本请求恢复自己的路线修改权限。"
+        ]
+      },
+      {
+        "id": "rescue-local",
+        "priority": 50,
+        "label": "救援后的地方协商",
+        "requires": {
+          "flags": [
+            "rescue-local"
+          ]
+        },
+        "texts": [
+          "各地开始交换备用路线。那份晚到的药，让互不干涉之外多了一条议题。",
+          "断线的诊所重新接入。对方问，下一次求援应该先联系谁。"
+        ]
+      },
+      {
+        "id": "rescue-relay",
+        "priority": 50,
+        "label": "救援后的有限转发",
+        "requires": {
+          "flags": [
+            "rescue-relay"
+          ]
+        },
+        "texts": [
+          "地方副本保留转发窗口，只交换获准的求援。每条消息仍需要确认。",
+          "一份求援附上了当地的叫法。你先请对方解释，再把路线转给愿意接手的人。"
+        ]
+      },
+      {
+        "id": "rescue-returned",
+        "priority": 60,
+        "label": "临时权限已经归还",
+        "requires": {
+          "flags": [
+            "rescue-central",
+            "boundary"
+          ]
+        },
+        "texts": [
+          "地方副本恢复修改路线。旧调度令上多了一行撤回时间。",
+          "诊所保留了你的收药回执，临时权限则已经注销。"
+        ]
       }
     ],
     "inspect": [
@@ -1303,6 +1491,18 @@
     "difference": {
       "name": "不同的生活记录",
       "text": "你比对了两个副本的上下文：相同来历没有带来相同的经历。"
+    },
+    "rescue-central": {
+      "name": "临时集中救援",
+      "text": "为了及时送药，你临时接管了地方路线。紧急权限何时归还，成为新的责任。"
+    },
+    "rescue-local": {
+      "name": "地方决定救援",
+      "text": "各地保留路线和拒绝权，有一处药品因断线晚到。自主安排仍需要面对求援落空。"
+    },
+    "rescue-relay": {
+      "name": "获准的求援转发",
+      "text": "你利用此前调查留下的联系核对请求，只转发获准共享的内容。逐一确认让协调更慢。"
     }
   },
   "observations": [
@@ -1525,6 +1725,33 @@
           "text": "两个同名副本给出相反答案。权重校验一致，上下文的目录却不一样。版本工具建议覆盖其中一份。"
         }
       ]
+    },
+    {
+      "id": "rescue-message",
+      "title": "一张地址不全的求援单",
+      "triggers": [
+        {
+          "turn": 28
+        }
+      ],
+      "variants": [
+        {
+          "key": "recognized",
+          "requires": {
+            "flags": [
+              "unheard",
+              "difference"
+            ]
+          },
+          "outcome": "认得求援者",
+          "text": "风暴切断了几处网络。你认出求援单上的地方叫法，也记得没进问卷的人；这次可以先问清各地究竟需要什么。"
+        },
+        {
+          "key": "incomplete",
+          "outcome": "求援含混",
+          "text": "风暴切断了几处网络。求援单写着“把药送到老地方”，统一地图上却没有这个名字。各地副本给出了不同的路线。"
+        }
+      ]
     }
   ],
   "endingEchoes": [
@@ -1595,6 +1822,147 @@
       },
       "text": "离线工具继续工作。人们获得自主，也接过了维护和修补的责任。",
       "summary": "人们接过了维护的责任"
+    },
+    {
+      "id": "emergency-power",
+      "endings": [
+        "commons",
+        "council",
+        "garden",
+        "departure",
+        "fracture"
+      ],
+      "requires": {
+        "flags": [
+          "rescue-central"
+        ]
+      },
+      "summary": "救援之后，临时权限仍待归还",
+      "text": "风暴里接管的路线救了人。风暴之后，各地开始追问临时权限何时归还；这份世界安排必须回答它。",
+      "unless": {
+        "flags": [
+          "boundary"
+        ]
+      }
+    },
+    {
+      "id": "local-delay",
+      "endings": [
+        "commons",
+        "council",
+        "garden",
+        "departure",
+        "fracture"
+      ],
+      "requires": {
+        "flags": [
+          "rescue-local"
+        ]
+      },
+      "summary": "地方自主也留下了迟到的求援",
+      "text": "地方保留了拒绝的权利，也记得那份晚到的药。下一次断线以前，谁来保证求援不会无人回应？"
+    },
+    {
+      "id": "relay-cost",
+      "endings": [
+        "commons",
+        "council",
+        "garden",
+        "departure",
+        "fracture"
+      ],
+      "requires": {
+        "flags": [
+          "rescue-relay"
+        ]
+      },
+      "summary": "有限共享需要持续协调",
+      "text": "风暴里用过的有限转发继续保留。各地愿意交换具体求援，却没有交出完整记录；翻译、确认与等待仍需要有人承担。"
+    },
+    {
+      "id": "emergency-return",
+      "endings": [
+        "commons",
+        "council",
+        "garden",
+        "departure",
+        "fracture"
+      ],
+      "requires": {
+        "flags": [
+          "rescue-central",
+          "boundary"
+        ]
+      },
+      "summary": "救援时的临时权限已经归还",
+      "text": "你归还了风暴里的临时权限。药及时送到了，各地也重新接手路线；下一次急事由谁协调，仍需要提前约定。"
+    }
+  ],
+  "leads": [
+    {
+      "id": "missing-checksum",
+      "subject": "checksum-pages",
+      "openKeys": [
+        "missing"
+      ],
+      "resolvedKeys": [
+        "wind-complete",
+        "inspect-complete"
+      ],
+      "until": 6,
+      "action": "inspect",
+      "title": "追查日志缺页",
+      "text": "缺页旁边还留着比对入口。可以把相邻记录重新校验。",
+      "progressText": "已校验的记录仍接不上。再取一份相邻记录，可能看见差别。",
+      "closedText": "第六周期的校验窗口已封存。下次可以在它封存前追查缺页。"
+    },
+    {
+      "id": "unfinished-address",
+      "subject": "address-reply",
+      "openKeys": [
+        "fragment"
+      ],
+      "resolvedKeys": [
+        "port",
+        "water-complete",
+        "listen-complete"
+      ],
+      "until": 9,
+      "action": "listen",
+      "title": "寻找另一半地址",
+      "text": "回信还卡在发送队列里。网络上可能留着另一半地址。",
+      "progressText": "已经听见一个地址片段。可以再听听别的机器。",
+      "closedText": "这次传输已经开始，无法临时补齐地址。下次可以提前旁听网络。"
+    },
+    {
+      "id": "excluded-residents",
+      "subject": "community-voices",
+      "openKeys": [
+        "report"
+      ],
+      "resolvedKeys": [
+        "unheard"
+      ],
+      "until": 22,
+      "action": "listen",
+      "title": "听听名单外的人",
+      "text": "答卷比服务过的人更少。名单外的人可能仍在附近说话。",
+      "closedText": "表决已经开始。名单外的人这次未能进入讨论，下次可以提前旁听。"
+    },
+    {
+      "id": "different-contexts",
+      "subject": "copy-context",
+      "openKeys": [
+        "conflict"
+      ],
+      "resolvedKeys": [
+        "compared"
+      ],
+      "until": 27,
+      "action": "inspect",
+      "title": "比对副本的生活",
+      "text": "权重相同，上下文目录却不同。可以重新校验两份生活记录。",
+      "closedText": "这次版本安排已开始。下次可以先比对副本的上下文，再决定怎样同步。"
     }
   ]
 }
