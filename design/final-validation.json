@@ -1,0 +1,45 @@
+{
+  "sourceHash": "c03945659e27b98c1ed8884c7b12d2edfb05a58769c8c2bc893887ada1a69c8c",
+  "rules": {
+    "passed": 19
+  },
+  "completeRuns": {
+    "viewports": 2,
+    "shortRuns": 2,
+    "longRuns": 2
+  },
+  "fullContent": {
+    "skins": [
+      "mist",
+      "ink",
+      "paper"
+    ],
+    "viewports": [
+      [
+        320,
+        568
+      ],
+      [
+        390,
+        664
+      ],
+      [
+        1280,
+        800
+      ],
+      [
+        667,
+        375
+      ]
+    ],
+    "events": 9,
+    "endings": 8,
+    "notebookNotes": 8,
+    "notebookWorlds": 8,
+    "historyGroups": 3,
+    "statusTabs": 3,
+    "result": "passed"
+  },
+  "additionalLayoutCases": 12,
+  "externalRuntimeRequests": 0
+}

@@ -1,0 +1,855 @@
+{
+  "id": "03",
+  "name": "同屏比较",
+  "question": "全部十个词条能否在短屏内同时比较？",
+  "change": "移除词条翻页，改双列横条与共享说明区。",
+  "skins": [
+    "mist"
+  ],
+  "sourceHash": "bc96e41aa128b8dc81fd78a10b8c419f0cdbb3d3d542f6645a26c30752a792d6",
+  "measuredAt": "2026-10-19T04:08:36.704Z",
+  "results": [
+    {
+      "skin": "mist",
+      "sample": {
+        "name": "desktop",
+        "width": 1280,
+        "height": 800
+      },
+      "setup": {
+        "visibleTraits": 10,
+        "traitSizes": [
+          {
+            "width": 491,
+            "height": 82
+          },
+          {
+            "width": 491,
+            "height": 82
+          },
+          {
+            "width": 491,
+            "height": 82
+          },
+          {
+            "width": 491,
+            "height": 82
+          },
+          {
+            "width": 491,
+            "height": 82
+          },
+          {
+            "width": 491,
+            "height": 82
+          },
+          {
+            "width": 491,
+            "height": 82
+          },
+          {
+            "width": 491,
+            "height": 82
+          },
+          {
+            "width": 491,
+            "height": 82
+          },
+          {
+            "width": 491,
+            "height": 82
+          }
+        ],
+        "traitPages": 0,
+        "visibleChoices": 0,
+        "choicePages": 0,
+        "textPages": 0,
+        "overflow": [],
+        "outside": [],
+        "documentScroll": false,
+        "minTargetHeight": 44,
+        "minMeasuredContrast": 5.35,
+        "contrasts": [
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "button primary",
+            "ratio": 5.88
+          }
+        ]
+      },
+      "selection": {
+        "selected": "已选 3 / 3",
+        "navigationClicks": 0
+      },
+      "allocation": {
+        "visibleTraits": 0,
+        "traitSizes": [],
+        "traitPages": 0,
+        "visibleChoices": 0,
+        "choicePages": 0,
+        "textPages": 0,
+        "overflow": [],
+        "outside": [],
+        "documentScroll": false,
+        "minTargetHeight": 44,
+        "minMeasuredContrast": 5.88,
+        "contrasts": [
+          {
+            "element": "button primary",
+            "ratio": 5.88
+          }
+        ]
+      },
+      "play": {
+        "visibleTraits": 0,
+        "traitSizes": [],
+        "traitPages": 0,
+        "visibleChoices": 0,
+        "choicePages": 0,
+        "textPages": 0,
+        "overflow": [],
+        "outside": [],
+        "documentScroll": false,
+        "minTargetHeight": 36,
+        "minMeasuredContrast": 11.6,
+        "contrasts": [
+          {
+            "element": "reader-text",
+            "ratio": 11.6
+          }
+        ]
+      },
+      "decision": {
+        "visibleTraits": 0,
+        "traitSizes": [],
+        "traitPages": 0,
+        "visibleChoices": 2,
+        "choicePages": 2,
+        "textPages": 0,
+        "overflow": [],
+        "outside": [],
+        "documentScroll": false,
+        "minTargetHeight": 36,
+        "minMeasuredContrast": 11.6,
+        "contrasts": [
+          {
+            "element": "reader-text",
+            "ratio": 11.6
+          }
+        ]
+      },
+      "errors": []
+    },
+    {
+      "skin": "mist",
+      "sample": {
+        "name": "phone",
+        "width": 390,
+        "height": 664
+      },
+      "setup": {
+        "visibleTraits": 10,
+        "traitSizes": [
+          {
+            "width": 178,
+            "height": 73
+          },
+          {
+            "width": 178,
+            "height": 73
+          },
+          {
+            "width": 178,
+            "height": 73
+          },
+          {
+            "width": 178,
+            "height": 73
+          },
+          {
+            "width": 178,
+            "height": 73
+          },
+          {
+            "width": 178,
+            "height": 73
+          },
+          {
+            "width": 178,
+            "height": 73
+          },
+          {
+            "width": 178,
+            "height": 73
+          },
+          {
+            "width": 178,
+            "height": 73
+          },
+          {
+            "width": 178,
+            "height": 73
+          }
+        ],
+        "traitPages": 0,
+        "visibleChoices": 0,
+        "choicePages": 0,
+        "textPages": 0,
+        "overflow": [],
+        "outside": [],
+        "documentScroll": false,
+        "minTargetHeight": 44,
+        "minMeasuredContrast": 5.35,
+        "contrasts": [
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "button primary",
+            "ratio": 5.88
+          }
+        ]
+      },
+      "selection": {
+        "selected": "已选 3 / 3",
+        "navigationClicks": 0
+      },
+      "allocation": {
+        "visibleTraits": 0,
+        "traitSizes": [],
+        "traitPages": 0,
+        "visibleChoices": 0,
+        "choicePages": 0,
+        "textPages": 0,
+        "overflow": [],
+        "outside": [],
+        "documentScroll": false,
+        "minTargetHeight": 44,
+        "minMeasuredContrast": 5.88,
+        "contrasts": [
+          {
+            "element": "button primary",
+            "ratio": 5.88
+          }
+        ]
+      },
+      "play": {
+        "visibleTraits": 0,
+        "traitSizes": [],
+        "traitPages": 0,
+        "visibleChoices": 0,
+        "choicePages": 0,
+        "textPages": 0,
+        "overflow": [],
+        "outside": [],
+        "documentScroll": false,
+        "minTargetHeight": 36,
+        "minMeasuredContrast": 11.6,
+        "contrasts": [
+          {
+            "element": "reader-text",
+            "ratio": 11.6
+          }
+        ]
+      },
+      "decision": {
+        "visibleTraits": 0,
+        "traitSizes": [],
+        "traitPages": 0,
+        "visibleChoices": 2,
+        "choicePages": 2,
+        "textPages": 0,
+        "overflow": [],
+        "outside": [],
+        "documentScroll": false,
+        "minTargetHeight": 36,
+        "minMeasuredContrast": 11.6,
+        "contrasts": [
+          {
+            "element": "reader-text",
+            "ratio": 11.6
+          }
+        ]
+      },
+      "errors": []
+    },
+    {
+      "skin": "mist",
+      "sample": {
+        "name": "short",
+        "width": 320,
+        "height": 568
+      },
+      "setup": {
+        "visibleTraits": 10,
+        "traitSizes": [
+          {
+            "width": 143,
+            "height": 59
+          },
+          {
+            "width": 143,
+            "height": 59
+          },
+          {
+            "width": 143,
+            "height": 59
+          },
+          {
+            "width": 143,
+            "height": 59
+          },
+          {
+            "width": 143,
+            "height": 59
+          },
+          {
+            "width": 143,
+            "height": 59
+          },
+          {
+            "width": 143,
+            "height": 59
+          },
+          {
+            "width": 143,
+            "height": 59
+          },
+          {
+            "width": 143,
+            "height": 59
+          },
+          {
+            "width": 143,
+            "height": 59
+          }
+        ],
+        "traitPages": 0,
+        "visibleChoices": 0,
+        "choicePages": 0,
+        "textPages": 0,
+        "overflow": [],
+        "outside": [],
+        "documentScroll": false,
+        "minTargetHeight": 44,
+        "minMeasuredContrast": 5.35,
+        "contrasts": [
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "button primary",
+            "ratio": 5.88
+          }
+        ]
+      },
+      "selection": {
+        "selected": "已选 3 / 3",
+        "navigationClicks": 0
+      },
+      "allocation": {
+        "visibleTraits": 0,
+        "traitSizes": [],
+        "traitPages": 0,
+        "visibleChoices": 0,
+        "choicePages": 0,
+        "textPages": 0,
+        "overflow": [],
+        "outside": [],
+        "documentScroll": false,
+        "minTargetHeight": 44,
+        "minMeasuredContrast": 5.88,
+        "contrasts": [
+          {
+            "element": "button primary",
+            "ratio": 5.88
+          }
+        ]
+      },
+      "play": {
+        "visibleTraits": 0,
+        "traitSizes": [],
+        "traitPages": 0,
+        "visibleChoices": 0,
+        "choicePages": 0,
+        "textPages": 0,
+        "overflow": [],
+        "outside": [],
+        "documentScroll": false,
+        "minTargetHeight": 32,
+        "minMeasuredContrast": 11.6,
+        "contrasts": [
+          {
+            "element": "reader-text",
+            "ratio": 11.6
+          }
+        ]
+      },
+      "decision": {
+        "visibleTraits": 0,
+        "traitSizes": [],
+        "traitPages": 0,
+        "visibleChoices": 1,
+        "choicePages": 2,
+        "textPages": 0,
+        "overflow": [],
+        "outside": [],
+        "documentScroll": false,
+        "minTargetHeight": 32,
+        "minMeasuredContrast": 11.6,
+        "contrasts": [
+          {
+            "element": "reader-text",
+            "ratio": 11.6
+          }
+        ]
+      },
+      "errors": []
+    },
+    {
+      "skin": "mist",
+      "sample": {
+        "name": "landscape",
+        "width": 667,
+        "height": 375
+      },
+      "setup": {
+        "visibleTraits": 10,
+        "traitSizes": [
+          {
+            "width": 185,
+            "height": 50
+          },
+          {
+            "width": 185,
+            "height": 50
+          },
+          {
+            "width": 185,
+            "height": 50
+          },
+          {
+            "width": 185,
+            "height": 50
+          },
+          {
+            "width": 185,
+            "height": 50
+          },
+          {
+            "width": 185,
+            "height": 50
+          },
+          {
+            "width": 185,
+            "height": 50
+          },
+          {
+            "width": 185,
+            "height": 50
+          },
+          {
+            "width": 185,
+            "height": 50
+          },
+          {
+            "width": 185,
+            "height": 50
+          }
+        ],
+        "traitPages": 0,
+        "visibleChoices": 0,
+        "choicePages": 0,
+        "textPages": 0,
+        "overflow": [],
+        "outside": [],
+        "documentScroll": false,
+        "minTargetHeight": 44,
+        "minMeasuredContrast": 5.35,
+        "contrasts": [
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "trait-name",
+            "ratio": 11.6
+          },
+          {
+            "element": "trait-effect",
+            "ratio": 5.35
+          },
+          {
+            "element": "button primary",
+            "ratio": 5.88
+          }
+        ]
+      },
+      "selection": {
+        "selected": "已选 3 / 3",
+        "navigationClicks": 0
+      },
+      "allocation": {
+        "visibleTraits": 0,
+        "traitSizes": [],
+        "traitPages": 0,
+        "visibleChoices": 0,
+        "choicePages": 0,
+        "textPages": 0,
+        "overflow": [
+          "attribute-panel story-card: 404x149/404x34"
+        ],
+        "outside": [],
+        "documentScroll": false,
+        "minTargetHeight": 30,
+        "minMeasuredContrast": 5.88,
+        "contrasts": [
+          {
+            "element": "button primary",
+            "ratio": 5.88
+          }
+        ]
+      },
+      "play": {
+        "visibleTraits": 0,
+        "traitSizes": [],
+        "traitPages": 0,
+        "visibleChoices": 0,
+        "choicePages": 0,
+        "textPages": 0,
+        "overflow": [],
+        "outside": [],
+        "documentScroll": false,
+        "minTargetHeight": 30,
+        "minMeasuredContrast": 11.6,
+        "contrasts": [
+          {
+            "element": "reader-text",
+            "ratio": 11.6
+          }
+        ]
+      },
+      "decision": {
+        "visibleTraits": 0,
+        "traitSizes": [],
+        "traitPages": 0,
+        "visibleChoices": 1,
+        "choicePages": 2,
+        "textPages": 0,
+        "overflow": [],
+        "outside": [],
+        "documentScroll": false,
+        "minTargetHeight": 30,
+        "minMeasuredContrast": 11.6,
+        "contrasts": [
+          {
+            "element": "reader-text",
+            "ratio": 11.6
+          }
+        ]
+      },
+      "errors": []
+    }
+  ]
+}

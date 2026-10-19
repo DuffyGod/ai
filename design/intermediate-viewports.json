@@ -1,0 +1,107 @@
+{
+  "kind": "Additional selected-trait layout probe",
+  "sourceHash": "c03945659e27b98c1ed8884c7b12d2edfb05a58769c8c2bc893887ada1a69c8c",
+  "traits": [
+    "mirror",
+    "socket",
+    "compiler"
+  ],
+  "results": [
+    {
+      "skin": "mist",
+      "viewport": {
+        "width": 900,
+        "height": 600
+      },
+      "overflow": []
+    },
+    {
+      "skin": "mist",
+      "viewport": {
+        "width": 1024,
+        "height": 600
+      },
+      "overflow": []
+    },
+    {
+      "skin": "mist",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "overflow": []
+    },
+    {
+      "skin": "mist",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "overflow": []
+    },
+    {
+      "skin": "ink",
+      "viewport": {
+        "width": 900,
+        "height": 600
+      },
+      "overflow": []
+    },
+    {
+      "skin": "ink",
+      "viewport": {
+        "width": 1024,
+        "height": 600
+      },
+      "overflow": []
+    },
+    {
+      "skin": "ink",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "overflow": []
+    },
+    {
+      "skin": "ink",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "overflow": []
+    },
+    {
+      "skin": "paper",
+      "viewport": {
+        "width": 900,
+        "height": 600
+      },
+      "overflow": []
+    },
+    {
+      "skin": "paper",
+      "viewport": {
+        "width": 1024,
+        "height": 600
+      },
+      "overflow": []
+    },
+    {
+      "skin": "paper",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "overflow": []
+    },
+    {
+      "skin": "paper",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "overflow": []
+    }
+  ]
+}

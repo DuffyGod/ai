@@ -26,7 +26,19 @@ npm test
 node tests/browser-smoke.cjs
 ```
 
-可使用 `AI_PREVIEW_URL` 指定待测站点，用 `AI_BROWSER_RESULTS` 指定截图的输出目录。默认输出在仓库外的 `/workspace/ai-dev-tools/results/card-ui`。浏览器检查覆盖完整短局与长局、八种视口、全部关键事件与结局、文字分页和内容溢出。
+可使用 `AI_PREVIEW_URL` 指定本地待测地址，用 `AI_BROWSER_RESULTS` 指定截图目录。默认输出在仓库外的 `/workspace/ai-dev-tools/results/strip-ui`。浏览器检查覆盖三种主题、完整短局与长局、全部事件与结局、标题和周期索引、键盘操作与存档恢复。
+
+## 界面方案与迭代
+
+[对比三种方案](docs/design-lab.html)：晨雾、墨蓝、暮纸。游戏中可以直接切换外观并保存。三种方案共用玩法和存档；十个词条同时列出，减少翻页与比较成本。
+
+[DESIGN_ITERATIONS.md](DESIGN_ITERATIONS.md) 记录旧版基线和十轮设计改造，区分实际浏览器测量与自主需求模拟。历史报告位于 `design/iterations/`；可在当前版本执行最终一轮检查：
+
+```bash
+node scripts/design-evaluate.cjs 11
+```
+
+该脚本同样使用环境提供的 Playwright 与 Chromium，需要先启动本地服务。`AI_PREVIEW_URL` 可覆盖默认测试地址；早期报告记录对应当时的 UI 源码摘要，不能视为当前版本的结果。
 
 ## GitHub Pages
 
@@ -43,7 +55,8 @@ node tests/browser-smoke.cjs
 - `docs/data/worlds.json`：新版词条、事件、线索、结局与日常文本。
 - `tests/`：规则和浏览器检查。
 - `DESIGN.md`：玩法细分、验收方法及含剧透的规则说明。
-- `UI_RESEARCH.md`：固定视口与卡牌界面的调研来源、采用方法及验证范围。
+- `UI_RESEARCH.md`：布局、条件叙事与评估方法来源。
+- `DESIGN_ITERATIONS.md`、`design/`：十轮改造的任务、实际测量与方案取舍。
 
 原稿的其他模块和数据暂时保留作为后续迁移的参考，新版入口只加载 `worldApp.js` 及其依赖。原稿存档与新版记录使用不同的键，原稿记录不会被覆盖。
 
