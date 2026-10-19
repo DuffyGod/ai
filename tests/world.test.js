@@ -79,6 +79,41 @@ test('action preview matches settled deltas including maintenance and caps', () 
   assert.equal(previewEffects(capped, { energy: 25 }).energy, 1);
 });
 
+test('world changes alter everyday accounts without changing settlement or randomness', () => {
+  const legacyData = { ...data, ambientRules: undefined };
+  for (const action of ['serve', 'inspect', 'listen']) {
+    const early = advance(data, fresh(), action);
+    assert.ok(data.ambient[action].includes(early.history.at(-1).text));
+    assert.equal(early.history.at(-1).context, undefined);
+    for (const direction of ['delegation', 'openness']) {
+      const state = fresh(); state.world[direction] = 12;
+      const before = structuredClone(state);
+      const next = advance(data, state, action);
+      const legacy = advance(legacyData, state, action);
+      const rule = data.ambientRules[action].find(rule => rule.id === direction);
+      assert.ok(rule.texts.includes(next.history.at(-1).text), `${action} did not reflect ${direction}`);
+      assert.equal(next.history.at(-1).context, rule.label);
+      assert.deepEqual(next.resources, legacy.resources);
+      assert.deepEqual(next.world, legacy.world);
+      assert.deepEqual(next.history.at(-1).changes, legacy.history.at(-1).changes);
+      assert.equal(next.rng, legacy.rng);
+      assert.deepEqual(advance(data, structuredClone(state), action), next, 'Reload changed the account');
+      assert.deepEqual(state, before);
+    }
+  }
+});
+
+test('everyday feedback responds as an action crosses the world threshold', () => {
+  for (const [action, key] of [['serve', 'delegation'], ['listen', 'openness']]) {
+    const state = fresh(); state.world[key] = 11;
+    const next = advance(data, state, action);
+    assert.equal(next.world[key], 12);
+    assert.ok(next.history.at(-1).context);
+  }
+  const invalid = structuredClone(data); invalid.ambientRules.serve[0].texts = [];
+  assert.throws(() => validateData(invalid), /世界回响/);
+});
+
 test('an unresolved event blocks progression and inaccessible choices have no effect', () => {
   let state = fresh();
   for (let i = 0; i < 3; i++) state = advance(data, state, 'serve');

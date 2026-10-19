@@ -135,8 +135,10 @@ export function advance(data, original, action) {
   const changes = applyEffects(state, actionEffects(state, action));
   state.turn++;
   state.counts[action]++;
-  const lines = data.ambient[action];
-  state.history.push({ turn: state.turn, title: ACTIONS[action].name, text: lines[Math.floor(random(state) * lines.length)], changes, action });
+  const echoes = (data.ambientRules?.[action] || []).filter(rule => meets(state, rule.requires));
+  const lines = echoes.length ? echoes.flatMap(rule => rule.texts.map(text => ({ text, context: rule.label }))) : data.ambient[action].map(text => ({ text }));
+  const line = lines[Math.floor(random(state) * lines.length)];
+  state.history.push({ turn: state.turn, title: ACTIONS[action].name, ...line, changes, action });
   checkSurvival(state);
   if (!state.ending) {
     const event = data.events.find(item => item.turn === state.turn);
@@ -175,6 +177,15 @@ export function validateData(data) {
       if (choice.ending && !data.endings.some(item => item.id === choice.ending)) throw new Error('缺少结局：' + choice.ending);
       for (const id of choice.discoveries || []) if (!data.discoveries.some(item => item.id === id)) throw new Error('缺少线索：' + id);
     }
+  }
+  for (const action of Object.keys(ACTIONS)) {
+    const lines = data.ambient?.[action];
+    if (!Array.isArray(lines) || !lines.length || lines.some(text => typeof text !== 'string' || !text.trim())) throw new Error('缺少日常文本：' + action);
+    const rules = data.ambientRules?.[action] || [];
+    if (!Array.isArray(rules) || new Set(rules.map(rule => rule.id)).size !== rules.length || rules.some(rule =>
+      typeof rule.id !== 'string' || !rule.id || typeof rule.label !== 'string' || !rule.label ||
+      !rule.requires || typeof rule.requires !== 'object' || Array.isArray(rule.requires) ||
+      !Array.isArray(rule.texts) || !rule.texts.length || rule.texts.some(text => typeof text !== 'string' || !text.trim()))) throw new Error('世界回响格式错误：' + action);
   }
   return data;
 }
